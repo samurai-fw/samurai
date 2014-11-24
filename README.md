@@ -1,8 +1,8 @@
 Samurai Framework
 ==================================================
 
-[![Build Status](https://travis-ci.org/8823-scholar/samurai.svg?branch=feature%2F3.0)](https://travis-ci.org/8823-scholar/samurai)
-[![Coverage Status](https://coveralls.io/repos/8823-scholar/samurai/badge.png?branch=feature%2F3.0)](https://coveralls.io/r/8823-scholar/samurai?branch=feature%2F3.0)
+[![Build Status](https://travis-ci.org/samurai-fw/samurai.svg?branch=feature%2F3.0)](https://travis-ci.org/samurai-fw/samurai)
+[![Coverage Status](https://coveralls.io/repos/samurai-fw/samurai/badge.png?branch=feature%2F3.0)](https://coveralls.io/r/samurai-fw/samurai?branch=feature%2F3.0)
 
 ## About "侍" (Samurai)
 
@@ -24,7 +24,7 @@ Easily resolve dependencies of any objects.
 ### via Composer.
 
 ```sh
-composer require samurai/samurai
+composer require samurai-fw/samurai@dev
 ```
 
 ## Some links
