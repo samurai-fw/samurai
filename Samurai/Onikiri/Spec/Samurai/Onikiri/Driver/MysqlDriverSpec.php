@@ -99,6 +99,7 @@ class MysqlDriverSpec extends PHPSpecContext
         $d->getPassword()->willReturn($pass);
         $d->getHostName()->willReturn($host);
         $d->getPort()->willReturn($port);
+        $d->getCharset()->willReturn('utf8');
         $d->getDatabaseName()->willReturn($database);
         $d->getOptions()->willReturn([]);
     }
