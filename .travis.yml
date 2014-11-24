@@ -8,6 +8,7 @@ env:
         - secure: "IdVGAor1x4rAUIyDZ/3RNkvFKCVarR/YA8QTq4GIL7I+ZlTd7MuzjPG5nBMv+oleXFUrDJQZJhmY8jdeCzhDY5YV94Y27q+ZPkH+s+aAhO/Ebjs3Rs+y1mnxNHKRkDIwvOwtsydwFzB64sjBZ4wiIKdfcy/3i18F8WaciF5Z4XU="
         - ONIKIRI_SPEC_MYSQL_USER="root" ONIKIRI_SPEC_MYSQL_DATABASE="app"
         - ONIKIRI_SPEC_PGSQL_USER="postgres" ONIKIRI_SPEC_PGSQL_DATABASE="app"
+        - SAMURAI_SPEC_REDIS_HOST="localhost"
 
 notifications:
     email:
@@ -16,6 +17,9 @@ notifications:
 branches:
     only:
         - feature/3.0
+
+services:
+    - redis-server
 
 before_script:
     - composer self-update
