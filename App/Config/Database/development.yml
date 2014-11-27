@@ -32,6 +32,7 @@
 # for development.
 #
 # alias:
+#     driver: mysql
 #     user: foo
 #     pass: password
 #     host: host1.localhost
@@ -41,9 +42,6 @@
 #
 
 base:
-    driver: mysql
-    user: user
-    pass: pass
-    host: localhost
-    database: sandbox
+    driver: sqlite
+    database: App/Database/Data/base.db
 

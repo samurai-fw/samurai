@@ -26,6 +26,7 @@
         "php": ">=5.4.0",
         "mustangostang/spyc": "0.5.*@dev",
         "twig/twig": "1.*",
+        "robmorgan/phinx": "*",
         "phpspec/phpspec": "2.1.x-dev"
     },
     "require-dev": {

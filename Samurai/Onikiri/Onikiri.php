@@ -142,6 +142,16 @@ class Onikiri
     }
 
     /**
+     * get all database configuration.
+     *
+     * @return  array
+     */
+    public function getDatabases()
+    {
+        return $this->_databases;
+    }
+
+    /**
      * set database.
      *
      * @param   string  $alias
