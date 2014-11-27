@@ -657,10 +657,14 @@ class EntityTable
         if (array_key_exists($method, $scopes)) {
             return $scopes[$method];
         } elseif (preg_match('/^findBy(.+)$/', $method, $matches)) {
-            $column = strtolower($matches[1]);
+            $camel_column = preg_split('/(?=[A-Z])/', $matches[1]);
+            array_shift($camel_column);
+            $column = strtolower(join('_', $camel_column));
             return $this->find("{$column} = ?", array_shift($args));
         } elseif (preg_match('/^findAllBy(.+)$/', $method, $matches)) {
-            $column = strtolower($matches[1]);
+            $camel_column = preg_split('/(?=[A-Z])/', $matches[1]);
+            array_shift($camel_column);
+            $column = strtolower(join('_', $camel_column));
             return $this->findAll("{$column} = ?", array_shift($args));
         }
     }
