@@ -67,6 +67,34 @@ class DbTaskList extends Task
         $this->sendMessage('All Done. Took %.4fs', $end - $start);
     }
 
+    
+    /**
+     * database rollback task. using phinx.
+     *
+     * usage:
+     *     $ ./app db:rollback [version]
+     *
+     * @option      database,d=all      target database (default is all databases).
+     */
+    public function rollbackTask(Option $option)
+    {
+        if ($option->get('database') === 'all') {
+            $databases = $this->onikiri->getDatabases();
+        } else {
+            $alias = $option->get('database');
+            $databases = [$alias => $this->onikiri->getDatabase($alias)];
+        }
+
+        $start = microtime(true);
+        foreach ($databases as $alias => $database) {
+            $manager = $this->getManager($alias, $database);
+            $manager->rollback($this->application->getEnv(), $option->getArg(0));
+        }
+        $end = microtime(true);
+
+        $this->sendMessage('');
+        $this->sendMessage('All Done. Took %.4fs', $end - $start);
+    }
 
     /**
      * get migration manager.
@@ -105,5 +133,5 @@ class DbTaskList extends Task
         $output->setDecorated(false);
         return $output;
     }
-}
 
+}
