@@ -3,7 +3,7 @@
 namespace Samurai\Samurai\Spec\Samurai\Samurai\Component\Console\Client;
 
 use Samurai\Samurai\Component\Spec\Context\PHPSpecContext;
-use PhpSpec\Exception\Example\PendingException;
+use PhpSpec\Exception\Example\SkippingException;
 
 class BuiltinServerClientSpec extends PHPSpecContext
 {
@@ -15,28 +15,28 @@ class BuiltinServerClientSpec extends PHPSpecContext
 
     public function it_is_log()
     {
-        throw new PendingException();
+        throw new SkippingException();
         // how shelve error_log ?
         $this->log('log to built-in server console.');
     }
     
     public function it_is_info_log()
     {
-        throw new PendingException();
+        throw new SkippingException();
         // how shelve error_log ?
         $this->info('info log to built-in server console.');
     }
     
     public function it_is_warn_log()
     {
-        throw new PendingException();
+        throw new SkippingException();
         // how shelve error_log ?
         $this->warn('warn log to built-in server console.');
     }
     
     public function it_is_error_log()
     {
-        throw new PendingException();
+        throw new SkippingException();
         // how shelve error_log ?
         $this->error('error log to built-in server console.');
     }
