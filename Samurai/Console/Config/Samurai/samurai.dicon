@@ -51,6 +51,8 @@ arrayUtil: Samurai\Samurai\Component\Utility\ArrayUtility
 
 taskProcessor: Samurai\Samurai\Component\Task\Processor
 
+migrationHelper: Samurai\Samurai\Component\Migration\Phinx\Helper
+
 specHelper: Samurai\Samurai\Component\Spec\Helper
 
 fileUtil: Samurai\Samurai\Component\FileSystem\Utility

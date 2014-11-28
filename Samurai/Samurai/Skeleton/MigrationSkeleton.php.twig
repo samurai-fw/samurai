@@ -1,0 +1,30 @@
+<?php
+
+{% if namespace %}
+namespace {{ namespace }};
+{% endif -%}
+
+use Samurai\Samurai\Component\Migration\Phinx\Migration;
+
+class {{ class }} extends Migration
+{
+    /**
+     * change
+     */
+    public function change()
+    {
+        
+    }
+
+
+    /*
+    public function up()
+    {
+    }
+
+    public function down()
+    {
+    }
+    */
+}
+

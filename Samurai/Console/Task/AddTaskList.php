@@ -216,6 +216,45 @@ EOL;
             }
         }
     }
+    
+    
+    /**
+     * add a migration
+     *
+     * [usage]
+     *   $ ./app add:migration title
+     *
+     * @option      database,d=base     set database name. (default is base)
+     * @option      app-dir             set app dir.
+     */
+    public function migrationTask(Option $option)
+    {
+        $database = $option->get('database');
+        $current = $this->getCurrentAppDir($option);
+        $migration_dir = $this->loader->find($current . DS . $this->application->config('directory.database.migration'))->first();
+        $migration_dir->absolutize();
+
+        foreach ($option->getArgs() as $arg) {
+
+            $name = $this->migrationHelper->nameStrategy($arg);
+            $filename = $this->migrationHelper->fileNameStrategy($database, $name);
+            $classname = $this->migrationHelper->classNameStrategy($database, $name);
+            $namespace = $this->migrationHelper->namespaceStrategy($migration_dir, $database, $name);
+
+            $skeleton = $this->getSkeleton('Migration');
+
+            $base_dir = clone $migration_dir;
+            
+            $skeleton->assign('namespace', $namespace ? $namespace . '\\' : '');
+            $skeleton->assign('class', $classname);
+            
+            $migration_file = $migration_dir->getRealPath() . DS . $filename;
+            $this->fileUtil->mkdirP(dirname($migration_file));
+            $this->fileUtil->putContents($migration_file, $skeleton->render());
+
+            $this->sendMessage('created migration file. -> %s', $migration_file);
+        }
+    }
 
 
 
@@ -280,5 +319,5 @@ EOL;
             return $default;
         }
     }
-}
 
+}
