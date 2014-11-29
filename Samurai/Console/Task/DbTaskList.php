@@ -98,6 +98,38 @@ class DbTaskList extends Task
 
 
     /**
+     * database reset task. using phinx.
+     * rollback to "0"
+     *
+     * usage:
+     *     $ ./app db:reset
+     *
+     * @option      database,d=all      target database (default is all databases).
+     */
+    public function resetTask(Option $option)
+    {
+        $option->setArg(0, 0);
+        $this->task('db:rollback', $option);
+    }
+
+
+    /**
+     * database refresh task.
+     * call db:reset and db:migrate
+     *
+     * usage:
+     *     $ ./app db:refresh
+     *
+     * @option      database,d=all      target database (default is all databases).
+     */
+    public function refreshTask(Option $option)
+    {
+        $this->task('db:reset');
+        $this->task('db:migrate');
+    }
+
+
+    /**
      * show database mgration status task. using phinx.
      *
      * usage:
@@ -158,5 +190,4 @@ class DbTaskList extends Task
         $output->setDecorated(false);
         return $output;
     }
-
 }
