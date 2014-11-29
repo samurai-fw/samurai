@@ -96,6 +96,31 @@ class DbTaskList extends Task
         $this->sendMessage('All Done. Took %.4fs', $end - $start);
     }
 
+
+    /**
+     * show database mgration status task. using phinx.
+     *
+     * usage:
+     *     $ ./app db:status [version]
+     *
+     * @option      format,f            output format. (default is text)
+     * @option      database,d=all      target database (default is all databases).
+     */
+    public function statusTask(Option $option)
+    {
+        if ($option->get('database') === 'all') {
+            $databases = $this->onikiri->getDatabases();
+        } else {
+            $alias = $option->get('database');
+            $databases = [$alias => $this->onikiri->getDatabase($alias)];
+        }
+
+        foreach ($databases as $alias => $database) {
+            $manager = $this->getManager($alias, $database);
+            $manager->printStatus($this->application->getEnv(), $option->get('format'));
+        }
+    }
+
     /**
      * get migration manager.
      *
