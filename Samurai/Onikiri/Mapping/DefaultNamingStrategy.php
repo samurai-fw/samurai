@@ -51,7 +51,21 @@ class DefaultNamingStrategy implements NamingStrategy
      */
     public function aliasToTableClassName($alias)
     {
-        return join('', array_map('ucfirst', explode('_', $alias))) . 'Table';
+        return $this->aliasToEntityClassName($alias) . 'Table';
+    }
+    
+    
+    /**
+     * User -> User
+     * user -> User
+     * UserPost -> UserPost
+     * user_post -> UserPost
+     *
+     * {@inheritdoc}
+     */
+    public function aliasToEntityClassName($alias)
+    {
+        return join('', array_map('ucfirst', explode('_', $alias)));
     }
 }
 

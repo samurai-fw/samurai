@@ -24,5 +24,15 @@ class DefaultNamingStrategySpec extends PHPSpecContext
         $this->aliasToTableClassName('UserPost')->shouldBe('UserPostTable');
         $this->aliasToTableClassName('user_post')->shouldBe('UserPostTable');
     }
+    
+    
+    public function it_convert_alias_to_entity_class_name()
+    {
+        $this->aliasToEntityClassName('User')->shouldBe('User');
+        $this->aliasToEntityClassName('user')->shouldBe('User');
+        
+        $this->aliasToEntityClassName('UserPost')->shouldBe('UserPost');
+        $this->aliasToEntityClassName('user_post')->shouldBe('UserPost');
+    }
 }
 

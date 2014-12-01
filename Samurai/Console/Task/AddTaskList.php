@@ -95,7 +95,7 @@ class AddTaskList extends Task
      * [usage]
      *   $ ./app add:component Foo\Bar\Zoo
      *
-     * @option  extands,e               extends class.
+     * @option  extends,e               extends class.
      * @option  use-raikiri,r=true      use raikiri(di container).
      * @option  use-accessor,a          use accessor trait.
      */
@@ -107,6 +107,56 @@ class AddTaskList extends Task
 
         $option->setArg(0, $prefix . DS . 'Component' . DS . $option->getArg(0));
         $this->task('add:class', $option);
+    }
+
+
+    /**
+     * add a model.
+     *
+     * usage:
+     *   $ ./app add:model table_name
+     */
+    public function modelTask(Option $option)
+    {
+        $current = $this->getCurrentAppDir($option);
+        $base_dir = $current;
+
+        foreach ($option->getArgs() as $arg)
+        {
+            // table
+            $table_class_name = $this->onikiri->config->getNamingStrategy()->aliasToTableClassName($arg);
+            $filename = $table_class_name . '.php';
+            $file = $this->loader->find($current . DS . $this->application->config('directory.model') . DS . $filename, true)->first();
+            $namespace = $file->getNameSpace();
+
+            $skeleton = $this->getSkeleton('modelTable');
+            $skeleton->assign('alias', $arg);
+            $skeleton->assign('namespace', $namespace);
+            $skeleton->assign('class', $table_class_name);
+            
+            if (! $file->isExists()) {
+                $this->fileUtil->mkdirP(dirname($file));
+                $this->fileUtil->putContents($file, $skeleton->render());
+                $this->sendMessage('created model table file. -> %s', $file);
+            }
+
+            // entity
+            $entity_class_name = $this->onikiri->config->getNamingStrategy()->aliasToEntityClassName($arg);
+            $filename = $entity_class_name . '.php';
+            $file = $this->loader->find($current . DS . $this->application->config('directory.model') . DS . $filename, true)->first();
+            $namespace = $file->getNameSpace();
+
+            $skeleton = $this->getSkeleton('modelEntity');
+            $skeleton->assign('alias', $arg);
+            $skeleton->assign('namespace', $namespace);
+            $skeleton->assign('class', $entity_class_name);
+            
+            if (! $file->isExists()) {
+                $this->fileUtil->mkdirP(dirname($file));
+                $this->fileUtil->putContents($file, $skeleton->render());
+                $this->sendMessage('created model entity file. -> %s', $file);
+            }
+        }
     }
 
 

@@ -1,0 +1,44 @@
+<?php
+
+namespace {{ namespace }};
+
+use Samurai\Onikiri\EntityTable;
+
+/**
+ * {{ alias }} table class.
+ *
+ * @package     App
+ * @subpackage  Model
+ * @author      name <foo@example.jp>
+ */
+class {{ class }} extends EntityTable
+{
+    /**
+     * table name
+     *
+     * @var     string
+    public $table_name;
+     */
+    
+    /**
+     * entity class name.
+     *
+     * @var     string
+    public $entity_class;
+     */
+
+    /**
+     * primary key name.
+     *
+     * @var     string
+    public $primary_key = 'id';
+     */
+    
+    /**
+     * database alias.
+     *
+     * @var     string
+    public $database = 'base';
+     */
+}
+
