@@ -28,56 +28,31 @@
  * @license     http://opensource.org/licenses/MIT
  */
 
-namespace Samurai\Samurai\Component\Migration;
-
-use Samurai\Raikiri\DependencyInjectable;
-use Samurai\Samurai\Component\Task\TaskCallable;
+namespace Samurai\Samurai\Component\Task;
 
 /**
- * migration seeder abstract class.
+ * tack callable trait.
+ *
+ * caution !
+ * you need use with Dependencyinjectable trait.
  *
  * @package     Samurai
- * @subpackage  Component.Migration
+ * @subpackage  Component.Task
  * @copyright   2007-2013, Samurai Framework Project
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-abstract class Seeder
+trait TaskCallable
 {
     /**
-     * @traits
-     */
-    use DependencyInjectable;
-    use TaskCallable;
-
-
-    /**
-     * seeding method.
-     */
-    abstract public function seed();
-
-
-    /**
-     * get name
-     *
-     * @return  string
-     */
-    public function getName()
-    {
-        return get_class($this);
-    }
-
-
-    /**
-     * get table
+     * call other task
      *
      * @param   string  $name
-     * @return  Samurai\Onikiri\EntityTable
+     * @param   array|Samurai\Samurai\Component\Task\Option $option
      */
-    public function getTable($name)
+    public function task($name, $option = [])
     {
-        $onikiri = $this->onikiri();
-        return $onikiri->getTable(ucfirst($name));
+        $this->taskProcessor->execute($name, $option);
     }
 }
 
