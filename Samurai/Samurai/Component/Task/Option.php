@@ -148,6 +148,7 @@ class Option
     public function setArg($index, $value)
     {
         $this->args[$index] = $value;
+        return $this;
     }
     
     /**
@@ -174,6 +175,19 @@ class Option
         }
 
         return $this->valuelize($default);
+    }
+    
+    /**
+     * set a option.
+     *
+     * @param   string  $key
+     * @param   mixed   $value
+     * @return  mixed
+     */
+    public function set($key, $value)
+    {
+        $this->options[$key] = $value;
+        return $this;
     }
 
 
@@ -277,6 +291,27 @@ class Option
                 throw $e;
             }
         }
+    }
+
+
+    /**
+     * copy this instance.
+     *
+     * @return  Samurai\Samurai\Component\Task\Option
+     */
+    public function copy()
+    {
+        return clone $this;
+    }
+
+    /**
+     * create new this instance
+     *
+     * @return  Samurai\Samurai\Component\Task\Option
+     */
+    public function create()
+    {
+        return new Option();
     }
 
 }

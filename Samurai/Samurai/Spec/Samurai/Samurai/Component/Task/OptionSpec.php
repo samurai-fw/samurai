@@ -46,6 +46,19 @@ class OptionSpec extends PHPSpecContext
     }
 
 
+    public function it_gets_option()
+    {
+        $this->set('foo', 'bar');
+        $this->get('foo')->shouldBe('bar');
+    }
+
+    public function it_sets_option()
+    {
+        $this->set('foo', 'bar')->shouldHaveType('Samurai\\Samurai\\Component\\Task\\Option');
+        $this->get('foo')->shouldBe('bar');
+    }
+
+
     public function it_gets_default_value()
     {
         $def = new OptionDefine();
@@ -87,6 +100,27 @@ class OptionSpec extends PHPSpecContext
         
         $this->importFromArray(['option1' => 'value1', 'op2' => true]);
         $this->shouldNotThrow('Samurai\Samurai\Component\Task\OptionRequiredException')->duringValidate();
+    }
+
+
+    public function it_is_copy()
+    {
+        $option = ['help' => true, 'foo' => 'bar'];
+        $this->importFromArray($option);
+
+        $copied = $this->copy();
+        $copied->shouldNotBe($this);
+        $copied->get('help')->shouldBe(true);
+    }
+    
+    public function it_is_create()
+    {
+        $option = ['help' => true, 'foo' => 'bar'];
+        $this->importFromArray($option);
+
+        $copied = $this->create();
+        $copied->shouldNotBe($this);
+        $copied->get('help')->shouldBe(null);
     }
 }
 

@@ -190,7 +190,7 @@ class Onikiri
                 return $table;
             }
         }
-        throw new Exception\EntityTableNotFoundException();
+        throw new Exception\EntityTableNotFoundException('no such table. -> ' . $alias);
     }
 
 

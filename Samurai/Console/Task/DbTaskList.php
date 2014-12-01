@@ -121,11 +121,56 @@ class DbTaskList extends Task
      *     $ ./app db:refresh
      *
      * @option      database,d=all      target database (default is all databases).
+     * @option      seed,s              with call db:seed task.
      */
     public function refreshTask(Option $option)
     {
-        $this->task('db:reset');
-        $this->task('db:migrate');
+        $this->task('db:reset', $option->copy());
+        $this->task('db:migrate', $option->copy());
+
+        if ($option->get('seed')) {
+            $this->task('db:seed', $option->copy());
+        }
+    }
+
+    
+    /**
+     * database seeding task.
+     *
+     * usage:
+     *     # all seeding files import.
+     *     $ ./app db:seed
+     *
+     *     # target seeding file import.
+     *     $ ./app db:seed [name] --database=base
+     *
+     * seeder file:
+     *     App/Database/Seed/[database alias]/[name]Seeder.php
+     *
+     * @option      database,d=all      target database (default is all databases).
+     */
+    public function seedTask(Option $option)
+    {
+        $name = $option->getArg(0);
+        $databases = $this->getDatabases($option);
+        
+        $start = microtime(true);
+        foreach ($databases as $alias => $database) {
+            foreach ($this->migrationHelper->getSeeders($alias, $name) as $seeder) {
+                try {
+                    $this->sendMessage('seeding... -> %s', $seeder->getName());
+                    $seeder->seed();
+                } catch (\Exception $e) {
+                    $this->sendMessage($e->getMessage());
+                    $this->sendMessage('has error. aborting.');
+                    return;
+                }
+            }
+        }
+        $end = microtime(true);
+
+        $this->sendMessage('');
+        $this->sendMessage('All Done. Took %.4fs', $end - $start);
     }
 
 
@@ -190,4 +235,23 @@ class DbTaskList extends Task
         $output->setDecorated(false);
         return $output;
     }
+
+
+    /**
+     * get target databases
+     *
+     * @param   Samurai\Samurai\Component\Task\Option   $option
+     * @return  array
+     */
+    protected function getDatabases(Option $option)
+    {
+        if ($option->get('database') === 'all') {
+            $databases = $this->onikiri->getDatabases();
+        } else {
+            $alias = $option->get('database');
+            $databases = [$alias => $this->onikiri->getDatabase($alias)];
+        }
+        return $databases;
+    }
 }
+

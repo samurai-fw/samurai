@@ -43,7 +43,6 @@ class Database
     /**
      * driver
      *
-     * @access  public
      * @var     Samurai\Onikiri\Driver\Driver
      */
     public $driver;
@@ -51,7 +50,6 @@ class Database
     /**
      * user
      *
-     * @access  public
      * @var     string
      */
     public $user;
@@ -59,7 +57,6 @@ class Database
     /**
      * password
      *
-     * @access  public
      * @var     string
      */
     public $password;
@@ -67,7 +64,6 @@ class Database
     /**
      * host name
      *
-     * @access  public
      * @var     string
      */
     public $host_name;
@@ -75,7 +71,6 @@ class Database
     /**
      * post
      *
-     * @access  public
      * @var     int
      */
     public $port;
@@ -83,7 +78,6 @@ class Database
     /**
      * charset
      *
-     * @access  public
      * @var     string
      */
     public $charset;
@@ -91,7 +85,6 @@ class Database
     /**
      * database name
      *
-     * @access  public
      * @var     string
      */
     public $database_name;
@@ -99,7 +92,6 @@ class Database
     /**
      * driver options
      *
-     * @access  public
      * @var     array
      */
     public $options = array();
@@ -107,7 +99,6 @@ class Database
     /**
      * connection
      *
-     * @access  public
      * @var     Samurai\Onikiri\Connection
      */
     public $connection;
@@ -115,7 +106,6 @@ class Database
     /**
      * slaves
      *
-     * @access  private
      * @var     array
      */
     private $_slaves = array();
@@ -123,7 +113,6 @@ class Database
     /**
      * master (if slave only.)
      *
-     * @access  private
      * @var     Samurai\Onikiri\Database
      */
     private $_master;
@@ -141,7 +130,6 @@ class Database
     /**
      * constructor.
      *
-     * @access  public
      * @param   array   $setting
      */
     public function __construct(array $setting = [])
