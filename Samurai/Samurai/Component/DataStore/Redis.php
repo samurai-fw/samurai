@@ -142,6 +142,17 @@ class Redis
         return $this->driver->sMembers($key);
     }
 
+    /**
+     * get score.
+     *
+     * @param  string $key
+     * @param  string $member
+     * @return float
+     */
+    public function getScore($key, $member)
+    {
+        return $this->driver->zScore($key, $member);
+    }
 
     /**
      * add data to sorted set.
@@ -174,7 +185,7 @@ class Redis
      */
     public function getSortedRankAsc($key, $member)
     {
-        $score = $this->driver->zScore($key, $member);
+        $score = $this->getScore($key, $member);
         if ($score === false) return null;
         return $this->driver->zCount($key, '-inf', -- $score);
     }
@@ -187,7 +198,7 @@ class Redis
      */
     public function getSortedRankDesc($key, $member)
     {
-        $score = $this->driver->zScore($key, $member);
+        $score = $this->getScore($key, $member);
         if ($score === false) return null;
         return $this->driver->zCount($key, ++ $score, '+inf');
     }
