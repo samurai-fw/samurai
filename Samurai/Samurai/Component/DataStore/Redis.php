@@ -34,7 +34,6 @@ class Redis
      */
     public $port = 6379;
 
-
     /**
      * construct
      */
@@ -44,25 +43,23 @@ class Redis
         $this->driver = new ExtRedis();
     }
 
-
     /**
      * set server
      *
-     * @param   string  $host
-     * @param   int     $port
+     * @param   string $host
+     * @param   int    $port
      */
     public function setServer($host, $port = 6379)
     {
         $this->host = $host;
         $this->port = $port ? $port : $this->port;
     }
-    
-    
+
     /**
      * connect to redis
      *
-     * @param   string  $host
-     * @param   int     $port
+     * @param   string $host
+     * @param   int    $port
      */
     public function connect($host = null, $port = null)
     {
@@ -72,12 +69,11 @@ class Redis
         );
     }
 
-
     /**
      * set string
      *
-     * @param   string      $key
-     * @param   string|int  $value
+     * @param   string     $key
+     * @param   string|int $value
      */
     public function set($key, $value)
     {
@@ -87,21 +83,21 @@ class Redis
     /**
      * get string
      *
-     * @param   string  $key
+     * @param   string $key
      * @return  string
      */
     public function get($key)
     {
         $value = $this->driver->get($key);
+
         return $value !== false ? $value : null;
     }
-
 
     /**
      * add data to list
      *
-     * @param   string      $key
-     * @param   string|int  $value
+     * @param   string     $key
+     * @param   string|int $value
      */
     public function addList($key, $value)
     {
@@ -111,20 +107,21 @@ class Redis
     /**
      * get list
      *
-     * @param   string  $key
-     * @return  array
+     * @param  string $key
+     * @param  int $offset
+     * @param  int $limit
+     * @return array
      */
-    public function getList($key, $offset = 0, $limit = -1)
+    public function getList($key, $offset = 0, $limit = - 1)
     {
         return $this->driver->lRange($key, $offset, $limit);
     }
 
-
     /**
      * add data to sets
      *
-     * @param   string      $key
-     * @param   string|int  $value
+     * @param   string     $key
+     * @param   string|int $value
      */
     public function addSet($key, $value)
     {
@@ -157,9 +154,9 @@ class Redis
     /**
      * add data to sorted set.
      *
-     * @param   string      $key
-     * @param   string      $member
-     * @param   int|float   $value
+     * @param   string    $key
+     * @param   string    $member
+     * @param   int|float $value
      */
     public function addSortedSet($key, $member, $value)
     {
@@ -169,52 +166,54 @@ class Redis
     /**
      * get sorted set rank
      *
-     * @param   string      $key
-     * @param   string      $member
+     * @param  string $key
+     * @param  string $member
+     * @return int|null
      */
     public function getSortedRank($key, $member)
     {
         return $this->getSortedRankAsc($key, $member);
     }
-    
+
     /**
      * get sorted set rank by asc
      *
-     * @param   string      $key
-     * @param   string      $member
+     * @param  string $key
+     * @param  string $member
+     * @return int|null
      */
     public function getSortedRankAsc($key, $member)
     {
         $score = $this->getScore($key, $member);
         if ($score === false) return null;
+
         return $this->driver->zCount($key, '-inf', -- $score);
     }
-    
+
     /**
      * get sorted set rank by desc
      *
-     * @param   string      $key
-     * @param   string      $member
+     * @param  string $key
+     * @param  string $member
+     * @return int|null
      */
     public function getSortedRankDesc($key, $member)
     {
         $score = $this->getScore($key, $member);
         if ($score === false) return null;
+
         return $this->driver->zCount($key, ++ $score, '+inf');
     }
-
 
     /**
      * delete data
      *
-     * @param   string  $key
+     * @param   string $key
      */
     public function delete($key)
     {
         $this->driver->delete($key);
     }
-
-
 
     /**
      * is redis supported ?
@@ -225,5 +224,4 @@ class Redis
     {
         return extension_loaded('redis');
     }
-
 }
