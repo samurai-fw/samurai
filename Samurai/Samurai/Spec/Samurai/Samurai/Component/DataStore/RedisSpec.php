@@ -102,7 +102,24 @@ class RedisSpec extends PHPSpecContext
         $this->getSortedRank('samurai.spec.foo', 'user99')->shouldBe(null);
     }
 
+    public function it_gets_score()
+    {
+        $key = 'samurai.spec.foo';
 
+        $this->_connect();
+
+        $this->delete($key);
+        $this->addSortedSet($key, 'user1', 1);
+        $this->addSortedSet($key, 'user2', 2);
+        $this->addSortedSet($key, 'user3', 3);
+        $this->addSortedSet($key, 'user4', 0);
+        $this->addSortedSet($key, 'user1', 4);
+
+        $this->getScore($key, 'user1')->shouldBeLike(4);
+        $this->getScore($key, 'user2')->shouldBeLike(2);
+        $this->getScore($key, 'user3')->shouldBeLike(3);
+        $this->getScore($key, 'user4')->shouldBeLike(0);
+    }
 
     /**
      * connect to redis
