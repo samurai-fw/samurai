@@ -102,6 +102,92 @@ class RedisSpec extends PHPSpecContext
         $this->getSortedRank('samurai.spec.foo', 'user99')->shouldBe(null);
     }
 
+    /**
+     * @todo   should be migrate, fixture load for datastore
+     * @throws SkippingException
+     */
+    public function it_gets_sets_with_scores()
+    {
+        $key = 'samurai.spec.foo';
+
+        $this->_connect();
+
+        $this->delete($key);
+        $this->addSortedSet($key, 'user1', 100);
+        $this->addSortedSet($key, 'user2', 2);
+        $this->addSortedSet($key, 'user3', 300);
+        $this->addSortedSet($key, 'user4', 2147483647);
+
+        $expect = [
+            'user2' => 2,
+            'user1' => 100,
+            'user3' => 300,
+            'user4' => 2147483647,
+        ];
+        $this->getSortedSets($key, 0, 4)->shouldBeLike($expect);
+        $this->getSortedSetsAsc($key, 0, 4)->shouldBeLike($expect);
+
+        $expect = [
+            'user1' => 100,
+            'user3' => 300,
+        ];
+        $this->getSortedSets($key, 1, 2)->shouldBeLike($expect);
+        $this->getSortedSetsAsc($key, 1, 2)->shouldBeLike($expect);
+
+        $expect = [
+            'user3' => 300,
+            'user1' => 100,
+        ];
+        $this->getSortedSetsDesc($key, 1, 2)->shouldBeLike($expect);
+    }
+
+    /**
+     * @todo   should be migrate, fixture load for datastore
+     * @throws SkippingException
+     */
+    public function it_gets_sets_without_scores()
+    {
+        $key = 'samurai.spec.foo';
+
+        $this->_connect();
+
+        $this->delete($key);
+        $this->addSortedSet($key, 'user1', 100);
+        $this->addSortedSet($key, 'user2', 2);
+        $this->addSortedSet($key, 'user3', 300);
+        $this->addSortedSet($key, 'user4', 2147483647);
+
+        $expect = [
+            'user2',
+            'user1',
+            'user3',
+            'user4',
+        ];
+        $this->getSortedSets($key, 0, 4, false)->shouldBeLike($expect);
+        $this->getSortedSetsAsc($key, 0, 4, false)->shouldBeLike($expect);
+
+        $expect = [
+            'user3',
+            'user4',
+        ];
+        $this->getSortedSets($key, 2, 2, false)->shouldBeLike($expect);
+        $this->getSortedSetsAsc($key, 2, 2, false)->shouldBeLike($expect);
+
+        $expect = [
+            'user4',
+            'user3',
+            'user1',
+            'user2',
+        ];
+        $this->getSortedSetsDesc($key, 0, 4, false)->shouldBeLike($expect);
+
+        $expect = [
+            'user1',
+            'user2',
+        ];
+        $this->getSortedSetsDesc($key, 2, 2, false)->shouldBeLike($expect);
+    }
+
     public function it_gets_score()
     {
         $key = 'samurai.spec.foo';

@@ -206,6 +206,48 @@ class Redis
     }
 
     /**
+     * get sets with score.
+     *
+     * @param  string $key
+     * @param  int    $start
+     * @param  int    $limit
+     * @param  bool   $with_scores
+     * @return array
+     */
+    public function getSortedSets($key, $start = 0, $limit = 20, $with_scores = true)
+    {
+        return $this->getSortedSetsAsc($key, $start, $limit, $with_scores);
+    }
+
+    /**
+     * get sets with score, order by score asc.
+     *
+     * @param  string $key
+     * @param  int    $start
+     * @param  int    $limit
+     * @param  bool   $with_scores
+     * @return array
+     */
+    public function getSortedSetsAsc($key, $start = 0, $limit = 20, $with_scores = true)
+    {
+        return $this->driver->zRangeByScore($key, 0, '+inf', ['limit' => [$start, $limit], 'withscores' => $with_scores]);
+    }
+
+    /**
+     * get sets with score, order by score desc.
+     *
+     * @param  string $key
+     * @param  int    $start
+     * @param  int    $limit
+     * @param  bool   $with_scores
+     * @return array
+     */
+    public function getSortedSetsDesc($key, $start = 0, $limit = 20, $with_scores = true)
+    {
+        return $this->driver->zRevRangeByScore($key, '+inf', 0, ['limit' => [$start, $limit], 'withscores' => $with_scores]);
+    }
+
+    /**
      * delete data
      *
      * @param   string $key
