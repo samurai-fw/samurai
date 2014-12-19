@@ -67,7 +67,11 @@ class ConsoleController extends SamuraiController
     public function send()
     {
         $args = func_get_args();
-        $message = call_user_func_array('sprintf', $args);
+        if (count($args) > 1) {
+            $message = call_user_func_array('sprintf', $args);
+        } else {
+            $message = $args[0];
+        }
         $this->response->send($message);
     }
 
