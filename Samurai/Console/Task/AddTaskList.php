@@ -134,7 +134,7 @@ class AddTaskList extends Task
             $skeleton->assign('namespace', $namespace);
             $skeleton->assign('class', $table_class_name);
             
-            if (! $file->isExists()) {
+            if (! $file->isExists() || $this->confirmation(['model table file(%s) is already exists. override ?', $file])) {
                 $this->fileUtil->mkdirP(dirname($file));
                 $this->fileUtil->putContents($file, $skeleton->render());
                 $this->sendMessage('created model table file. -> %s', $file);
@@ -151,7 +151,7 @@ class AddTaskList extends Task
             $skeleton->assign('namespace', $namespace);
             $skeleton->assign('class', $entity_class_name);
             
-            if (! $file->isExists()) {
+            if (! $file->isExists() || $this->confirmation(['model entity file(%s) is already exists. override ?', $file])) {
                 $this->fileUtil->mkdirP(dirname($file));
                 $this->fileUtil->putContents($file, $skeleton->render());
                 $this->sendMessage('created model entity file. -> %s', $file);

@@ -126,6 +126,19 @@ class Task
         call_user_func_array([$this->output, 'send'], $args);
     }
 
+    /**
+     * confirmation prompt
+     *
+     * @param   string|array    $message
+     * @param   array           $choices
+     * @param   mixed           $default
+     * @return  mixed
+     */
+    public function confirmation($message, $choices = ['y' => true, 'n' => false], $default = false)
+    {
+        return $this->response->confirmation($message, $choices, $default);
+    }
+
 
     /**
      * get option

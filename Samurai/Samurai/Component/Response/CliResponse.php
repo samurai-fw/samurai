@@ -43,8 +43,6 @@ class CliResponse extends HttpResponse
 {
     /**
      * constructor
-     *
-     * @access  public
      */
     public function __construct()
     {
@@ -54,8 +52,6 @@ class CliResponse extends HttpResponse
 
     /**
      * output contents
-     *
-     * @access  public
      */
     public function execute()
     {
@@ -65,8 +61,6 @@ class CliResponse extends HttpResponse
 
     /**
      * send body content
-     *
-     * @access  private
      */
     private function sendBody()
     {
@@ -78,12 +72,54 @@ class CliResponse extends HttpResponse
     /**
      * send simple stdout.
      *
-     * @access  public
      * @param   string  $line
      */
     public function send($line, $eol = PHP_EOL)
     {
         echo $line . $eol;
+    }
+
+
+    /**
+     * confirmation
+     *
+     * @param   string|array    $message
+     * @param   array           $choices
+     * @param   string          $default
+     */
+    public function confirmation($message, $choices = ['y' => true, 'n' => false], $default = false)
+    {
+        $message = is_array($message) ? call_user_func_array('sprintf', $message) : $message;
+
+        $answers = [];
+        foreach ($choices as $answer => $value) {
+            $answers[$answer] = $answer;
+            if ($value === $default) $answers[$answer] = ucfirst($answer);
+        }
+        
+        $this->send(sprintf('%s [%s]: ', $message, join('/', $answers)), '');
+        $answer = $this->readline();
+        if ($answer === '') return $default;
+
+        if (array_key_exists($answer, $choices)) {
+            return $choices[$answer];
+        } else {
+            foreach ($choices as $key => $value) {
+                if ($answer === substr($key, 0, strlen($answer))) return $value;
+            }
+            return $default;
+        }
+    }
+
+
+    /**
+     * read stdin
+     *
+     * @return  string
+     */
+    public function readline()
+    {
+        return trim(fgets(STDIN));
     }
 
 
