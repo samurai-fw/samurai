@@ -36,7 +36,6 @@ use Samurai\Onikiri\Connection;
 use Samurai\Onikiri\EntityTable;
 use Samurai\Onikiri\Criteria\Criteria;
 use Samurai\Samurai\Component\Pager\SimplePager;
-use Samurai\Samurai\Component\Core\Accessor;
 
 /**
  * Entities class.
@@ -77,11 +76,6 @@ class Entities implements Iterator
      */
     public $criteria;
 
-    /**
-     * @traits
-     */
-    use Accessor;
-
 
     /**
      * constructor.
@@ -90,7 +84,7 @@ class Entities implements Iterator
      */
     public function __construct(EntityTable $table = null)
     {
-        $this->setTable($table);
+        $this->table = $table;
     }
 
 
@@ -245,7 +239,17 @@ class Entities implements Iterator
     public function getPager($class = 'Samurai\\Samurai\\Component\\Pager\\SimplePager')
     {
         $pager = new $class();
-        return $this->getTable()->initializePager($pager, $this->getCriteria());
+        return $this->table->initializePager($pager, $this->criteria);
+    }
+
+    /**
+     * set criteria
+     *
+     * @param   Samurai\Onikiri\Criteria\Criteria   $criteria
+     */
+    public function setCriteria(Criteria $criteria)
+    {
+        $this->criteria = $criteria;
     }
 
 
