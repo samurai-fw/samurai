@@ -33,6 +33,10 @@ namespace Samurai\Onikiri;
 use Iterator;
 use Samurai\Onikiri\Statement;
 use Samurai\Onikiri\Connection;
+use Samurai\Onikiri\EntityTable;
+use Samurai\Onikiri\Criteria\Criteria;
+use Samurai\Samurai\Component\Pager\SimplePager;
+use Samurai\Samurai\Component\Core\Accessor;
 
 /**
  * Entities class.
@@ -59,13 +63,34 @@ class Entities implements Iterator
      */
     private $_position = 0;
 
+    /**
+     * entity table
+     *
+     * @var     Samurai\Onikiri\EntityTable
+     */
+    public $table;
+
+    /**
+     * criteria
+     *
+     * @var     Samurai\Onikiri\Criteria\Criteria
+     */
+    public $criteria;
+
+    /**
+     * @traits
+     */
+    use Accessor;
+
 
     /**
      * constructor.
      *
+     * @param   Samurai\Onikiri\EntityTable $table
      */
-    public function __construct()
+    public function __construct(EntityTable $table = null)
     {
+        $this->setTable($table);
     }
 
 
@@ -209,6 +234,18 @@ class Entities implements Iterator
         foreach ($this as $entity) {
             $closure($entity);
         }
+    }
+    
+    
+    /**
+     * get pager helper
+     *
+     * @return  Samurai\Samurai\Component\Pager\SimplePager
+     */
+    public function getPager($class = 'Samurai\\Samurai\\Component\\Pager\\SimplePager')
+    {
+        $pager = new $class();
+        return $this->getTable()->initializePager($pager, $this->getCriteria());
     }
 
 

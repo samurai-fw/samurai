@@ -296,8 +296,9 @@ class EntityTable
         // query
         $sth = $this->query($sql, $criteria->getParams());
 
-        // to entoties
+        // to entities
         $entities = new Entities($this);
+        $entities->setCriteria($criteria);
         foreach ($sth->fetchAll(Connection::FETCH_ASSOC) as $row) {
             $entities->add($this->build($row, true));
         }
@@ -638,6 +639,31 @@ class EntityTable
         }
         
         return $criteria;
+    }
+
+
+    /**
+     * initialize paging helper
+     *
+     * @param   Samurai\Samurai\Component\Pager\SimplePager $pager
+     * @param   Samurai\Onikiri\Criteria\Criteria           $criteria
+     * @return  Samurai\Samurai\Component\Pager\SimplePager
+     */
+    public function initializePager(SimplePager $pager, Criteria\Criteria $criteria)
+    {
+        // now page
+        if ($criteria->offset !== null && $criteria->limit !== null) {
+            $pager->setNow(floor($criteria->offset / $criteria->limit) + 1);
+            $pager->setPerPage($criteria->limit);
+        } elseif ($criteria->limit !== null){
+            $pager->setPerPage($criteria->limit);
+        }
+
+        // get total rows
+        $criteria->columns('COUNT(1)')->limit(null)->offset(null);
+        $pager->setTotal($this->getOne($criteria));
+
+        return $pager;
     }
     
     
