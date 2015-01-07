@@ -31,6 +31,7 @@
 namespace Samurai\Onikiri;
 
 use Samurai\Raikiri\DependencyInjectable;
+use Samurai\Samurai\Component\Pager\SimplePager;
 
 /**
  * entity repository table.
