@@ -268,6 +268,7 @@ class WhereCondition extends BaseCondition
     public function toSQL()
     {
         $sql = [];
+        $this->params = [];
 
         $sql[] = 'WHERE';
 

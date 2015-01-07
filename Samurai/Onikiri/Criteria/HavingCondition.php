@@ -52,6 +52,8 @@ class HavingCondition extends WhereCondition
         if (! $this->has()) return '';
 
         $sql = [];
+        $this->params = [];
+
         $sql[] = 'HAVING';
 
         foreach ($this->conditions as $index => $value) {
