@@ -168,14 +168,14 @@ class File extends \SplFileInfo
      * get ruled class name from path.
      * (not real class name.)
      *
-     * @access  public
+     * @param   boolean     $with_namespace
      * @return  string
      */
-    public function getClassName()
+    public function getClassName($with_namespace = true)
     {
         $namespace = $this->getNameSpace();
         $class_name = $this->getBasename(".{$this->getExtension()}");
-        return "${namespace}\\{$class_name}";
+        return $with_namespace ? "${namespace}\\{$class_name}" : $class_name;
     }
 
     /**

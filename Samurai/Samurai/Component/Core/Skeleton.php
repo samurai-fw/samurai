@@ -31,7 +31,9 @@
 namespace Samurai\Samurai\Component\Core;
 
 use Samurai\Samurai\Component\Core\Accessor;
+use Twig_Autoloader;
 use Twig_Environment;
+use Twig_Loader_Filesystem;
 
 /**
  * Base skeleton.
@@ -120,10 +122,10 @@ class Skeleton
         if ($this->twig) return;
 
         // initialize twig
-        \Twig_Autoloader::register();
+        Twig_Autoloader::register();
         $this->twig = new Twig_Environment();
         
-        $loader = new \Twig_Loader_Filesystem(dirname($this->path));
+        $loader = new Twig_Loader_Filesystem(dirname($this->path));
         $this->twig->setLoader($loader);
     }
 }

@@ -56,7 +56,7 @@ class Directory extends File
     /**
      * {@inheritdoc}
      */
-    public function getClassName()
+    public function getClassName($with_namespace = true)
     {
         return '';
     }

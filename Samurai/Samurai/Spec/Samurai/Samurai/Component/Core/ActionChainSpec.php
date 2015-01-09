@@ -98,8 +98,14 @@ class ActionChainSpec extends PHPSpecContext
 
     public function it_is_action_name_strategy()
     {
-        $this->actionNameStrategy('index')->shouldBe('index');
-        $this->actionNameStrategy('foo_bar')->shouldBe('fooBar');
+        $this->actionNameStrategy('index')->shouldBe('indexAction');
+        $this->actionNameStrategy('foo_bar')->shouldBe('fooBarAction');
+    }
+    
+    public function it_is_controller_name_strategy()
+    {
+        $this->controllerClassNameStrategy('index')->shouldBe('IndexController');
+        $this->controllerClassNameStrategy('foo_bar')->shouldBe('Foo\\BarController');
     }
 }
 

@@ -113,7 +113,7 @@ class AddTaskList extends Task
     /**
      * add a model.
      *
-     * usage:
+     * [usage]
      *   $ ./app add:model table_name
      */
     public function modelTask(Option $option)
@@ -155,6 +155,83 @@ class AddTaskList extends Task
                 $this->fileUtil->mkdirP(dirname($file));
                 $this->fileUtil->putContents($file, $skeleton->render());
                 $this->sendMessage('created model entity file. -> %s', $file);
+            }
+        }
+    }
+    
+    
+    /**
+     * add a controller.
+     *
+     * [usage]
+     *   $ ./app add:action controller.action
+     */
+    public function actionTask(Option $option)
+    {
+        $current = $this->getCurrentAppDir($option);
+        $base_dir = $current;
+
+        foreach ($option->getArgs() as $arg)
+        {
+            // validation
+            if (! preg_match('/^[\w_]+\.[\w_]+$/', $arg)) {
+                $this->sendMessage('invalid format. -> %s', $arg);
+                continue;
+            }
+
+            // controller
+            list($controller, $action) = explode('.', $arg);
+            $class_name = $this->actionChain->controllerClassNameStrategy($controller);
+            $action_name = $this->actionChain->actionNameStrategy($action);
+            $filename = str_replace('\\', DS, $class_name) . '.php';
+            $file = $this->loader->find($current . DS . $this->application->config('directory.controller') . DS . $filename, true)->first();
+
+            $skeleton = $this->getSkeleton('controller');
+            $skeleton->assign('namespace', $file->getNameSpace());
+            $skeleton->assign('class', $file->getClassName(false));
+            
+            if ($file->isExists()) {
+                $this->sendMessage('controller file(%s) is already exists', $file);
+            } else {
+                $this->fileUtil->mkdirP(dirname($file));
+                $this->fileUtil->putContents($file, $skeleton->render());
+                $this->sendMessage('created controller file. -> %s', $file);
+            }
+
+            // action
+            $ref = new \ReflectionClass($file->getClassName());
+            if ($ref->hasMethod($action_name)) {
+                $this->sendMessage('this action name is already defined. -> %s', $arg);
+            } else {
+                $contents = file_get_contents($file);
+                $code = <<<EOL
+
+    /**
+     * [description]
+     */
+    public function $action_name()
+    {
+        // some implements
+    }
+EOL;
+                $contents = preg_replace('/}[ \n]*$/', $code . "\n}\n", $contents);
+                $this->fileUtil->putContents($file, $contents);
+                
+                $this->sendMessage('created action method. -> %s (%s)', $arg, $file);
+            }
+
+            // view
+            $template = sprintf('%s/%s.%s', str_replace('\\', DS, $controller), substr($action_name, 0, -6), $this->renderer->getSuffix());
+            $file = $this->loader->find($current . DS . $this->application->config('directory.template') . DS . $template, true)->first();
+            $skeleton = $this->getSkeleton('ViewContent', 'html');
+            
+            if ($file->isExists()) {
+                $this->sendMessage('view file(%s) is already exists', $file);
+            } else {
+                $this->fileUtil->mkdirP(dirname($file));
+                $this->console->log($skeleton->render());
+                $this->fileUtil->putContents($file, $skeleton->render());
+                $this->sendMessage('created view file. -> %s', $file);
             }
         }
     }
@@ -315,9 +392,9 @@ EOL;
      * @param   string  $name
      * @return  Samurai\Samurai\Component\Core\Skeleton
      */
-    private function getSkeleton($name)
+    private function getSkeleton($name, $suffix = 'php')
     {
-        $file = $this->loader->find($this->application->config('directory.skeleton') . DS . ucfirst($name) . 'Skeleton.php.twig')->first();
+        $file = $this->loader->find($this->application->config('directory.skeleton') . DS . ucfirst($name) . 'Skeleton.' . $suffix . '.twig')->first();
         $skeleton = new Skeleton($file);
         return $skeleton;
     }

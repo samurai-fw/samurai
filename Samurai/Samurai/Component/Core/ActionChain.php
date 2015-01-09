@@ -92,7 +92,6 @@ class ActionChain
         if ($action === null) {
             list($controller, $action) = explode('.', $controller);
         }
-        $action = $this->actionNameStrategy($action);
         $this->actions[] = array(
             'controller' => null,
             'controller_name' => $controller,
@@ -114,7 +113,6 @@ class ActionChain
         if ($action === null) {
             list($controller, $action) = explode('.', $controller);
         }
-        $action = $this->actionNameStrategy($action);
         return in_array("{$controller}.{$action}", $this->action_names);
     }
 
@@ -196,7 +194,7 @@ class ActionChain
             if (! $action && class_exists($class)) return true;
             
             $action = $this->actionNameStrategy($action);
-            if (method_exists($class, $action . 'Action')) return true;
+            if (method_exists($class, $action)) return true;
         }
 
         return false;
@@ -259,6 +257,20 @@ class ActionChain
 
 
     /**
+     * controller class name strategy
+     *
+     * @param   string  $name
+     * @return  string
+     */
+    public function controllerClassNameStrategy($name)
+    {
+        $names = explode('_', $name);
+        $names = array_map('ucfirst', $names);
+        return join('\\', $names) . 'Controller';
+    }
+
+
+    /**
      * action name strategy
      *
      * @param   string  $name
@@ -268,7 +280,7 @@ class ActionChain
     {
         $names = explode('_', $name);
         $names = array_map('ucfirst', $names);
-        return lcfirst(join('', $names));
+        return lcfirst(join('', $names)) . 'Action';
     }
 
 
