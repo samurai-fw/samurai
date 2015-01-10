@@ -212,6 +212,8 @@ class AddTaskList extends Task
     public function $action_name()
     {
         // some implements
+
+        return self::VIEW_TEMPLATE;
     }
 EOL;
                 $contents = preg_replace('/}[ \n]*$/', $code . "\n}\n", $contents);
