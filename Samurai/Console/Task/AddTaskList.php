@@ -221,7 +221,7 @@ EOL;
             }
 
             // view
-            $template = sprintf('%s/%s.%s', str_replace('\\', DS, $controller), substr($action_name, 0, -6), $this->renderer->getSuffix());
+            $template = sprintf('%s/%s.%s', join(DS, array_map('ucfirst', explode('\\', $controller))), substr($action_name, 0, -6), $this->renderer->getSuffix());
             $file = $this->loader->find($current . DS . $this->application->config('directory.template') . DS . $template, true)->first();
             $skeleton = $this->getSkeleton('ViewContent', 'html');
             
