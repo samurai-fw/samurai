@@ -135,7 +135,7 @@ class ViewFilter extends Filter
         if (! $template) {
             $controller = join(DS, array_map('ucfirst', explode('_', $def['controller_name'])));
             $action = $def['action'];
-            $template = sprintf('%s/%s.%s', $controller, $action, $this->renderer->getSuffix());
+            $template = sprintf('%s/%s.%s', $controller, substr($this->actionChain->actionNameStrategy($action), 0, -6), $this->renderer->getSuffix());
         }
 
         // rendering by renderer.

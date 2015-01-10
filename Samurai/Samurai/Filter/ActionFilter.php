@@ -81,9 +81,10 @@ class ActionFilter extends Filter
      */
     private function _callAction(SamuraiController $controller, $action, $error)
     {
-        $method = $action . 'Action';
         if ($error) {
-            $method = $action . ucfirst($error) . 'Action';
+            $method = $this->actionChain->actionNameStrategy($action . '_' . $error);
+        } else {
+            $method = $this->actionChain->actionNameStrategy($action);
         }
         if (method_exists($controller, $method)) {
             return $controller->$method();
