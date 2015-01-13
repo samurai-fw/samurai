@@ -155,6 +155,24 @@ class EntityTableSpec extends PHPSpecContext
         $entity->getName()->shouldBe('kaneda');
     }
 
+    public function it_finds_record_when_arg_is_empty(Connection $con, Statement $stm, Onikiri $oni, TableSchema $t)
+    {
+        $oni->getTableSchema('entity', 'base')->willReturn($t);
+        $t->getDefaultValues()->willReturn([]);
+        $t->hasColumn('active')->willReturn(false);
+
+        $con->prepare('SELECT * FROM entity WHERE 1 LIMIT ?')->willReturn($stm);
+        $stm->execute()->shouldBeCalled();
+        $stm->bindValue(0, 1, Connection::PARAM_INT)->shouldBeCalled();
+        $stm->fetchAll(Connection::FETCH_ASSOC)->willReturn([
+            ['name' => 'kaneda', 'mail' => 'kaneda@akira.jp']
+        ]);
+
+        $entity = $this->find("");
+        $entity->shouldHaveType('Samurai\Onikiri\Entity');
+        $entity->getName()->shouldBe('kaneda');
+    }
+
     public function it_finds_first_record_by_magicmethod(Connection $con, Statement $stm, Onikiri $oni, TableSchema $t)
     {
         $oni->getTableSchema('entity', 'base')->willReturn($t);

@@ -633,6 +633,9 @@ class EntityTable
         if (is_numeric($first)) {
             $criteria->where(sprintf('%s = ?', $this->getPrimaryKey()), $first);
 
+        // first argument is empty ? then nothing additional where
+        } elseif(empty($first)) {
+
         // first argument is string ? then simple where.
         } elseif(is_string($first)) {
             array_unshift($args, $first);
