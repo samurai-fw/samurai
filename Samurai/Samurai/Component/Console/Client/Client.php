@@ -172,10 +172,11 @@ abstract class Client
      * @param   mixed   $var
      * @return  mixed
      */
-    public function wrapping($var, array $references = [])
+    public function wrapping($var, array $references = [], $depth = 0)
     {
         switch (true) {
             case is_object($var):
+                if ($depth > 2) return '[object]';
 
                 // is recruision ?
                 if (in_array($var, $references, true)) return '** recursion **';
@@ -192,16 +193,21 @@ abstract class Client
                         && $property->getName() === 'container') $v = '** raikiri **';
                     if ($var instanceof EntityTable && $property->getName() === 'onikiri') $v = '** onikiri **';
 
-                    $values[] = sprintf('%s: %s', $property->getName(), $this->wrapping($v, $references));
+                    $values[] = sprintf('%s: %s', $property->getName(), $this->wrapping($v, $references, $depth + 1));
                 }
                 $value = sprintf('%s {%s}', $ref->getName(), join(', ', $values));
                 break;
             case is_array($var):
+                if ($depth > 2) return '[array]';
+
                 $values = [];
                 foreach ($var as $key => $value) {
-                    $values[] = sprintf('%s: %s', $key, $this->wrapping($value, $references));
+                    $values[] = sprintf('%s: %s', $key, $this->wrapping($value, $references, $depth + 1));
                 }
                 $value = sprintf('[%s]', join(', ', $values));
+                break;
+            case $var === null:
+                $value = 'NULL';
                 break;
             default:
                 $value = $var;

@@ -28,47 +28,26 @@
  * @license     http://opensource.org/licenses/MIT
  */
 
-namespace App\Config\Initializer;
-
-use Samurai\Samurai\Application as SamuraiApplication;
-use Samurai\Samurai\Component\Core\Initializer;
-use Samurai\Samurai\Component\Console\Client\MultipleClient;
-use Samurai\Samurai\Component\Console\Client\BrowserClient;
-use Samurai\Samurai\Component\Console\Client\BuiltinServerClient;
-use Samurai\Samurai\Component\Console\Client\IgnoreClient;
+namespace Samurai\Samurai\Component\Console\Client;
 
 /**
- * console initializer.
+ * console client
  *
  * @package     Samurai
- * @subpackage  Config.Initializer
+ * @subpackage  Component.Console
  * @copyright   2007-2013, Samurai Framework Project
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class Console extends Initializer
+class ConsoleClient extends Client
 {
     /**
      * {@inheritdoc}
      */
-    public function configure(SamuraiApplication $app)
+    public function send($level, $message)
     {
-        $app->config('container.callback.initialized.', function($c) {
-            switch (php_sapi_name()) {
-                case 'cli':
-                    $console = new ConsoleClient();
-                    break;
-                case 'cli-server':
-                    $console = new MultipleClient();
-                    $console->add(new BuiltinServerClient());
-                    $console->add(new BrowserClient());
-                    break;
-                default:
-                    $console = new BrowserClient();
-                    break;
-            }
-            $c->register('console', $console);
-        });
+        $message = sprintf('[%s]: %s', $this->levelToString($level), $this->wrapping($message));
+        if ($this->request->get('debug-print')) $this->response->send($message);
     }
 }
 
