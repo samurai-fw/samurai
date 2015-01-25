@@ -138,10 +138,11 @@ class BrowserClient extends Client implements Optimizer
     /**
      * {@inheritdoc}
      */
-    public function wrapping($var, array $references = [])
+    public function wrapping($var, array $references = [], $depth = 0)
     {
         switch (true) {
             case is_object($var):
+                if ($depth > 2) return '[object]';
 
                 $value = [];
 
@@ -165,6 +166,7 @@ class BrowserClient extends Client implements Optimizer
                 }
                 break;
             case is_array($var):
+                if ($depth > 2) $var = '[array]';
             default:
                 $value = $var;
                 break;
