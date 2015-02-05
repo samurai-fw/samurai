@@ -74,10 +74,11 @@ class Redis
      *
      * @param   string     $key
      * @param   string|int $value
+     * @param   int $timeout
      */
-    public function set($key, $value)
+    public function set($key, $value, $timeout = 0)
     {
-        $this->driver->set($key, (string)$value);
+        $this->driver->set($key, (string)$value, $timeout);
     }
 
     /**
