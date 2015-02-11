@@ -154,6 +154,16 @@ class Container
         return $def->getInstance();
     }
 
+    /**
+     * get all components
+     *
+     * @return  array
+     */
+    public function getAll()
+    {
+        return $this->components;
+    }
+
 
     /**
      * get define instance
@@ -187,6 +197,21 @@ class Container
         foreach ($members as $key) {
             $component->$key = $this->get($key);
         }
+    }
+
+    /**
+     * inherit other container
+     *
+     * @param   Samurai\Raikiri\Container   $parent
+     */
+    public function inherit(Container $parent)
+    {
+        foreach ($parent->getAll() as $name => $component) {
+            if (! $this->has($name)) {
+                $this->register($name, $component);
+            }
+        }
+        return $this;
     }
 }
 

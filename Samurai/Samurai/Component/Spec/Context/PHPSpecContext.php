@@ -103,8 +103,8 @@ class PHPSpecContext extends ObjectBehavior
     {
         $object = $this->object->getWrappedObject();
         if ($this->isUseableRaikiri($object) && ! $object->getContainer()) {
-            $object->setContainer(new Container('spec'));
-            //$object->setContainer($this->__getContainer());
+            $c = new Container('spec');
+            $object->setContainer($c->inherit($this->__getContainer()));
         }
         return $object;
     }

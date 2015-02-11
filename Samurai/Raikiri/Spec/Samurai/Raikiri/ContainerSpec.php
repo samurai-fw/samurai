@@ -3,6 +3,7 @@
 namespace Samurai\Raikiri\Spec\Samurai\Raikiri;
 
 use Samurai\Samurai\Component\Spec\Context\PHPSpecContext;
+use Samurai\Raikiri\Container;
 use Samurai\Raikiri\DependencyInjectable;
 
 class ContainerSpec extends PHPSpecContext
@@ -104,6 +105,15 @@ class ContainerSpec extends PHPSpecContext
             return $instance;
         });
         $this->get('some.closuer')->shouldHaveType('Samurai\Raikiri\Spec\Samurai\Raikiri\HasInitializeMethod');
+    }
+
+
+    public function it_inherits(Container $c)
+    {
+        $c->getAll()->willReturn(['inherit' => (object)['a' => 1, 'b' => 2]]);
+        $this->inherit($c);
+        $this->get('inherit')->a->shouldBe(1);
+        $this->get('inherit')->b->shouldBe(2);
     }
 }
 
