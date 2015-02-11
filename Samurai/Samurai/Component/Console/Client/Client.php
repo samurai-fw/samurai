@@ -202,7 +202,11 @@ abstract class Client
 
                 $values = [];
                 foreach ($var as $key => $value) {
-                    $values[] = sprintf('%s: %s', $key, $this->wrapping($value, $references, $depth + 1));
+                    if (is_int($key)) {
+                        $values[] = sprintf('%s', $this->wrapping($value, $references, $depth + 1));
+                    } else {
+                        $values[] = sprintf('%s: %s', $key, $this->wrapping($value, $references, $depth + 1));
+                    }
                 }
                 $value = sprintf('[%s]', join(', ', $values));
                 break;

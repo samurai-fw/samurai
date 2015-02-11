@@ -513,7 +513,13 @@ class EntityTable
             $sth->bindValue($key, $value, $type);
         }
 
+        $start = microtime(true);
         $result = $sth->execute();
+        $end = microtime(true);
+
+        $this->console->log(sprintf('[%01.4f] %s', $end - $start, $sql));
+        $this->console->log($params);
+
         return $sth;
     }
 
