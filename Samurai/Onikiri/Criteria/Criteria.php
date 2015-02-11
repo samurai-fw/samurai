@@ -327,18 +327,6 @@ class Criteria
 
 
     /**
-     * set tx
-     *
-     * @param   Samurai\Onikiri\Transaction
-     */
-    public function setTx(Transaction $tx)
-    {
-        $this->getTable()->setTx($tx);
-        return $this;
-    }
-
-
-    /**
      * bind params
      *
      * @param   array   $params

@@ -153,14 +153,5 @@ class EntitySpec extends PHPSpecContext
         $this->getTable('User')->shouldHaveType('Samurai\Onikiri\Spec\Samurai\Onikiri\Fixtures\UserTable');
     }
 
-
-    public function it_gets_and_sets_transaction(EntityTable $t, Transaction $tx)
-    {
-        $t->setTx($tx)->shouldBeCalled();
-        $t->getTx()->willReturn($tx);
-
-        $this->setTx($tx);
-        $this->getTx()->shouldBe($tx);
-    }
 }
 

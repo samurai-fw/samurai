@@ -12,10 +12,13 @@ use Samurai\Onikiri\Schema\TableSchema;
 
 class EntityTableSpec extends PHPSpecContext
 {
-    public function let(Onikiri $oni, Connection $con)
+    public function let(Onikiri $oni, Connection $con, Transaction $tx)
     {
         $this->beConstructedWith($oni);
         $oni->establishConnection($this->getDatabase(), Database::TARGET_MASTER)->willReturn($con);
+        $oni->getTx()->willReturn($tx);
+
+        $tx->isValid()->willReturn(false);
 
         $oni->getTable('User')->willReturn(new Fixtures\UserTable($oni->getWrappedObject()));
     }
@@ -418,69 +421,6 @@ class EntityTableSpec extends PHPSpecContext
         $stm->bindValue(0, 1, Connection::PARAM_INT)->shouldBeCalled();
         $stm->isSuccess()->willReturn(true);
         $this->destroy($entity);
-    }
-
-
-    public function it_is_transaction_commit(Onikiri $oni)
-    {
-        $this->_setMySQLDatabase();
-        $con = new Connection(
-            $this->_spec_driver->makeDsn($this->_spec_database),
-            $this->_spec_database->getUser(),
-            $this->_spec_database->getPassword()
-        );
-        $oni->establishConnection($this->getDatabase(), Database::TARGET_MASTER)->willReturn($con);
-
-        $sql = file_get_contents(__DIR__ . '/Fixtures/create.tables.entitytable.sql');
-        $result = $con->query($sql);
-        unset($result);
-
-        $tx = new Transaction();
-        $this->setTx($tx);
-        $sql = "INSERT INTO spec_samurai_onikiri_entity_table (name, mail) VALUES (?, ?);";
-        $params = ['Kaneda', 'kaneda@akira.jp'];
-        $this->query($sql, $params);
-        $tx->commit();
-
-        $sql = "SELECT * FROM spec_samurai_onikiri_entity_table WHERE name = :name;";
-        $params = [':name' => 'Kaneda'];
-        $result = $this->query($sql, $params);
-        $result->shouldHaveType('Samurai\Onikiri\Statement');
-        $result->fetch(\PDO::FETCH_OBJ)->name->shouldBe('Kaneda');
-
-        unset($con);
-    }
-
-    public function it_is_transaction_rollback(Onikiri $oni)
-    {
-        $this->_setMySQLDatabase();
-        $con = new Connection(
-            $this->_spec_driver->makeDsn($this->_spec_database),
-            $this->_spec_database->getUser(),
-            $this->_spec_database->getPassword()
-        );
-        $oni->establishConnection($this->getDatabase(), Database::TARGET_MASTER)->willReturn($con);
-
-        $sql = file_get_contents(__DIR__ . '/Fixtures/create.tables.entitytable.sql');
-        $result = $con->query($sql);
-        unset($result);
-
-        try {
-            $tx = new Transaction();
-            $this->setTx($tx);
-            $sql = "INSERT INTO spec_samurai_onikiri_entity_table (name, mail) VALUES (?, ?);";
-            $params = ['Kaneda', 'kaneda@akira.jp'];
-            $this->query($sql, $params);
-
-            $tx->rollback();
-        } catch (\Samurai\Onikiri\Exception\TransactionFailedException $e) {
-            $sql = "SELECT * FROM spec_samurai_onikiri_entity_table WHERE name = :name;";
-            $params = [':name' => 'Kaneda'];
-            $result = $this->query($sql, $params);
-            $result->shouldHaveType('Samurai\Onikiri\Statement');
-            $result->fetch(\PDO::FETCH_OBJ)->shouldBe(false);
-        }
-        unset($con);
     }
 
 

@@ -43,11 +43,11 @@ use Samurai\Onikiri\Exception\TransactionFailedException;
 class Transaction
 {
     /**
-     * valid ?
+     * depth
      *
-     * @var     boolean
+     * @var     int
      */
-    protected $_valid = true;
+    protected $_depth = 0;
 
     /**
      * connection
@@ -81,10 +81,22 @@ class Transaction
 
 
     /**
-     * begin transaction
+     * begin flagment
      */
     public function begin()
     {
+        $this->_depth ++;
+
+        return $this;
+    }
+    
+    /**
+     * begin transaction
+     */
+    public function beginTransaction()
+    {
+        if (! $this->isValid()) return;
+
         foreach ($this->getConnections() as $connection) {
             if (! $connection->inTx()) $connection->beginTransaction();
         }
@@ -95,11 +107,18 @@ class Transaction
      */
     public function commit()
     {
+        if (! $this->isValid()) return;
+
+        if ($this->_depth > 1) {
+            $this->_depth --;
+            return;
+        }
+
         foreach ($this->getConnections() as $connection) {
             $connection->commit();
         }
 
-        $this->_valid = false;
+        $this->_depth = 0;
     }
 
     /**
@@ -107,14 +126,10 @@ class Transaction
      *
      * @throw   Samurai\Onikiri\Exception\TransactionFailedException
      */
-    public function rollback($message = null)
+    public function rollback($message = 'failed to transaction.')
     {
-        foreach ($this->getConnections() as $connection) {
-            $connection->rollback();
-        }
-
-        $this->_valid = false;
-        throw new TransactionFailedException($message ? $message : 'failed to transaction.');
+        $this->rollbackWithoutThrow();
+        throw new TransactionFailedException($message);
     }
 
     /**
@@ -122,10 +137,13 @@ class Transaction
      */
     public function rollbackWithoutThrow()
     {
-        try {
-            $this->rollback();
-        } catch (TransactionFailedException $e) {
+        if (! $this->isValid()) return;
+
+        foreach ($this->getConnections() as $connection) {
+            $connection->rollback();
         }
+
+        $this->_depth = 0;
     }
 
 
@@ -136,7 +154,7 @@ class Transaction
      */
     public function isValid()
     {
-        return $this->_valid;
+        return $this->_depth > 0;
     }
 
 
@@ -147,11 +165,7 @@ class Transaction
      */
     public function inTx()
     {
-        if (! $connections = $this->getConnections()) return false;
-        foreach ($connections as $connection) {
-            if (! $connection->inTx()) return false;
-        }
-        return true;
+        return $this->_depth > 0;
     }
 }
 

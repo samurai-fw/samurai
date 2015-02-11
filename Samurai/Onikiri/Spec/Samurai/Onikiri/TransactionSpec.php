@@ -24,48 +24,59 @@ class TransactionSpec extends PHPSpecContext
     }
 
 
+    public function it_begins()
+    {
+        $this->begin()->shouldBe($this);
+        $this->inTx()->shouldBe(true);
+    }
+    
     public function it_begins_transaction(Connection $c)
     {
         $this->setConnection($c);
+        
+        $c->inTx()->willReturn(false);
         $c->beginTransaction()->shouldBeCalled();
 
-        $c->inTx()->willReturn(false);
         $this->begin();
-        $c->inTx()->willReturn(true);
-
-        $this->inTx()->shouldBe(true);
+        $this->beginTransaction();
     }
     
     public function it_commits(Connection $c)
     {
+        $this->begin();
+        $this->inTx()->shouldBe(true);
+
         $this->setConnection($c);
         $c->beginTransaction()->shouldBeCalled();
         $c->commit()->shouldBeCalled();
-
         $c->inTx()->willReturn(false);
-        $this->begin();
+
+        $this->beginTransaction();
         $c->inTx()->willReturn(true);
-        $this->inTx()->shouldBe(true);
 
         $this->commit();
         $c->inTx()->willReturn(false);
+
         $this->inTx()->shouldBe(false);
     }
     
     
     public function it_rollbacks(Connection $c)
     {
+        $this->begin();
+        $this->inTx()->shouldBe(true);
+
         $this->setConnection($c);
         $c->beginTransaction()->shouldBeCalled();
         $c->rollback()->shouldBeCalled();
-
         $c->inTx()->willReturn(false);
-        $this->begin();
+
+        $this->beginTransaction();
         $c->inTx()->willReturn(true);
-        $this->inTx()->shouldBe(true);
 
         $this->shouldThrow('Samurai\Onikiri\Exception\TransactionFailedException')->duringRollback();
         $c->inTx()->willReturn(false);
+
         $this->inTx()->shouldBe(false);
     }
     

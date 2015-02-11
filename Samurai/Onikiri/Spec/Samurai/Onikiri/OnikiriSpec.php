@@ -77,6 +77,35 @@ class OnikiriSpec extends PHPSpecContext
         $this->getTx()->shouldHaveType('Samurai\Onikiri\Transaction');
     }
 
+    public function it_is_transaction_nesting(Connection $c)
+    {
+        $tx = $this->getTx()->begin();
+        $tx->setConnection($c);
+
+        $tx2 = $this->getTx()->begin();
+        $tx->shouldBe($tx2);
+        
+        $c->inTx()->willReturn(false);
+        $c->beginTransaction()->shouldBeCalled();
+
+        $tx2->beginTransaction();
+        $c->inTx()->willReturn(true);
+
+        $tx2->commit();
+
+        $tx->inTx()->shouldBe(true);
+        $tx2->inTx()->shouldBe(true);
+        
+        $tx->beginTransaction();
+        
+        $c->commit()->shouldBeCalled();
+
+        $tx->commit();
+        
+        $tx->inTx()->shouldBe(false);
+        $tx2->inTx()->shouldBe(false);
+    }
+
 
     public function it_gets_table_schema(Database $d, Connection $c, MysqlDriver $md)
     {

@@ -83,7 +83,6 @@ class EntityTable
     /**
      * @traits
      */
-    use TransactionHolder;
     use DependencyInjectable;
 
 
@@ -582,13 +581,13 @@ class EntityTable
     public function establishConnection($target = Database::TARGET_MASTER)
     {
         // tx
-        $tx = $this->getTx();
+        $tx = $this->onikiri()->getTx();
         if ($tx && $tx->isValid()) $target = Database::TARGET_MASTER;
 
-        $connection = $this->getOnikiri()->establishConnection($this->database, $target);
+        $connection = $this->onikiri()->establishConnection($this->database, $target);
         if ($tx && $tx->isValid()) {
             $tx->setConnection($connection);
-            $tx->begin();
+            $tx->beginTransaction();
         }
 
         return $connection;
