@@ -28,28 +28,65 @@
  * @license     http://opensource.org/licenses/MIT
  */
 
-namespace Samurai\Samurai\Component\Migration\Phinx;
+namespace Samurai\Samurai\Component\Migration\Phinx\Db;
 
-use Samurai\Samurai\Component\Migration\Phinx\Db\Table;
-use Phinx\Migration\AbstractMigration;
+use Phinx\Db\Table as PhinxTable;
 
 /**
- * phinx migration abstract class wrapper.
+ * Phinx table wrapper.
  *
  * @package     Samurai
- * @subpackage  Component.Migration
+ * @subpackage  Component.Migration.Phinx
  * @copyright   2007-2013, Samurai Framework Project
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class Migration extends AbstractMigration
+class Table extends PhinxTable
 {
     /**
-     * {@inheritdoc}
+     * comment
+     *
+     * @var     string
      */
-    public function table($tableName, $options = array())
+    protected $comment;
+
+
+    /**
+     * addColumn wrapper.
+     *
+     * @param   string  $name
+     * @param   string  $type
+     * @param   array   $options
+     * @return  Samurai\Samurai\Component\Migration\Phinx\Db\Column
+     */
+    public function column($name, $type = null, $options = [])
     {
-        return new Table($tableName, $options, $this->getAdapter());
+        return $this->addColumn($name, $type, $options);
+    }
+
+
+    /**
+     * set comment.
+     *
+     * but table comment is not supported in phinx.
+     * this method is not working!
+     *
+     * @param   string  $comment
+     */
+    public function setComment($comment)
+    {
+        $this->comment = $comment;
+        return $this;
+    }
+
+    /**
+     * get comment
+     *
+     * @return  string
+     */
+    public function getComment()
+    {
+        return $this->comment;
     }
 }
 
