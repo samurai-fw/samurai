@@ -107,5 +107,17 @@ class Table extends PhinxTable
     {
         return $this->comment;
     }
+
+
+    /**
+     * set primary key
+     *
+     * @param   string  $column
+     */
+    public function setPrimaryKey()
+    {
+        $columns = func_get_args();
+        $this->options['primary_key'] = $columns;
+    }
 }
 

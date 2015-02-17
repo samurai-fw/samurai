@@ -35,5 +35,17 @@ class TableSpec extends PHPSpecContext
         $this->setComment('hogehogehoge')->shouldHaveType('Samurai\Samurai\Component\Migration\Phinx\Db\Table');
         $this->getComment()->shouldBe('hogehogehoge');
     }
+
+
+    public function it_sets_primary_key()
+    {
+        $this->setPrimaryKey('id');
+        $o = $this->getOptions();
+        $o['primary_key']->shouldBe(['id']);
+
+        $this->setPrimaryKey('id', 'sub_id');
+        $o = $this->getOptions();
+        $o['primary_key']->shouldBe(['id', 'sub_id']);
+    }
 }
 

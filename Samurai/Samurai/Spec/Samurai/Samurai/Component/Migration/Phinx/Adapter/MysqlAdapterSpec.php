@@ -54,24 +54,35 @@ class MysqlAdapterSpec extends PHPSpecContext
 
     public function it_gets_column_sql_definition_with_charset(Column $c)
     {
-        $c->getName()->willReturn('foo');
-        $c->getType()->willReturn('string');
-        $c->getLimit()->willReturn(256);
-        $c->getPrecision()->willReturn(null);
-        $c->getScale()->willReturn(null);
-        $c->isSigned()->willReturn(false);
-        $c->isNull()->willReturn(false);
-        $c->isIdentity()->willReturn(false);
-        $c->getDefault()->willReturn(null);
-        $c->getComment()->willReturn(null);
-        $c->getUpdate()->willReturn(null);
-        $c->getCollation()->willReturn(null);
+        $this->_prepareColumn($c);
         $c->getCharset()->willReturn('ascii');
 
         $this->getColumnSqlDefinition($c)->shouldBe("VARCHAR(256) CHARACTER SET ascii NOT NULL");
     }
     
     public function it_gets_column_sql_definition_with_collation(Column $c)
+    {
+        $this->_prepareColumn($c);
+        $c->getCollation()->willReturn('utf8_general_ci');
+
+        $this->getColumnSqlDefinition($c)->shouldBe("VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL");
+    }
+
+    public function it_gets_column_sql_definition_notnull_and_default_empty_string(Column $c)
+    {
+        $this->_prepareColumn($c);
+        $c->getDefault()->willReturn('');
+
+        $this->getColumnSqlDefinition($c)->shouldBe("VARCHAR(256) NOT NULL DEFAULT ''");
+    }
+
+
+    /**
+     * column setup
+     *
+     * @param   Samurai\Samurai\Component\Migration\Phinx\Db\Column     $c
+     */
+    private function _prepareColumn($c)
     {
         $c->getName()->willReturn('foo');
         $c->getType()->willReturn('string');
@@ -84,10 +95,8 @@ class MysqlAdapterSpec extends PHPSpecContext
         $c->getDefault()->willReturn(null);
         $c->getComment()->willReturn(null);
         $c->getUpdate()->willReturn(null);
-        $c->getCollation()->willReturn('utf8_general_ci');
+        $c->getCollation()->willReturn(null);
         $c->getCharset()->willReturn(null);
-
-        $this->getColumnSqlDefinition($c)->shouldBe("VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL");
     }
 }
 
