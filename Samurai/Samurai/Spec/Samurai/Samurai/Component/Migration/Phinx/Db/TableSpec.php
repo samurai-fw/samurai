@@ -4,6 +4,7 @@ namespace Samurai\Samurai\Spec\Samurai\Samurai\Component\Migration\Phinx\Db;
 
 use Phinx\Db\Adapter\MysqlAdapter;
 use Samurai\Samurai\Component\Spec\Context\PHPSpecContext;
+use Prophecy\Argument;
 
 class TableSpec extends PHPSpecContext
 {
@@ -21,12 +22,15 @@ class TableSpec extends PHPSpecContext
     }
 
 
-    public function it_is_add_column_bridge()
+    public function it_is_add_column_bridge(MysqlAdapter $a)
     {
-        $this->column('id', 'integer')->shouldHaveType('Samurai\Samurai\Component\Migration\Phinx\Db\Column');
+        $a->isValidColumnType(Argument::any())->willReturn(true);
+
+        $c = $this->column('id', 'integer');
+        $c->shouldHaveType('Samurai\Samurai\Component\Migration\Phinx\Db\Column');
+
         $columns = $this->getPendingColumns();
-        $columns[0]->shouldHaveType('Samurai\Samurai\Component\Migration\Phinx\Db\Column');
-        $columns[0]->getName()->shouldBe('id');
+        $columns[0]->shouldBe($c);
     }
 
 
