@@ -28,15 +28,13 @@
  * @license     http://opensource.org/licenses/MIT
  */
 
-namespace Samurai\Samurai\Component\Migration\Phinx;
+namespace Samurai\Samurai\Component\Migration\Phinx\Adapter;
 
-use Samurai\Samurai\Component\Migration\Phinx\Adapter\MysqlAdapter;
-use Phinx\Migration\Manager as PhinxManager;
-use Phinx\Migration\Manager\Environment;
-use Symfony\Component\Console\Output\OutputInterface;
+use Phinx\Db\Table\Column;
+use Phinx\Db\Adapter\MysqlAdapter as PhinxMysqlAdapter;
 
 /**
- * Phinx manager wrapper.
+ * Phinx mysql adapter wrapper.
  *
  * @package     Samurai
  * @subpackage  Component.Migration.Phinx
@@ -44,30 +42,31 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class Manager extends PhinxManager
+class MysqlAdapter extends PhinxMysqlAdapter
 {
-    /**
-     * construct
-     */
-    public function __construct(Config $config, OutputInterface $output)
-    {
-        parent::__construct($config, $output);
-    }
-
-
     /**
      * {@inheritdoc}
      */
-    public function getEnvironment($name)
+    public function getColumnSqlDefinition(Column $column)
     {
-        if (isset($this->environments[$name])) return $this->environments[$name];
+        $def = parent::getColumnSqlDefinition($column);
+        $defs = explode(' ', $def);
 
-        $environment = parent::getEnvironment($name);
-        $environment->registerAdapter('mysql', function(Environment $env){
-            return new MysqlAdapter($env->getOptions(), $env->getOutput());
-        });
+        $define = [$defs[0]];
 
-        return $environment;
+        if ($collation = $column->getCollation()) {
+            $charset = explode('_', $collation);
+
+            $define[] = sprintf('CHARACTER SET %s', $charset[0]);
+            $define[] =  sprintf('COLLATE %s', $collation);
+        } elseif ($charset = $column->getCharset()) {
+            $define[] = sprintf('CHARACTER SET %s', $charset);
+        }
+
+        $define = array_merge($define, array_slice($defs, 1));
+        $define = join(' ', $define);
+
+        return $define;
     }
 }
 

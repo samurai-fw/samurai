@@ -25,6 +25,7 @@ class TableSpec extends PHPSpecContext
     {
         $this->column('id', 'integer')->shouldHaveType('Samurai\Samurai\Component\Migration\Phinx\Db\Table');
         $columns = $this->getPendingColumns();
+        $columns[0]->shouldHaveType('Samurai\Samurai\Component\Migration\Phinx\Db\Column');
         $columns[0]->getName()->shouldBe('id');
     }
 

@@ -30,10 +30,10 @@
 
 namespace Samurai\Samurai\Component\Migration\Phinx\Db;
 
-use Phinx\Db\Table as PhinxTable;
+use Phinx\Db\Table\Column as PhinxColumn;
 
 /**
- * Phinx table wrapper.
+ * Phinx column wrapper.
  *
  * @package     Samurai
  * @subpackage  Component.Migration.Phinx
@@ -41,69 +41,106 @@ use Phinx\Db\Table as PhinxTable;
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class Table extends PhinxTable
+class Column extends PhinxColumn
 {
     /**
-     * comment
+     * collation
      *
      * @var     string
      */
-    protected $comment;
+    protected $collation;
+
+    /**
+     * charset
+     *
+     * @var     string
+     */
+    protected $charset;
+
+    /**
+     * table
+     *
+     * @var     Samurai\Samurai\Component\Migration\Phinx\Db\Table
+     */
+    protected $table;
 
 
     /**
-     * addColumn wrapper.
+     * set table
      *
-     * {@inheritdoc}
+     * @param   Samurai\Samurai\Component\Migration\Phinx\Db\Table  $table
      */
-    public function addColumn($columnName, $type = null, $options = [])
+    public function setTable(Table $table)
     {
-        $column = new Column();
-        $column->setName($columnName);
-        $column->setType($type);
-        $column->setOptions($options);
-
-        $column->setTable($this);
-
-        return parent::addColumn($column);
-    }
-
-    /**
-     * add column bridge
-     *
-     * @param   string  $name
-     * @param   string  $type
-     * @param   array   $options
-     * @return  Samurai\Samurai\Component\Migration\Phinx\Db\Column
-     */
-    public function column($name, $type = null, $options = [])
-    {
-        return $this->addColumn($name, $type, $options);
-    }
-
-
-    /**
-     * set comment.
-     *
-     * but table comment is not supported in phinx.
-     * this method is not working!
-     *
-     * @param   string  $comment
-     */
-    public function setComment($comment)
-    {
-        $this->comment = $comment;
+        $this->table = $table;
         return $this;
     }
 
     /**
-     * get comment
+     * get table
+     *
+     * @return Samurai\Samurai\Component\Migration\Phinx\Db\Table
+     */
+    public function getTable()
+    {
+        return $this->table;
+    }
+
+
+    /**
+     * set collation
+     *
+     * @param   string  $collation
+     * @return  Samurai\Samurai\Component\Migration\Phinx\Db\Column
+     */
+    public function setCollation($collation)
+    {
+        $this->collation = $collation;
+        return $this;
+    }
+
+    /**
+     * get collation
      *
      * @return  string
      */
-    public function getComment()
+    public function getCollation()
     {
-        return $this->comment;
+        return $this->collation;
+    }
+
+
+    /**
+     * set charset
+     *
+     * @param   string  $charset
+     */
+    public function setCharset($charset)
+    {
+        $this->charset = $charset;
+        return $this;
+    }
+
+    /**
+     * get charset
+     *
+     * @return  string
+     */
+    public function getCharset()
+    {
+        return $this->charset;
+    }
+
+
+    /**
+     * __call
+     *
+     * @param   string  $method
+     * @param   array   $args
+     */
+    public function __call($method, $args)
+    {
+        return call_user_func_array([$this->getTable(), $method], $args);
     }
 }
 
