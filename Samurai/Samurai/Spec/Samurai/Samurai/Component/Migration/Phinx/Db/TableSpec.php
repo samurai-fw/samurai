@@ -23,7 +23,7 @@ class TableSpec extends PHPSpecContext
 
     public function it_is_add_column_bridge()
     {
-        $this->column('id', 'integer')->shouldHaveType('Samurai\Samurai\Component\Migration\Phinx\Db\Table');
+        $this->column('id', 'integer')->shouldHaveType('Samurai\Samurai\Component\Migration\Phinx\Db\Column');
         $columns = $this->getPendingColumns();
         $columns[0]->shouldHaveType('Samurai\Samurai\Component\Migration\Phinx\Db\Column');
         $columns[0]->getName()->shouldBe('id');

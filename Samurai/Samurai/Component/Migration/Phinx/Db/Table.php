@@ -65,7 +65,9 @@ class Table extends PhinxTable
 
         $column->setTable($this);
 
-        return parent::addColumn($column);
+        parent::addColumn($column);
+
+        return $column;
     }
 
     /**
