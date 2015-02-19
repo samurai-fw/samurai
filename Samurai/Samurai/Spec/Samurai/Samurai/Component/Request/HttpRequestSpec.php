@@ -48,11 +48,29 @@ class HttpRequestSpec extends PHPSpecContext
         $_COOKIE = $cookie;
     }
 
+    
+    public function it_gets_as_int()
+    {
+        $this->import(['foo' => 'bar', 'zoo' => '28']);
+
+        $this->getAsInt('zoo')->shouldBe(28);
+        $this->getAsInt('foo')->shouldBe(0);
+    }
+    
+    public function it_gets_as_array()
+    {
+        $this->import(['foo' => 'bar', 'zoo' => [1,2,3]]);
+
+        $this->getAsArray('foo')->shouldBe(['bar']);
+        $this->getAsArray('zoo')->shouldBe([1,2,3]);
+    }
+
     public function it_gets_header_value()
     {
         $this->setHeader('User-Agent', 'samurai/spec');
         $this->getHeader('user-agent')->shouldBe('samurai/spec');
     }
+
 
     public function it_gets_http_method()
     {

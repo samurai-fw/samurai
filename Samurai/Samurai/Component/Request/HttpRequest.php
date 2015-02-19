@@ -122,6 +122,30 @@ class HttpRequest extends Request
     }
 
 
+    /**
+     * get as int
+     *
+     * @param   string  $key
+     * @param   mixed   $default
+     * @return  int
+     */
+    public function getAsInt($key, $default = 0)
+    {
+        return (int) $this->get($key, $default);
+    }
+    
+    /**
+     * get as array
+     *
+     * @param   string  $key
+     * @param   mixed   $default
+     * @return  array
+     */
+    public function getAsArray($key, $default = [])
+    {
+        return (array) $this->get($key, $default);
+    }
+
 
     /**
      * get path.
