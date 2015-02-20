@@ -92,6 +92,7 @@ class Config extends PhinxConfig
                 'port' => $database->getPort(),
                 'charset' => $database->getCharset(),
                 'name' => $database->getDatabaseName(),
+                'memory' => $this->toPhinxSqliteMemory($database->getDriver(), $database->getDatabaseName()),
             ]
         ];
     }
@@ -111,6 +112,18 @@ class Config extends PhinxConfig
         } elseif ($driver instanceof \Samurai\Onikiri\Driver\SqliteDriver) {
             return 'sqlite';
         }
+    }
+
+
+    /**
+     * convert to phinx sqlite memory flag.
+     *
+     * @param   Samurai\Onikiri\Driver\Driver   $driver
+     * @param   string  $database
+     */
+    public function toPhinxSqliteMemory(Driver $driver, $database)
+    {
+        return $driver instanceof \Samurai\Onikiri\Driver\SqliteDriver && $database === ':memory:';
     }
 }
 
