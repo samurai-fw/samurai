@@ -209,7 +209,7 @@ class DbTaskList extends Task
     {
         $reporter = $this->getReporter();
 
-        $config = new Config();
+        $config = new Config([]);
         $config->setContainer($this->raikiri());
         $config->initialize($alias, $database);
 
@@ -220,6 +220,7 @@ class DbTaskList extends Task
         $reporter->writeln('<info>using database</info> ' . $env['name']);
 
         $manager = new Manager($config, $reporter);
+        $manager->setContainer($this->raikiri());
         return $manager;
     }
 

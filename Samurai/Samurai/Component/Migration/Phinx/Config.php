@@ -58,14 +58,6 @@ class Config extends PhinxConfig
 
 
     /**
-     * construct
-     */
-    public function __construct()
-    {
-    }
-
-
-    /**
      * initialize
      *
      * @param   string                      $alias
@@ -73,17 +65,20 @@ class Config extends PhinxConfig
      */
     public function initialize($alias, Database $database)
     {
+        $this['raikiri'] = $this->raikiri();
+
         $this['paths'] = [
             'migrations' => $this->loader->findFirst($this->application->config('directory.database.migration')) . DS . $alias
         ];
         $this['environments'] = [
-            'default_migration_table' => 'samurai_migration_log',
             'default_database' => 'development',
+            'default_migration_table' => 'samurai_migration_log',
         ];
 
         $environment = $this->application->getEnv();
         $this['environments'] = [
             $environment => [
+                'alias' => $alias,
                 'adapter' => $this->toPhinxAdapterName($database->getDriver()),
                 'host' => $database->getHostName(),
                 'user' => $database->getUser(),

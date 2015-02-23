@@ -30,6 +30,7 @@
 
 namespace Samurai\Samurai\Component\Migration\Phinx\Adapter;
 
+use Samurai\Raikiri\DependencyInjectable;
 use Phinx\Db\Table\Column;
 use Phinx\Db\Adapter\SQLiteAdapter as PhinxSQLiteAdapter;
 
@@ -44,6 +45,74 @@ use Phinx\Db\Adapter\SQLiteAdapter as PhinxSQLiteAdapter;
  */
 class SQLiteAdapter extends PhinxSQLiteAdapter
 {
+    /**
+     * @traits
+     */
+    use DependencyInjectable;
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setOptions(array $options)
+    {
+        parent::setOptions($options);
+
+        if (isset($option['raikiri'])) {
+            $this->setContainer($options['raikiri']);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function connect()
+    {
+        if ($this->connection) return;
+
+        $onikiri = $this->onikiri();
+        $alias = $this->options['alias'];
+
+        $database = $onikiri->getDatabase($alias);
+        if (! $database) return parent::connect();
+
+        $connection = $database->connect();
+        $this->setConnection($connection);
+        
+        if (! $this->hasSchemaTable()) {
+            $this->createSchemaTable();
+        }
+    }
+    
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function beginTransaction()
+    {
+        $this->connection->beginTransaction();
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function commitTransaction()
+    {
+        $this->connection->commit();
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function rollbackTransaction()
+    {
+        $this->connection->rollback();
+    }
+
+
     /**
      * {@inheritdoc}
      */

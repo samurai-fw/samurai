@@ -31,6 +31,7 @@
 namespace Samurai\Samurai\Component\Migration\Phinx\Db;
 
 use Phinx\Db\Table as PhinxTable;
+use Phinx\Db\Table\Index;
 
 /**
  * Phinx table wrapper.
@@ -118,6 +119,27 @@ class Table extends PhinxTable
     {
         $columns = func_get_args();
         $this->options['primary_key'] = $columns;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addIndex($columns, $options = [])
+    {
+        if (! $columns instanceof Index) {
+            $index = new Index();
+            if (is_string($columns)) {
+                $columns = [$columns];
+            }
+            $index->setColumns($columns);
+            $index->setOptions($options);
+            $index->setName(join('_', array_merge([$this->getName()], $columns)));
+        } else {
+            $index = $columns;
+        }
+
+        return parent::addIndex($index);
     }
 }
 

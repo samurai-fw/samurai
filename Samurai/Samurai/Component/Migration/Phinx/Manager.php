@@ -32,8 +32,10 @@ namespace Samurai\Samurai\Component\Migration\Phinx;
 
 use Samurai\Samurai\Component\Migration\Phinx\Adapter\MysqlAdapter;
 use Samurai\Samurai\Component\Migration\Phinx\Adapter\SQLiteAdapter;
+use Samurai\Raikiri\DependencyInjectable;
 use Phinx\Migration\Manager as PhinxManager;
 use Phinx\Migration\Manager\Environment;
+use Phinx\Db\Adapter\AdapterFactory;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -48,30 +50,43 @@ use Symfony\Component\Console\Output\OutputInterface;
 class Manager extends PhinxManager
 {
     /**
+     * @traits
+     */
+    use DependencyInjectable;
+
+
+    /**
      * construct
      */
     public function __construct(Config $config, OutputInterface $output)
     {
         parent::__construct($config, $output);
+
+        AdapterFactory::instance()->registerAdapter('mysql', 'Samurai\Samurai\Component\Migration\Phinx\Adapter\MysqlAdapter');
+        AdapterFactory::instance()->registerAdapter('mysql', 'Samurai\Samurai\Component\Migration\Phinx\Adapter\SQLiteAdapter');
     }
 
 
     /**
      * {@inheritdoc}
-     */
     public function getEnvironment($name)
     {
         if (isset($this->environments[$name])) return $this->environments[$name];
+
+        $ref = $this;
 
         $environment = parent::getEnvironment($name);
         $environment->registerAdapter('mysql', function(Environment $env){
             return new MysqlAdapter($env->getOptions(), $env->getOutput());
         });
-        $environment->registerAdapter('sqlite', function(Environment $env){
-            return new SQLiteAdapter($env->getOptions(), $env->getOutput());
+        $environment->registerAdapter('sqlite', function(Environment $env) use ($ref) {
+            $adapter = new SQLiteAdapter($env->getOptions(), $env->getOutput());
+            $adapter->setContainer($ref->raikiri());
+            return $adapter;
         });
 
         return $environment;
     }
+     */
 }
 
