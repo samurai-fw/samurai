@@ -120,7 +120,9 @@ class Onikiri
 
         $settings = $this->yaml->load($file);
         foreach ($settings as $alias => $setting) {
-            $this->_databases[$alias] = new Database($setting);
+            $database= new Database($setting);
+            $database->database_dir = $this->config->getDataDir();
+            $this->_databases[$alias] = $database;
         }
     }
     

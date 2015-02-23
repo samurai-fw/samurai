@@ -31,6 +31,7 @@
 namespace Samurai\Onikiri;
 
 use Samurai\Samurai\Component\Cache\Cache;
+use Samurai\Samurai\Component\Core\Accessor;
 
 /**
  * Onikiri configurations.
@@ -62,6 +63,20 @@ class Configuration
      * @var     Samurai\Samurai\Component\Cache\Cache
      */
     public $schema_cacher;
+
+    /**
+     * data dir
+     *
+     * using for sqlite data file and others.
+     *
+     * @var     string
+     */
+    public $data_dir;
+
+    /**
+     * @traits
+     */
+    use Accessor;
 
 
     /**

@@ -30,6 +30,9 @@
 
 namespace Samurai\Onikiri;
 
+use Samurai\Onikiri\Driver\SqliteDriver;
+use Samurai\Samurai\Component\Core\Accessor;
+
 /**
  * Database configuration and entity;
  *
@@ -90,11 +93,25 @@ class Database
     public $database_name;
 
     /**
+     * database dir (for sqlite)
+     *
+     * @var     string
+     */
+    public $database_dir;
+
+    /**
+     * use memory (only sqlite)
+     *
+     * @var     boolean
+     */
+    public $memory;
+
+    /**
      * driver options
      *
      * @var     array
      */
-    public $options = array();
+    public $options = [];
 
     /**
      * connection
@@ -116,6 +133,11 @@ class Database
      * @var     Samurai\Onikiri\Database
      */
     private $_master;
+
+    /**
+     * @trait
+     */
+    use Accessor;
     
     /**
      * target constants
@@ -137,10 +159,11 @@ class Database
         foreach ($setting as $key => $value) {
             switch ($key) {
                 case 'driver':
-                    $this->setDriver($value);
-                    break;
                 case 'user':
-                    $this->setUser($value);
+                case 'port':
+                case 'charset':
+                case 'memory':
+                    $this->{'set' . ucfirst($key)}($value);
                     break;
                 case 'pass':
                     $this->setPassword($value);
@@ -150,12 +173,6 @@ class Database
                     break;
                 case 'database':
                     $this->setDatabaseName($value);
-                    break;
-                case 'port':
-                    $this->setPort($value);
-                    break;
-                case 'charset':
-                    $this->setCharset($value);
                     break;
                 case 'slaves':
                     foreach ($value as $slave) {
@@ -170,7 +187,6 @@ class Database
     /**
      * Set driver
      *
-     * @access  public
      * @param   string  $name
      */
     public function setDriver($name)
@@ -185,7 +201,6 @@ class Database
     /**
      * Get driver.
      *
-     * @access  public
      * @return  Driver\Driver
      */
     public function getDriver()
@@ -198,20 +213,8 @@ class Database
 
 
     /**
-     * Set user
-     *
-     * @access  public
-     * @param   string  $user
-     */
-    public function setUser($user)
-    {
-        $this->user = $user;
-    }
-
-    /**
      * Get user.
      *
-     * @access  public
      * @return  string
      */
     public function getUser()
@@ -224,20 +227,8 @@ class Database
 
 
     /**
-     * Set password
-     *
-     * @access  public
-     * @param   string  $password
-     */
-    public function setPassword($password)
-    {
-        $this->password = $password;
-    }
-
-    /**
      * Get password
      *
-     * @access  public
      * @return  string
      */
     public function getPassword()
@@ -250,43 +241,8 @@ class Database
 
 
     /**
-     * Set host name.
-     *
-     * @access  public
-     * @param   string  $host
-     */
-    public function setHostName($host)
-    {
-        $this->host_name = $host;
-    }
-
-    /**
-     * Get host name.
-     *
-     * @access  public
-     * @return  string
-     */
-    public function getHostName()
-    {
-        return $this->host_name;
-    }
-
-
-    /**
-     * Set port number.
-     *
-     * @access  public
-     * @param   int     $port
-     */
-    public function setPort($port)
-    {
-        $this->port = $port;
-    }
-
-    /**
      * Get port number.
      *
-     * @access  public
      * @return  int
      */
     public function getPort()
@@ -299,20 +255,8 @@ class Database
 
 
     /**
-     * Set database name.
-     *
-     * @access  public
-     * @param   string  $database
-     */
-    public function setDatabaseName($database)
-    {
-        $this->database_name = $database;
-    }
-
-    /**
      * Get database name.
      *
-     * @access  public
      * @return  string
      */
     public function getDatabaseName()
@@ -320,29 +264,32 @@ class Database
         if ($this->isSlave() && ! $this->database_name) {
             return $this->_master->getDatabaseName();
         }
+
+        // sqlite data file
+        if ($this->driver instanceof SqliteDriver) {
+            if ($this->isUseMemory()) {
+                return ':memory:';
+            }
+            if ($this->database_dir && $this->database_name[0] !== '/') {
+                return $this->database_dir . '/' . $this->database_name;
+            }
+        }
+        
         return $this->database_name;
     }
 
 
     /**
-     * Set charset.
-     *
-     * @access  public
-     * @param   string  $charset
-     */
-    public function setCharset($charset)
-    {
-        $this->charset = $charset;
-    }
-
-    /**
      * Get charset.
      *
-     * @access  public
      * @return  string
      */
     public function getCharset()
     {
+        if ($this->isSlave() && ! $this->charset) {
+            return $this->_master->getCharset();
+        }
+
         return $this->charset;
     }
 
@@ -350,7 +297,6 @@ class Database
     /**
      * Add slave.
      *
-     * @access  public
      * @param   array   $setting
      */
     public function addSlave(array $setting)
@@ -362,8 +308,6 @@ class Database
 
     /**
      * Clear slaves.
-     *
-     * @access  public
      */
     public function clearSlaves()
     {
@@ -373,7 +317,6 @@ class Database
     /**
      * Get all slaves.
      *
-     * @access  public
      * @return  array
      */
     public function getSlaves()
@@ -384,7 +327,6 @@ class Database
     /**
      * pick a slave.
      *
-     * @access  public
      * @return  Database
      */
     public function pickSlave()
@@ -397,7 +339,6 @@ class Database
     /**
      * Set master configuration.
      *
-     * @access  public
      * @param   Samurai\Onikiri\Database    $master
      */
     public function setMaster(Database $master)
@@ -409,7 +350,6 @@ class Database
     /**
      * Get options
      *
-     * @access  public
      * @return  array
      */
     public function getOptions()
@@ -469,5 +409,21 @@ class Database
     public function isMaster()
     {
         return $this->_master === null;
+    }
+
+
+    /**
+     * is use memory ?
+     * (only sqlite)
+     *
+     * @return  boolean
+     */
+    public function isUseMemory()
+    {
+        if ($this->isSlave() && $this->memory === null) {
+            return $this->_master->isUseMemory();
+        }
+
+        return $this->memory === true;
     }
 }

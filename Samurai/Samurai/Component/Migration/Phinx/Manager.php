@@ -31,6 +31,7 @@
 namespace Samurai\Samurai\Component\Migration\Phinx;
 
 use Samurai\Samurai\Component\Migration\Phinx\Adapter\MysqlAdapter;
+use Samurai\Samurai\Component\Migration\Phinx\Adapter\SQLiteAdapter;
 use Phinx\Migration\Manager as PhinxManager;
 use Phinx\Migration\Manager\Environment;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -65,6 +66,9 @@ class Manager extends PhinxManager
         $environment = parent::getEnvironment($name);
         $environment->registerAdapter('mysql', function(Environment $env){
             return new MysqlAdapter($env->getOptions(), $env->getOutput());
+        });
+        $environment->registerAdapter('sqlite', function(Environment $env){
+            return new SQLiteAdapter($env->getOptions(), $env->getOutput());
         });
 
         return $environment;

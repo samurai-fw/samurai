@@ -28,48 +28,47 @@
  * @license     http://opensource.org/licenses/MIT
  */
 
-namespace App\Config\Initializer;
+namespace Samurai\Samurai\Component\Migration\Phinx\Adapter;
 
-use Samurai\Samurai\Application as SamuraiApplication;
-use Samurai\Samurai\Component\Core\Initializer;
-use Samurai\Onikiri\Onikiri;
+use Phinx\Db\Table\Column;
+use Phinx\Db\Adapter\SQLiteAdapter as PhinxSQLiteAdapter;
 
 /**
- * database initializer.
+ * Phinx sqlite adapter wrapper.
  *
  * @package     Samurai
- * @subpackage  Config.Initializer
+ * @subpackage  Component.Migration.Phinx
  * @copyright   2007-2013, Samurai Framework Project
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class Database extends Initializer
+class SQLiteAdapter extends PhinxSQLiteAdapter
 {
     /**
      * {@inheritdoc}
      */
-    public function configure(SamuraiApplication $app)
+    public function getColumnSqlDefinition(Column $column)
     {
-        $app->config('container.callback.initialized.', function($c) use ($app) {
-            $onikiri = new Onikiri();
-            $c->register('onikiri', $onikiri);
+        $def = parent::getColumnSqlDefinition($column);
+        $defs = explode(' ', $def);
 
-            $config = $onikiri->configure();
+        $define = [$defs[0]];
 
-            // register model directory.
-            $loader = $app->getLoader();
-            foreach ($loader->find($app->config('directory.model')) as $dir) {
-                $config->addModelDir($dir->toString(), $dir->getNameSpace());
-            }
+        /*
+        if ($collation = $column->getCollation()) {
+            $charset = explode('_', $collation);
 
-            // set data dir
-            $config->setDataDir($loader->findFirst($app->config('directory.database.data')));
+            $define[] = sprintf('CHARACTER SET %s', $charset[0]);
+            $define[] =  sprintf('COLLATE %s', $collation);
+        } elseif ($charset = $column->getCharset()) {
+            $define[] = sprintf('CHARACTER SET %s', $charset);
+        }
+         */
 
-            // load configuration.
-            // App/Config/Database/[env].yml
-            $file = $loader->find($app->config('directory.config.database') . DS . $app->getEnv() . '.yml')->first();
-            if ($file) $onikiri->import($file);
-        });
+        $define = array_merge($define, array_slice($defs, 1));
+        $define = join(' ', $define);
+
+        return $define;
     }
 }
 

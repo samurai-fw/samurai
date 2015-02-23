@@ -201,5 +201,30 @@ class DatabaseSpec extends PHPSpecContext
         $con2 = $this->connect();
         $con1->shouldNotBe($con2);
     }
+
+
+    public function it_is_sqlite_database_name()
+    {
+        $config = [
+            'driver' => 'sqlite',
+            'database' => 'foo.db',
+        ];
+        $this->beConstructedWith($config);
+
+        $this->database_dir = __DIR__;
+
+        $this->getDatabaseName()->shouldBe(__DIR__ . DS . 'foo.db');
+    }
+
+    public function it_is_sqlite_using_memory()
+    {
+        $config = [
+            'driver' => 'sqlite',
+            'memory' => true,
+        ];
+        $this->beConstructedWith($config);
+
+        $this->getDatabaseName()->shouldBe(':memory:');
+    }
 }
 

@@ -24,7 +24,7 @@ class TableSpec extends PHPSpecContext
 
     public function it_is_add_column_bridge(MysqlAdapter $a)
     {
-        $a->isValidColumnType(Argument::any())->willReturn(true);
+        //$a->isValidColumnType(Argument::any())->willReturn(true);
 
         $c = $this->column('id', 'integer');
         $c->shouldHaveType('Samurai\Samurai\Component\Migration\Phinx\Db\Column');

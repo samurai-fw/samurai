@@ -51,7 +51,6 @@ class Config extends PhinxConfig
      */
     protected $values = [];
 
-
     /**
      * @traits
      */
@@ -123,7 +122,8 @@ class Config extends PhinxConfig
      */
     public function toPhinxSqliteMemory(Driver $driver, $database)
     {
-        return $driver instanceof \Samurai\Onikiri\Driver\SqliteDriver && $database === ':memory:';
+        $is_memory = $driver instanceof \Samurai\Onikiri\Driver\SqliteDriver && $database === ':memory:';
+        return $is_memory ? true : null;
     }
 }
 

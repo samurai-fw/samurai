@@ -26,6 +26,8 @@ class OnikiriSpec extends PHPSpecContext
     
     public function it_imports_database_configuration_file()
     {
+        $this->configure();
+
         $config = __DIR__ . '/Fixtures/databases.yml';
         $this->import($config);
 
@@ -36,6 +38,8 @@ class OnikiriSpec extends PHPSpecContext
 
     public function it_gets_database_instance()
     {
+        $this->configure();
+
         $config = __DIR__ . '/Fixtures/databases.yml';
         $this->import($config);
 
