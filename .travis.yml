@@ -28,7 +28,7 @@ before_script:
     - psql -c 'CREATE DATABASE app;' -U postgres
     - wget -O phpredis.tar.gz --no-check-certificate https://github.com/nicolasff/phpredis/tarball/master
     - tar -xzf phpredis.tar.gz
-    - sh -c "cd nicolasff-phpredis-* && phpize && ./configure && make && sudo make install"
+    - sh -c "cd phpredis-phpredis-* && phpize && ./configure && make && sudo make install"
     - phpenv config-add .travis/php.ini
 
 script:

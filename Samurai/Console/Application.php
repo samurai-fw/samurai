@@ -93,9 +93,12 @@ class Application extends Samurai\Application
     protected function getEnvFromEnvironmentVariables()
     {
         // has request ?
-        $opts = getopt('', array('ENV:'));
-        if (isset($opts['ENV'])) {
-            return $opts['ENV'];
+        $options = getopt('e:', ['env:']);
+        if (isset($options['e']) && $options['e']) {
+            return $options['e'];
+        }
+        if (isset($options['env']) && $options['env']) {
+            return $options['env'];
         }
 
         return parent::getEnvFromEnvironmentVariables();

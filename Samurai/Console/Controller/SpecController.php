@@ -66,6 +66,12 @@ class SpecController extends ConsoleController
     {
         if ($this->isUsage()) return [self::FORWARD_ACTION, 'spec.usage'];
 
+        // production
+        if ($this->application->isProduction() && ! $this->response->confirmation('May I execute spec in production environment ?')) {
+            $this->send('aborted.');
+            return;
+        }
+
         $this->setup();
         $this->run();
     }
