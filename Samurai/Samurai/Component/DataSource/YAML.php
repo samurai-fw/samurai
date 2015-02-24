@@ -68,7 +68,12 @@ class YAML
     {
         if ($this->enableSpyc()) {
             if (! file_exists($file)) return [];
-            return $this->loadBySpyc($file);
+
+            // parse environment
+            $content = file_get_contents($file);
+            $content = $this->parseEnvironmentVariables($content);
+
+            return $this->loadBySpyc($content);
         } else {
             throw new NotFoundException('Not found YAML parser.');
         }
@@ -141,6 +146,23 @@ class YAML
     {
         $data = \Spyc::YAMLDump($data);
         return $data;
+    }
+
+
+    /**
+     * parse environment variables
+     *
+     * @param   string  $content
+     * @return  string
+     */
+    public function parseEnvironmentVariables($content)
+    {
+        $func = function($matches) {
+            $value = getenv($matches[1]);
+            return $value === false ? 'null' : $value;
+        };
+        $content = preg_replace_callback('/%([\w_]+?)%/', $func, $content);
+        return $content;
     }
 
 

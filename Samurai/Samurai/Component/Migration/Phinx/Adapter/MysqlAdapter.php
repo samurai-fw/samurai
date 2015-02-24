@@ -30,7 +30,8 @@
 
 namespace Samurai\Samurai\Component\Migration\Phinx\Adapter;
 
-use Phinx\Db\Table\Column;
+use Samurai\Samurai\Component\Migration\Phinx\Db\Column;
+use Phinx\Db\Table\Column as PhinxColumn;
 use Phinx\Db\Adapter\MysqlAdapter as PhinxMysqlAdapter;
 
 /**
@@ -47,9 +48,11 @@ class MysqlAdapter extends PhinxMysqlAdapter
     /**
      * {@inheritdoc}
      */
-    public function getColumnSqlDefinition(Column $column)
+    public function getColumnSqlDefinition(PhinxColumn $column)
     {
         $def = parent::getColumnSqlDefinition($column);
+        if (! $column instanceof Column) return $def;
+
         $defs = explode(' ', $def);
 
         $define = [$defs[0]];

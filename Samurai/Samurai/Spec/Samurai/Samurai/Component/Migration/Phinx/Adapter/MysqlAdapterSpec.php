@@ -2,11 +2,14 @@
 
 namespace Samurai\Samurai\Spec\Samurai\Samurai\Component\Migration\Phinx\Adapter;
 
+use Samurai\Onikiri\Connection;
+use Samurai\Onikiri\Statement;
 use Samurai\Samurai\Component\Migration\Phinx\Db\Table;
 use Samurai\Samurai\Component\Migration\Phinx\Db\Column;
 use Samurai\Samurai\Component\Spec\Context\PHPSpecContext;
 use Symfony\Component\Console\Output\OutputInterface;
 use PhpSpec\Exception\Example\SkippingException;
+use Prophecy\Argument;
 
 class MysqlAdapterSpec extends PHPSpecContext
 {
@@ -16,7 +19,7 @@ class MysqlAdapterSpec extends PHPSpecContext
     public $request;
 
 
-    public function let(OutputInterface $o)
+    public function let(OutputInterface $o, Connection $con, Statement $st)
     {
         $op = [
             'name' => 'sandbox',
@@ -25,6 +28,11 @@ class MysqlAdapterSpec extends PHPSpecContext
             'pass' => '',
         ];
         $this->beConstructedWith($op, $o);
+
+        $con->exec(Argument::any())->willReturn(0);
+        $con->query(Argument::any())->willReturn($st);
+
+        $this->setConnection($con);
     }
 
     public function it_is_initializable()
@@ -35,19 +43,11 @@ class MysqlAdapterSpec extends PHPSpecContext
 
     public function it_gets_column_sql_definition(Column $c)
     {
-        $c->getName()->willReturn('foo');
+        $this->_prepareColumn($c);
         $c->getType()->willReturn('integer');
         $c->getLimit()->willReturn(11);
-        $c->getPrecision()->willReturn(null);
-        $c->getScale()->willReturn(null);
         $c->isSigned()->willReturn(false);
-        $c->isNull()->willReturn(false);
         $c->isIdentity()->willReturn(true);
-        $c->getDefault()->willReturn(null);
-        $c->getComment()->willReturn(null);
-        $c->getUpdate()->willReturn(null);
-        $c->getCollation()->willReturn(null);
-        $c->getCharset()->willReturn(null);
 
         $this->getColumnSqlDefinition($c)->shouldBe("INT(11) unsigned NOT NULL AUTO_INCREMENT");
     }
@@ -68,10 +68,12 @@ class MysqlAdapterSpec extends PHPSpecContext
         $this->getColumnSqlDefinition($c)->shouldBe("VARCHAR(256) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL");
     }
 
-    public function it_gets_column_sql_definition_notnull_and_default_empty_string(Column $c)
+    public function it_gets_column_sql_definition_notnull_and_default_empty_string(Column $c, Connection $con)
     {
         $this->_prepareColumn($c);
         $c->getDefault()->willReturn('');
+        
+        $con->quote(Argument::any())->willReturn("''");
 
         $this->getColumnSqlDefinition($c)->shouldBe("VARCHAR(256) NOT NULL DEFAULT ''");
     }
@@ -89,6 +91,7 @@ class MysqlAdapterSpec extends PHPSpecContext
         $c->getLimit()->willReturn(256);
         $c->getPrecision()->willReturn(null);
         $c->getScale()->willReturn(null);
+        $c->getValues()->willReturn([]);
         $c->isSigned()->willReturn(false);
         $c->isNull()->willReturn(false);
         $c->isIdentity()->willReturn(false);

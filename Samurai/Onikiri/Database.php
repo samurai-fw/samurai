@@ -241,6 +241,17 @@ class Database
 
 
     /**
+     * get host name
+     *
+     * @return  string
+     */
+    public function getHostName()
+    {
+        return $this->host_name;
+    }
+
+
+    /**
      * Get port number.
      *
      * @return  int

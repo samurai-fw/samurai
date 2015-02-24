@@ -39,5 +39,17 @@ EOL;
             'names' => ['satoshi', 'minka'],
         ]);
     }
+
+    public function it_replace_environment_variables_place_holder()
+    {
+        putenv('BAR=barbarbar');
+        putenv('NAME_1=satoshinosuke');
+
+        $file = __DIR__ . '/Fixtures/sample2.yml';
+        $this->load($file)->shouldBeLike([
+            'bar' => 'barbarbar',
+            'names' => ['satoshinosuke', null, 'minka'],
+        ]);
+    }
 }
 
