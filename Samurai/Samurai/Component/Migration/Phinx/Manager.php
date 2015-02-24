@@ -63,7 +63,7 @@ class Manager extends PhinxManager
         parent::__construct($config, $output);
 
         AdapterFactory::instance()->registerAdapter('mysql', 'Samurai\Samurai\Component\Migration\Phinx\Adapter\MysqlAdapter');
-        AdapterFactory::instance()->registerAdapter('mysql', 'Samurai\Samurai\Component\Migration\Phinx\Adapter\SQLiteAdapter');
+        AdapterFactory::instance()->registerAdapter('sqlite', 'Samurai\Samurai\Component\Migration\Phinx\Adapter\SQLiteAdapter');
     }
 
 
