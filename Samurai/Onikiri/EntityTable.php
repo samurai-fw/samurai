@@ -378,6 +378,8 @@ class EntityTable
             $new = $this->create($entity->toArray());
             $entity->exists = true;
             $entity->setPrimaryValue($new->getPrimaryValue());
+            
+            $entity->shiftOriginalAttributes();
         }
 
         // when update.
@@ -389,6 +391,8 @@ class EntityTable
                 $attributes['updated_at'] = time();
                 $entity->updated_at = $attributes['updated_at'];
             }
+
+            $entity->shiftOriginalAttributes();
             return $this->update($attributes, $entity->getPrimaryValue());
         }
     }

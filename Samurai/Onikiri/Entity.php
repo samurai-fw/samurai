@@ -182,6 +182,14 @@ class Entity
     }
 
     /**
+     * shift original attributes
+     */
+    public function shiftOriginalAttributes()
+    {
+        $this->o_attributes = $this->attributes;
+    }
+
+    /**
      * get attribute
      *
      * @param   string  $key
