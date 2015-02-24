@@ -58,7 +58,7 @@ class SQLiteAdapter extends PhinxSQLiteAdapter
     {
         parent::setOptions($options);
 
-        if (isset($option['raikiri'])) {
+        if (isset($options['raikiri'])) {
             $this->setContainer($options['raikiri']);
         }
 

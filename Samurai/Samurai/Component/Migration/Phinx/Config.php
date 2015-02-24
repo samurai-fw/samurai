@@ -78,6 +78,7 @@ class Config extends PhinxConfig
         $environment = $this->application->getEnv();
         $this['environments'] = [
             $environment => [
+                'raikiri' => $this->raikiri(),
                 'alias' => $alias,
                 'adapter' => $this->toPhinxAdapterName($database->getDriver()),
                 'host' => $database->getHostName(),
