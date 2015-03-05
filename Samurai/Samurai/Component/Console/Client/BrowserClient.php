@@ -64,6 +64,10 @@ class BrowserClient extends Client implements Optimizer
         if (! $this->application->isProduction()) {
             $this->messages[] = ['level' => $level, 'message' => $message];
         }
+
+        if ($level >= self::LOG_LEVEL_WARN) {
+            error_log($this->wrapping($message));
+        }
     }
 
 
