@@ -61,7 +61,9 @@ class BrowserClient extends Client implements Optimizer
      */
     public function send($level, $message)
     {
-        $this->messages[] = ['level' => $level, 'message' => $message];
+        if (! $this->application->isProduction()) {
+            $this->messages[] = ['level' => $level, 'message' => $message];
+        }
     }
 
 
@@ -84,6 +86,8 @@ class BrowserClient extends Client implements Optimizer
      */
     public function prepare(Response $response)
     {
+        if ($this->application->isProduction()) return;
+
         $body = $response->getBody();
 
         // is text/html ?
