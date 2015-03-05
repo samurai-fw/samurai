@@ -154,7 +154,7 @@ class BrowserClient extends Client implements Optimizer
 
                 $value = [];
 
-                // is recruision ?
+                // is recursion ?
                 if (in_array($var, $references, true)) return '** recursion **';
                 $references[] = $var;
 
