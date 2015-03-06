@@ -61,6 +61,8 @@ class BrowserClient extends Client implements Optimizer
      */
     public function send($level, $message)
     {
+        if ($this->application->isProduction()) return;
+
         $this->messages[] = ['level' => $level, 'message' => $message];
     }
 
@@ -84,6 +86,8 @@ class BrowserClient extends Client implements Optimizer
      */
     public function prepare(Response $response)
     {
+        if ($this->application->isProduction()) return;
+
         $body = $response->getBody();
 
         // is text/html ?
@@ -146,7 +150,7 @@ class BrowserClient extends Client implements Optimizer
 
                 $value = [];
 
-                // is recruision ?
+                // is recursion ?
                 if (in_array($var, $references, true)) return '** recursion **';
                 $references[] = $var;
 
