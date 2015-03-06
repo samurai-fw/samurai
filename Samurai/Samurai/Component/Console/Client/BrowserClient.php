@@ -61,13 +61,9 @@ class BrowserClient extends Client implements Optimizer
      */
     public function send($level, $message)
     {
-        if (! $this->application->isProduction()) {
-            $this->messages[] = ['level' => $level, 'message' => $message];
-        }
+        if ($this->application->isProduction()) return;
 
-        if ($level >= self::LOG_LEVEL_WARN) {
-            error_log($this->wrapping($message));
-        }
+        $this->messages[] = ['level' => $level, 'message' => $message];
     }
 
 
