@@ -57,6 +57,27 @@ class HttpRequestSpec extends PHPSpecContext
         $this->getAsInt('foo')->shouldBe(0);
     }
     
+    public function it_gets_as_bool()
+    {
+        $this->import(
+            [
+                'some1' => false,
+                'some2' => 'false',
+                'some3' => '',
+                'some4' => ' ',
+                'some5' => '1',
+                'some6' => 'true',
+            ]
+        );
+
+        $this->getAsBool('some1')->shouldBe(false);
+        $this->getAsBool('some2')->shouldBe(false);
+        $this->getAsBool('some3')->shouldBe(false);
+        $this->getAsBool('some4')->shouldBe(true);
+        $this->getAsBool('some5')->shouldBe(true);
+        $this->getAsBool('some6')->shouldBe(true);
+    }
+
     public function it_gets_as_array()
     {
         $this->import(['foo' => 'bar', 'zoo' => [1,2,3]]);
