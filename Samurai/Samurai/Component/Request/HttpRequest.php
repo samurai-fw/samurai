@@ -146,6 +146,20 @@ class HttpRequest extends Request
         return (array) $this->get($key, $default);
     }
 
+    /**
+     * get as bool
+     *
+     * @param   string  $key
+     * @param   mixed   $default
+     * @return  int
+     */
+    public function getAsBool($key, $default = 0)
+    {
+        $value = $this->get($key, $default);
+        if ($value === 'false') return false;
+
+        return (bool) $value;
+    }
 
     /**
      * get path.
