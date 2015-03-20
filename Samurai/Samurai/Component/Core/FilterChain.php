@@ -194,7 +194,6 @@ class FilterChain
     /**
      * Add filter.
      *
-     * @access  public
      * @param   string  $name
      * @param   array   $attributes
      */
@@ -254,7 +253,6 @@ class FilterChain
     /**
      * Get current filter instance.
      *
-     * @access  public
      * @return  Samurai\Samurai\Filter\Filter
      */
     public function getCurrentFilter()
@@ -268,25 +266,17 @@ class FilterChain
     /**
      * Get filter by name.
      *
-     * @access  public
      * @param   string  $name
      * @param   array   $attributes
      * @return  Samurai\Samurai\Filter\Filter
      */
     public function getFilterByName($name, $attributes = [])
     {
-        // APP ?
-        // TODO: serach by loader
         $filter = null;
-        $name = ucfirst($name) . 'Filter';
-        $class = '\\App\\Filter\\' . $name;
-        if (class_exists($class)) {
-            $filter = new $class();
-        }
-
-        // CORE ?
-        $class = '\\Samurai\Samurai\\Filter\\' . $name;
-        if (! $filter && class_exists($class)) {
+        $name = str_replace('\\', DS, ucfirst($name)) . 'Filter.php';
+        $file = $this->loader->findFirst($this->application->config('directory.filter') . DS . $name);
+        if ($file) {
+            $class = $file->getClassName();
             $filter = new $class();
         }
 

@@ -172,6 +172,7 @@ class Application
         $this->config('directory.config.renderer', 'Config/Renderer');
         $this->config('directory.controller', 'Controller');
         $this->config('directory.model', 'Model');
+        $this->config('directory.filter', 'Filter');
         $this->config('directory.layout', 'View/Layout');
         $this->config('directory.template', 'View/Content');
         $this->config('directory.database.data', 'Database');
