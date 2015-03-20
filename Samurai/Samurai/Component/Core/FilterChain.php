@@ -205,6 +205,7 @@ class FilterChain
         $method = array_shift($names);
         $alias = array_shift($names);
         if (! $alias) $alias = $filter;
+        if (! is_array($attributes)) $attributes = [];
 
         // method miss match, when return.
         if ($method && strtoupper($method) !== $this->Request->getMethod()) return;
