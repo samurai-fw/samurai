@@ -77,7 +77,6 @@ class SamuraiController
     /**
      * set name.
      *
-     * @access  public
      * @param   string
      */
     public function setName($name)
@@ -85,6 +84,15 @@ class SamuraiController
         $this->name = $name;
     }
 
+    /**
+     * get name
+     *
+     * @return  string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
 
     /**
@@ -140,15 +148,8 @@ class SamuraiController
      */
     public function getFilterKey($action = null)
     {
-        $class = get_class($this);
-        $names = explode('\\', $class);
-
-        // top 2 level is namespace.
-        array_shift($names);
-        array_shift($names);
-
         // controller.action
-        $controller = preg_replace('/controller$/', '', strtolower(join('_', $names)));
+        $controller = $this->getName();
         return $action ? $controller . '.' . $action : $controller;
     }
 
