@@ -125,6 +125,19 @@ class Task
         $args = func_get_args();
         call_user_func_array([$this->output, 'send'], $args);
     }
+    
+    /**
+     * ask prompt
+     *
+     * @param   string|array    $message
+     * @param   boolean         $secret
+     * @param   mixed           $default
+     * @return  string
+     */
+    public function ask($message, $secret = false, $default = '')
+    {
+        return $this->response->ask($message, $secret, $default);
+    }
 
     /**
      * confirmation prompt

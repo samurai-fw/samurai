@@ -79,6 +79,23 @@ class CliResponse extends HttpResponse
         echo $line . $eol;
     }
 
+    
+    /**
+     * ask
+     *
+     * @param   string|array    $message
+     * @param   boolean         $secret
+     * @param   string          $default
+     */
+    public function ask($message, $secret = false, $default = '')
+    {
+        $message = is_array($message) ? call_user_func_array('sprintf', $message) : $message;
+
+        $this->send($message);
+        $answer = $this->readline($secret);
+        
+        return $answer === '' ? $default : $answer;
+    }
 
     /**
      * confirmation
@@ -115,11 +132,24 @@ class CliResponse extends HttpResponse
     /**
      * read stdin
      *
+     * @param   boolean $secret
      * @return  string
      */
-    public function readline()
+    public function readline($secret = false)
     {
-        return trim(fgets(STDIN));
+        $line = null;
+
+        if ($secret) {
+            if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
+                system('stty -echo');
+                $line = trim(fgets(STDIN));
+                system('stty echo');
+            }
+        }
+        
+        $line = $line !== null ? $line : trim(fgets(STDIN));
+
+        return $line;
     }
 
 
