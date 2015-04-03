@@ -287,6 +287,23 @@ class EntityTableSpec extends PHPSpecContext
 
         $this->count($criteria)->shouldBe(10);
     }
+    
+    public function it_gets_sum(Connection $con, Statement $stm, Onikiri $oni, TableSchema $t)
+    {
+        $oni->getTableSchema('entity', 'base')->willReturn($t);
+        $t->getDefaultValues()->willReturn([]);
+        $t->hasColumn('active')->willReturn(false);
+
+        $con->prepare('SELECT sum(age) as s FROM entity WHERE (mail = ?)')->willReturn($stm);
+        $stm->execute()->shouldBeCalled();
+        $stm->closeCursor()->shouldBeCalled();
+        $stm->bindValue(0, "kaneda@akira.jp", \PDO::PARAM_STR)->shouldBeCalled();
+        $stm->fetch(Connection::FETCH_NUM)->willReturn([10]);
+
+        $criteria = $this->criteria()->where('mail = ?', 'kaneda@akira.jp');
+        
+        $this->sum('age', $criteria)->shouldBe(10);
+    }
 
     public function it_gets_col(Connection $con, Statement $stm, Onikiri $oni, TableSchema $t)
     {

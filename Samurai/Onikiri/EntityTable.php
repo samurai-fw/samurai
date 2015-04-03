@@ -333,6 +333,34 @@ class EntityTable
         return $this->getOne($sql, $criteria->getParams());
     }
     
+    /**
+     * sum.
+     *
+     * @param   string  $column
+     * @param   Samurai\Onikiri\Criteria\Criteria   $criteria
+     * @return  int
+     */
+    public function sum($column, $criteria = null)
+    {
+        // convert to criteria.
+        $criteria = call_user_func_array(array($this, 'argsToCriteria'), [$criteria]);
+
+        $criteria->columns(sprintf('sum(%s) as s', $column));
+        
+        // logical delete ?
+        $schema = $this->getSchema();
+        if ($schema->hasColumn('active')) {
+            $criteria->where('active = ?', 1);
+        }
+
+        // to SQL.
+        $sql = $criteria->toSQL();
+
+        // query
+        $sum = $this->getOne($sql, $criteria->getParams());
+        return $sum ?: 0;
+    }
+    
     
     /**
      * build entity.
