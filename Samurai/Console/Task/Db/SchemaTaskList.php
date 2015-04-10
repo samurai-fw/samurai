@@ -28,7 +28,7 @@
  * @license     http://opensource.org/licenses/MIT
  */
 
-namespace Samurai\Console\Task;
+namespace Samurai\Console\Task\Db;
 
 use Samurai\Samurai\Component\Task\Task;
 use Samurai\Samurai\Component\Task\Option;
@@ -37,128 +37,31 @@ use Samurai\Samurai\Component\Migration\Phinx\Config;
 use Samurai\Onikiri\Database;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
-class DbTaskList extends Task
+class SchemaTaskList extends Task
 {
     /**
-     * database migration task. using phinx.
+     * database schema dump task. using phinx.
      *
      * usage:
-     *     $ ./app db:migrate [version]
+     *     $ ./app db:schema:dump
      *
      * @option      database,d=all      target database (default is all databases).
      */
-    public function migrateTask(Option $option)
+    public function dumpTask(Option $option)
     {
         $databases = $this->getDatabases($option);
 
         $start = microtime(true);
         foreach ($databases as $alias => $database) {
             $manager = $this->getManager($alias, $database);
-            $manager->migrate($this->application->getEnv(), $option->getArg(0));
-        }
-        $end = microtime(true);
+            $schemaFile = $this->migrationHelper->getSchemaFile($alias);
+            $dump = $manager->dumpSchema($this->application->getEnv());
 
-        $this->sendMessage('');
-        $this->sendMessage('All Done. Took %.4fs', $end - $start);
+            $this->console->log($schemaFile);
+            $this->console->log($dump);
 
-        $this->task('db:schema:dump', $option->copy());
-    }
-
-    
-    /**
-     * database rollback task. using phinx.
-     *
-     * usage:
-     *     $ ./app db:rollback [version]
-     *
-     * @option      database,d=all      target database (default is all databases).
-     */
-    public function rollbackTask(Option $option)
-    {
-        $databases = $this->getDatabases($option);
-
-        $start = microtime(true);
-        foreach ($databases as $alias => $database) {
-            $manager = $this->getManager($alias, $database);
-            $manager->rollback($this->application->getEnv(), $option->getArg(0));
-        }
-        $end = microtime(true);
-
-        $this->sendMessage('');
-        $this->sendMessage('All Done. Took %.4fs', $end - $start);
-        
-        $this->task('db:schema:dump', $option->copy());
-    }
-
-
-    /**
-     * database reset task. using phinx.
-     * rollback to "0"
-     *
-     * usage:
-     *     $ ./app db:reset
-     *
-     * @option      database,d=all      target database (default is all databases).
-     */
-    public function resetTask(Option $option)
-    {
-        $option->setArg(0, 0);
-        $this->task('db:rollback', $option);
-    }
-
-
-    /**
-     * database refresh task.
-     * call db:reset and db:migrate
-     *
-     * usage:
-     *     $ ./app db:refresh
-     *
-     * @option      database,d=all      target database (default is all databases).
-     * @option      seed,s              with call db:seed task.
-     */
-    public function refreshTask(Option $option)
-    {
-        $this->task('db:reset', $option->copy());
-        $this->task('db:migrate', $option->copy());
-
-        if ($option->get('seed')) {
-            $this->task('db:seed', $option->copy());
-        }
-    }
-
-    
-    /**
-     * database seeding task.
-     *
-     * usage:
-     *     # all seeding files import.
-     *     $ ./app db:seed
-     *
-     *     # target seeding file import.
-     *     $ ./app db:seed [name] --database=base
-     *
-     * seeder file:
-     *     App/Database/Seed/[database alias]/[name]Seeder.php
-     *
-     * @option      database,d=all      target database (default is all databases).
-     */
-    public function seedTask(Option $option)
-    {
-        $name = $option->getArg(0);
-        $databases = $this->getDatabases($option);
-        
-        $start = microtime(true);
-        foreach ($databases as $alias => $database) {
-            foreach ($this->migrationHelper->getSeeders($alias, $name) as $seeder) {
-                try {
-                    $this->sendMessage('seeding... -> %s', $seeder->getName());
-                    $seeder->seed();
-                } catch (\Exception $e) {
-                    $this->sendMessage($e->getMessage());
-                    $this->sendMessage('has error. aborting.');
-                    return;
-                }
+            if (file_put_contents($schemaFile, $dump) === false) {
+                $this->sendMessage('can not write schema file. -> %s', $schemaFile);
             }
         }
         $end = microtime(true);
@@ -166,26 +69,7 @@ class DbTaskList extends Task
         $this->sendMessage('');
         $this->sendMessage('All Done. Took %.4fs', $end - $start);
     }
-
-
-    /**
-     * show database mgration status task. using phinx.
-     *
-     * usage:
-     *     $ ./app db:status [version]
-     *
-     * @option      format,f            output format. (default is text)
-     * @option      database,d=all      target database (default is all databases).
-     */
-    public function statusTask(Option $option)
-    {
-        $databases = $this->getDatabases($option);
-
-        foreach ($databases as $alias => $database) {
-            $manager = $this->getManager($alias, $database);
-            $manager->printStatus($this->application->getEnv(), $option->get('format'));
-        }
-    }
+    
 
     /**
      * get migration manager.

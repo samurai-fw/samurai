@@ -54,7 +54,7 @@ abstract class Helper
      *
      * @param   string  $database
      * @param   string  $name
-     * return   array
+     * @return  array
      */
     public function getSeeders($database, $name)
     {
@@ -70,6 +70,19 @@ abstract class Helper
         }
         return $seeders;
     }
+    
+    
+    /**
+     * get schema file
+     *
+     * @param   string  $database
+     * @return  string
+     */
+    public function getSchemaFile($database)
+    {
+        $dir = $this->loader->find($this->application->config('directory.database.schema'))->first();
+        return $dir . DS . $this->schemaFileNameStrategy($database);
+    }
 
 
     /**
@@ -81,6 +94,29 @@ abstract class Helper
     public function seederFileBaseNameStrategy($name)
     {
         return ucfirst($name) . 'Seeder.php';
+    }
+
+
+    /**
+     * schema file name strategy
+     *
+     * @param   string  $database
+     * @return  string
+     */
+    public function schemaFileNameStrategy($database)
+    {
+        return $this->schemaClassNameStrategy($database) . '.php';
+    }
+
+    /**
+     * schema class name strategy
+     *
+     * @param   string  $database
+     * @return  string
+     */
+    public function schemaClassNameStrategy($database)
+    {
+        return ucfirst($database) . 'Schema';
     }
 }
 

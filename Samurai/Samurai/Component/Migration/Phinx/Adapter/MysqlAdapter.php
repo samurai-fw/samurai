@@ -30,6 +30,7 @@
 
 namespace Samurai\Samurai\Component\Migration\Phinx\Adapter;
 
+use Samurai\Samurai\Component\Migration\Phinx\Db\Table;
 use Samurai\Samurai\Component\Migration\Phinx\Db\Column;
 use Phinx\Db\Table\Column as PhinxColumn;
 use Phinx\Db\Adapter\MysqlAdapter as PhinxMysqlAdapter;
@@ -70,6 +71,56 @@ class MysqlAdapter extends PhinxMysqlAdapter
         $define = join(' ', $define);
 
         return $define;
+    }
+
+
+    /**
+     * get tables
+     *
+     * @return  array
+     */
+    public function getTables()
+    {
+        $options = $this->getOptions();
+        $tables = [];
+
+        foreach ($this->fetchAll(sprintf('SHOW TABLES IN %s', $this->quoteTableName($options['name']))) as $row) {
+            $table = new Table($row[0], [], $this);
+            $tables[] = $table;
+            $options = [];
+
+            $describes = $this->fetchAll(sprintf('SHOW COLUMNS IN %s', $this->quoteTableName($table->getName())));
+            $primary_keys = [];
+            $auto_increment = false;
+            foreach ($describes as $describe) {
+                if ($describe['Key'] === 'PRI') {
+                    $primary_keys[] = $describe['Field'];
+                    if ($describe['Extra'] === 'auto_increment') {
+                        $auto_increment = true;
+                    }
+                }
+            }
+
+            // $this->table('foo');
+            if (! $primary_keys || (count($primary_keys) === 1 && $primary_keys[0] === 'id')) {
+            }
+
+            // $this->table('foo', ['id' => 'foo_id']);
+            elseif (count($primary_keys) === 1 && $primary_keys[0] !== 'id' && $auto_increment) {
+                $options = ['id' => $primary_keys[0]];
+            }
+
+            // $this->table('foo', ['id' => false, 'primary_key' => ['user_id']]);
+            // $this->table('foo', ['id' => false, 'primary_key' => ['user_id', 'parent_id']]);
+            else {
+                $options = ['id' => false, 'primary_key' => $primary_keys];
+            }
+
+            $table->setOptions($options);
+            //var_dump($table);
+        }
+
+        return $tables;
     }
 }
 

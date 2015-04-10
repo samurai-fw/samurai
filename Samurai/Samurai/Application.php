@@ -178,6 +178,7 @@ class Application
         $this->config('directory.database.data', 'Database');
         $this->config('directory.database.migration', 'Database/Migration');
         $this->config('directory.database.seed', 'Database/Seed');
+        $this->config('directory.database.schema', 'Database/Schema');
         $this->config('directory.locale', 'Locale');
         $this->config('directory.task', 'Task');
         $this->config('directory.spec', 'Spec');

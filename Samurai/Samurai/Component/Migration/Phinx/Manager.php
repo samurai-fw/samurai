@@ -30,6 +30,7 @@
 
 namespace Samurai\Samurai\Component\Migration\Phinx;
 
+use Samurai\Samurai\Component\Migration\Phinx\CodeGenerator;
 use Samurai\Samurai\Component\Migration\Phinx\Adapter\MysqlAdapter;
 use Samurai\Samurai\Component\Migration\Phinx\Adapter\SQLiteAdapter;
 use Samurai\Raikiri\DependencyInjectable;
@@ -64,6 +65,49 @@ class Manager extends PhinxManager
 
         AdapterFactory::instance()->registerAdapter('mysql', 'Samurai\Samurai\Component\Migration\Phinx\Adapter\MysqlAdapter');
         AdapterFactory::instance()->registerAdapter('sqlite', 'Samurai\Samurai\Component\Migration\Phinx\Adapter\SQLiteAdapter');
+    }
+
+
+    /**
+     * schema dump
+     *
+     * @param   string  $environment
+     * @return  string  dump class file string
+     */
+    public function dumpSchema($environment)
+    {
+        $env = $this->getEnvironment($environment);
+        $current = $env->getCurrentVersion();
+        $codeGenerator = new CodeGenerator();
+        $code = [
+            '<?php',
+            'use Samurai\\Samurai\\Component\\Migration\\Phinx\\Migration;',
+            '',
+            sprintf('class %s extends Migration', $this->migrationHelper->schemaClassNameStrategy($env->getOptions()['alias'])),
+            '{',
+            '    public function change()',
+            '    {',
+        ];
+
+        $adapter = $env->getAdapter();
+
+        foreach ($adapter->getTables() as $table) {
+            $code[] = sprintf('        $this->table("%s"%s)', $table->getName(), $codeGenerator->generateTableOptions($table));
+            foreach ($table->getColumns() as $column) {
+                if (! $codeGenerator->isSinglePrimaryKeyColumn($table, $column)) {
+                    $code[] = sprintf('            ->addColumn("%s", "%s"%s)',
+                                $column->getName(), $column->getType(), $codeGenerator->generateColumnOptions($column));
+                }
+            }
+            $code[] = '        ;';
+        }
+
+        $code = array_merge($code, [
+            '    }',
+            '}',
+        ]);
+
+        return join(PHP_EOL, $code);
     }
 
 
