@@ -99,7 +99,7 @@ class Manager extends PhinxManager
                                 $column->getName(), $column->getType(), $codeGenerator->generateColumnOptions($column));
                 }
             }
-            $code[] = '        ;';
+            $code[] = '        ->create();';
         }
 
         $code = array_merge($code, [
