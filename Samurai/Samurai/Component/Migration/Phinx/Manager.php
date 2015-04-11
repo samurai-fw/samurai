@@ -93,6 +93,8 @@ class Manager extends PhinxManager
         $adapter = $env->getAdapter();
 
         foreach ($adapter->getTables() as $table) {
+            if ($env->getSchemaTableName() === $table->getName()) continue;
+
             $code[] = sprintf('        $this->table("%s"%s)', $table->getName(), $codeGenerator->generateTableOptions($table));
             foreach ($table->getColumns() as $column) {
                 if (! $codeGenerator->isSinglePrimaryKeyColumn($table, $column)) {
