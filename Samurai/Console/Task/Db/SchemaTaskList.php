@@ -40,7 +40,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 class SchemaTaskList extends Task
 {
     /**
-     * database schema dump task. using phinx.
+     * database schema dump task.
      *
      * usage:
      *     $ ./app db:schema:dump
@@ -55,6 +55,7 @@ class SchemaTaskList extends Task
         foreach ($databases as $alias => $database) {
             $manager = $this->getManager($alias, $database);
             $schemaFile = $this->migrationHelper->getSchemaFile($alias);
+            
             $dump = $manager->dumpSchema($this->application->getEnv());
 
             $this->console->log($schemaFile);
@@ -62,6 +63,40 @@ class SchemaTaskList extends Task
 
             if (file_put_contents($schemaFile, $dump) === false) {
                 $this->sendMessage('can not write schema file. -> %s', $schemaFile);
+            }
+        }
+        $end = microtime(true);
+
+        $this->sendMessage('');
+        $this->sendMessage('All Done. Took %.4fs', $end - $start);
+    }
+    
+    
+    /**
+     * database schema load task.
+     *
+     * usage:
+     *     $ ./app db:schema:load
+     *
+     * @option      database,d=all      target database (default is all databases).
+     */
+    public function loadTask(Option $option)
+    {
+        $databases = $this->getDatabases($option);
+
+        $start = microtime(true);
+        foreach ($databases as $alias => $database) {
+            $manager = $this->getManager($alias, $database);
+            $schemaFile = $this->migrationHelper->getSchemaFile($alias);
+            $this->console->log($schemaFile);
+            
+            try {
+                $this->sendMessage('schema loading... -> %s', $schemaFile);
+                $manager->loadSchema($this->application->getEnv(), $schemaFile);
+            } catch (\Exception $e) {
+                $this->sendMessage($e->getMessage());
+                $this->sendMessage('has error. aborting.');
+                return;
             }
         }
         $end = microtime(true);
