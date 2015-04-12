@@ -130,6 +130,16 @@ class Column extends PhinxColumn
     {
         return $this->charset;
     }
+    
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function setComment($comment)
+    {
+        if ($comment === '') $comment = null;
+        return parent::setComment($comment);
+    }
 
 
     /**

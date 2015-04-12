@@ -122,5 +122,36 @@ class MysqlAdapter extends PhinxMysqlAdapter
 
         return $tables;
     }
+    
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getColumns($tableName)
+    {
+        $columns = array();
+        $rows = $this->fetchAll(sprintf('SHOW FULL COLUMNS FROM %s', $this->quoteTableName($tableName)));
+        foreach ($rows as $columnInfo) {
+
+            $phinxType = $this->getPhinxType($columnInfo['Type']);
+
+            $column = new Column();
+            $column->setName($columnInfo['Field'])
+                   ->setNull($columnInfo['Null'] != 'NO')
+                   ->setDefault($columnInfo['Default'])
+                   ->setType($phinxType['name'])
+                   ->setLimit($phinxType['limit'])
+                   ->setCollation($columnInfo['Collation'])
+                   ->setComment($columnInfo['Comment']);
+
+            if ($columnInfo['Extra'] == 'auto_increment') {
+                $column->setIdentity(true);
+            }
+
+            $columns[] = $column;
+        }
+
+        return $columns;
+    }
 }
 

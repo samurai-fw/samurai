@@ -70,7 +70,7 @@ class CodeGenerator
     {
         $options = [];
 
-        $keys = ['length', 'default', 'null', 'precision', 'scale', 'after', 'update', 'comment'];
+        $keys = ['length', 'default', 'collation', 'null', 'precision', 'scale', 'after', 'update', 'comment'];
         foreach ($keys as $key) {
             $method = "get{$key}";
             if ($key === 'length') $method = 'getLimit';
