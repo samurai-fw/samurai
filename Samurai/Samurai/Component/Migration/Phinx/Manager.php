@@ -134,6 +134,45 @@ class Manager extends PhinxManager
 
         $this->executeMigration($environment, $migration, MigrationInterface::UP);
     }
+    
+    
+    /**
+     * schema yaml dump
+     *
+     * @param   string  $environment
+     * @return  string  dump yaml file string
+     */
+    public function dumpSchemaYAML($environment)
+    {
+        $env = $this->getEnvironment($environment);
+        $current = $env->getCurrentVersion();
+        $codeGenerator = new CodeGenerator();
+        $data = [];
+
+        $adapter = $env->getAdapter();
+
+        foreach ($adapter->getTables() as $table) {
+            if ($env->getSchemaTableName() === $table->getName()) continue;
+
+            $tableName = $table->getName();
+            $data[$tableName] = [];
+            
+            foreach ($table->getColumns() as $column) {
+                $columnName = $column->getName();
+
+                $phinxType = $adapter->getPhinxType($column->getType());
+
+                $data[$tableName][$columnName] = [
+                    'type' => $phinxType['name'],
+                    'limit' => $phinxType['limit'],
+                    'default' => $column->getDefault(),
+                    'comment' => $column->getComment(),
+                ];
+            }
+        }
+
+        return $this->yaml->dump($data);
+    }
 
 
     /**

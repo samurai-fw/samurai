@@ -54,15 +54,27 @@ class SchemaTaskList extends Task
         $start = microtime(true);
         foreach ($databases as $alias => $database) {
             $manager = $this->getManager($alias, $database);
-            $schemaFile = $this->migrationHelper->getSchemaFile($alias);
-            
-            $dump = $manager->dumpSchema($this->application->getEnv());
 
+            // schema class
+            $schemaFile = $this->migrationHelper->getSchemaFile($alias);
             $this->console->log($schemaFile);
+
+            $dump = $manager->dumpSchema($this->application->getEnv());
             $this->console->log($dump);
 
             if (file_put_contents($schemaFile, $dump) === false) {
                 $this->sendMessage('can not write schema file. -> %s', $schemaFile);
+            }
+            
+            // schema yaml
+            $schemaYAMLFile = $this->migrationHelper->getSchemaYAMLFile($alias);
+            $this->console->log($schemaYAMLFile);
+            
+            $dump = $manager->dumpSchemaYAML($this->application->getEnv());
+            $this->console->log($dump);
+            
+            if (file_put_contents($schemaYAMLFile, $dump) === false) {
+                $this->sendMessage('can not write schema yaml file. -> %s', $schemaYAMLFile);
             }
         }
         $end = microtime(true);
@@ -87,6 +99,7 @@ class SchemaTaskList extends Task
         $start = microtime(true);
         foreach ($databases as $alias => $database) {
             $manager = $this->getManager($alias, $database);
+
             $schemaFile = $this->migrationHelper->getSchemaFile($alias);
             $this->console->log($schemaFile);
             

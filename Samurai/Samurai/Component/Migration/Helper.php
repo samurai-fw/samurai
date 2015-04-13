@@ -83,6 +83,19 @@ abstract class Helper
         $dir = $this->loader->find($this->application->config('directory.database.schema'))->first();
         return $dir . DS . $this->schemaFileNameStrategy($database);
     }
+    
+    
+    /**
+     * get schema yaml file
+     *
+     * @param   string  $database
+     * @return  string
+     */
+    public function getSchemaYAMLFile($database)
+    {
+        $dir = $this->loader->find($this->application->config('directory.database.schema'))->first();
+        return $dir . DS . $this->schemaYAMLFileNameStrategy($database);
+    }
 
 
     /**
@@ -117,6 +130,17 @@ abstract class Helper
     public function schemaClassNameStrategy($database)
     {
         return ucfirst($database) . 'Schema';
+    }
+    
+    /**
+     * schema yaml file name strategy
+     *
+     * @param   string  $database
+     * @return  string
+     */
+    public function schemaYAMLFileNameStrategy($database)
+    {
+        return $database . '.yml';
     }
 }
 
