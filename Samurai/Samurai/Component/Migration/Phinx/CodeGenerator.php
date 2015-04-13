@@ -76,6 +76,13 @@ class CodeGenerator
             if ($key === 'length') $method = 'getLimit';
 
             $value = $column->$method();
+
+            if ($key === 'collation') {
+                if ($value === null) {
+                    $key = 'charset';
+                    $value = $column->getCharset();
+                }
+            }
             if ($value === null) continue;
             if ($key === 'null' && $value === false) continue;
 

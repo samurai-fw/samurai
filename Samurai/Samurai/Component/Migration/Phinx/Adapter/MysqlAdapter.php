@@ -134,6 +134,7 @@ class MysqlAdapter extends PhinxMysqlAdapter
         foreach ($rows as $columnInfo) {
 
             $phinxType = $this->getPhinxType($columnInfo['Type']);
+            $collation = $this->parseCollation($columnInfo['Collation']);
 
             $column = new Column();
             $column->setName($columnInfo['Field'])
@@ -141,7 +142,8 @@ class MysqlAdapter extends PhinxMysqlAdapter
                    ->setDefault($columnInfo['Default'])
                    ->setType($phinxType['name'])
                    ->setLimit($phinxType['limit'])
-                   ->setCollation($columnInfo['Collation'])
+                   ->setCharset($collation['charset'])
+                   ->setCollation($collation['collation'])
                    ->setComment($columnInfo['Comment']);
 
             if ($columnInfo['Extra'] == 'auto_increment') {
@@ -152,6 +154,26 @@ class MysqlAdapter extends PhinxMysqlAdapter
         }
 
         return $columns;
+    }
+
+
+    /**
+     * parse collation
+     *
+     * @param   string  $collation
+     * @return  array   charaset and collation
+     */
+    public function parseCollation($collation)
+    {
+        $parsed = ['charset' => null, 'collation' => null];
+        if ($collation === null) return $parsed;
+
+        $charset = explode('_', $collation)[0];
+        $parsed['charset'] = $charset;
+        if ($charset === 'ascii') return $parsed;
+
+        $parsed['collation'] = $collation;
+        return $parsed;
     }
 }
 
