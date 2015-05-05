@@ -96,6 +96,27 @@ class CriteriaSpec extends PHPSpecContext
         $this->getParams()->shouldBe([1, 10]);
     }
     
+    public function it_is_where_like_condition_directly()
+    {
+        $this->whereLike('alias', 'foo.%');
+        $this->toSQL()->shouldBe('SELECT * FROM foo WHERE (alias LIKE ?)');
+        $this->getParams()->shouldBe(['foo.%']);
+    }
+    
+    public function it_is_where_like_condition_or()
+    {
+        $this->whereLike('alias', 'foo.%')->orLike('bar', '%.zoo.%');
+        $this->toSQL()->shouldBe('SELECT * FROM foo WHERE (alias LIKE ?) OR (bar LIKE ?)');
+        $this->getParams()->shouldBe(['foo.%', '%.zoo.%']);
+    }
+
+    public function it_is_where_notlike_condition_directly()
+    {
+        $this->whereNotLike('alias', 'foo.%');
+        $this->toSQL()->shouldBe('SELECT * FROM foo WHERE (alias NOT LIKE ?)');
+        $this->getParams()->shouldBe(['foo.%']);
+    }
+    
     public function it_is_columns_condition()
     {
         $this->columns('id', 'name');

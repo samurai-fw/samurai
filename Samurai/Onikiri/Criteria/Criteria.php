@@ -223,6 +223,26 @@ class Criteria
     {
         return call_user_func_array(array($this->where, 'andNotBetween'), func_get_args());
     }
+    
+    /**
+     * where like
+     *
+     * @return  Samurai\Onikiri\Criteria\WhereCondition
+     */
+    public function whereLike()
+    {
+        return call_user_func_array(array($this->where, 'andLike'), func_get_args());
+    }
+    
+    /**
+     * where not like
+     *
+     * @return  Samurai\Onikiri\Criteria\WhereCondition
+     */
+    public function whereNotLike()
+    {
+        return call_user_func_array(array($this->where, 'andNotLike'), func_get_args());
+    }
 
     
     /**

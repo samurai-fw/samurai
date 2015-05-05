@@ -257,6 +257,59 @@ class WhereCondition extends BaseCondition
         $value = sprintf('%s NOT BETWEEN ? AND ?', $key);
         return $this->orAdd($value, [$min, $max]);
     }
+    
+    
+    /**
+     * add like condition.
+     *
+     * @param   string  $key
+     * @param   string  $like
+     * @return  Samurai\Onikiri\Criteria\WhereCondition
+     */
+    public function andLike($key, $like)
+    {
+        $value = sprintf('%s LIKE ?', $key);
+        return $this->andAdd($value, [$like]);
+    }
+
+    /**
+     * add not like condition.
+     *
+     * @param   string  $key
+     * @param   string  $like
+     * @return  Samurai\Onikiri\Criteria\WhereCondition
+     */
+    public function andNotLike($key, $like)
+    {
+        $value = sprintf('%s NOT LIKE ?', $key);
+        return $this->andAdd($value, [$like]);
+    }
+    
+    /**
+     * or like condition.
+     *
+     * @param   string  $key
+     * @param   string  $like
+     * @return  Samurai\Onikiri\Criteria\WhereCondition
+     */
+    public function orLike($key, $like)
+    {
+        $value = sprintf('%s LIKE ?', $key);
+        return $this->orAdd($value, [$like]);
+    }
+    
+    /**
+     * or not like condition.
+     *
+     * @param   string  $key
+     * @param   string  $like
+     * @return  Samurai\Onikiri\Criteria\WhereCondition
+     */
+    public function orNotLike($key, $like)
+    {
+        $value = sprintf('%s NOT LIKE ?', $key);
+        return $this->orAdd($value, [$like]);
+    }
 
 
     /**
