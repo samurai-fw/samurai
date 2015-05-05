@@ -190,6 +190,16 @@ class Entities implements Iterator
         return $this->getByPosition($this->size() - 1);
     }
 
+    /**
+     * get by random pick
+     *
+     * @return  Samurai\Onikiri\Entity
+     */
+    public function random()
+    {
+        return $this->getByPosition(rand(0, $this->size() - 1));
+    }
+
 
     /**
      * filtering results
@@ -202,7 +212,7 @@ class Entities implements Iterator
     {
         if (! $key instanceof \Closure) {
             $closure = function($entity) use ($key, $value) {
-                if ($entity->$key == $value) return $entity;
+                return $entity->$key == $value;
             };
         } else {
             $closure = $key;
@@ -210,7 +220,7 @@ class Entities implements Iterator
         
         $filtered = new Entities();
         foreach ($this->_entities as $entity) {
-            if ($entity = $closure($entity)) {
+            if ($closure($entity)) {
                 $filtered->add($entity);
             }
         }

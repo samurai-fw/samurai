@@ -90,9 +90,7 @@ class EntitiesSpec extends PHPSpecContext
     public function it_is_filtering_to_result_using_closure()
     {
         $filtered = $this->filter(function($entity){
-            if (preg_match('/Kyoko$/', $entity->name)) {
-                return $entity;
-            }
+            return preg_match('/Kyoko$/', $entity->name);
         });
         $filtered->col('id')->shouldBe([3, 4]);
     }
