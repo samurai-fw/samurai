@@ -90,7 +90,7 @@ abstract class BaseCondition
     public function set($condition, array $params = [])
     {
         $this->conditions = [];
-        $this->add($condition);
+        $this->add($condition, $params);
         return $this;
     }
 
@@ -104,6 +104,7 @@ abstract class BaseCondition
     public function add($condition, array $params = [])
     {
         $this->conditions[] = $condition;
+        $this->bind($params);
         return $this;
     }
 
