@@ -132,6 +132,14 @@ class Container
         $this->components[$name] = $component;
     }
 
+    /**
+     * alias of register
+     */
+    public function set($name, $component)
+    {
+        return $this->register($name, $component);
+    }
+
 
     /**
      * get component

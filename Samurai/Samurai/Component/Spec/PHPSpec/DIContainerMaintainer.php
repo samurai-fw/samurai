@@ -7,6 +7,7 @@ use PhpSpec\Loader\Node\ExampleNode;
 use PhpSpec\SpecificationInterface;
 use PhpSpec\Runner\MatcherManager;
 use PhpSpec\Runner\CollaboratorManager;
+use Samurai\Raikiri\Container;
 
 class DIContainerMaintainer implements MaintainerInterface
 {
@@ -31,12 +32,10 @@ class DIContainerMaintainer implements MaintainerInterface
      */
     public function prepare(ExampleNode $example, SpecificationInterface $context, MatcherManager $matchers, CollaboratorManager $collaborators)
     {
-        /*
-        $obj = $context->getWrappedObject();
-        if (method_exists($obj, 'setContainer') && ! $obj->getContainer()) {
-            $obj->setContainer($this->Container);
-        }
-         */
+        $container = new Container('inspec');
+        $context->setContainer($container);
+
+        $container->set('console', $this->Container->get('console'));
     }
 
 

@@ -46,11 +46,28 @@ use Samurai\Raikiri\DependencyInjectable;
 class PHPSpecContext extends ObjectBehavior
 {
     /**
-     * samurai di-container
+     * container for context
+     *
+     * @var     Samurai\Raikiri\Container
+     */
+    public $container;
+
+    /**
+     * container for bridge to original
      *
      * @var     Samurai\Raikiri\Container
      */
     protected $__container;
+
+    /**
+     * set container
+     *
+     * @param   Samurai\Raikiri\Container   $container
+     */
+    public function setContainer(Container $container)
+    {
+        $this->container = $container;
+    }
 
     /**
      * set container.
@@ -116,7 +133,8 @@ class PHPSpecContext extends ObjectBehavior
     {
         if (! in_array(strtolower($method), ['beconstructedwith', 'beconstructedthrough'])) {
             try {
-                $this->getWrappedObject();
+                $obj = $this->getWrappedObject();
+                $this->__injectContainer($obj);
             } catch (\Exception $e) {
                 //var_dump($e->getMessage());
             }
@@ -129,7 +147,8 @@ class PHPSpecContext extends ObjectBehavior
      */
     public function __set($property, $value)
     {
-        $this->getWrappedObject();
+        $obj = $this->getWrappedObject();
+        $this->__injectContainer($obj);
         parent::__set($property, $value);
     }
 
@@ -138,7 +157,8 @@ class PHPSpecContext extends ObjectBehavior
      */
     public function __get($property)
     {
-        $this->getWrappedObject();
+        $obj = $this->getWrappedObject();
+        $this->__injectContainer($obj);
         return parent::__get($property);
     }
     
@@ -147,8 +167,22 @@ class PHPSpecContext extends ObjectBehavior
      */
     public function __invoke()
     {
-        $this->getWrappedObject();
+        $obj = $this->getWrappedObject();
+        $this->__injectContainer($obj);
         return call_user_func_array('parent::__invoke', func_get_args());
+    }
+
+
+    /**
+     * inject container to context
+     *
+     * @param   object  $context
+     */
+    private function __injectContainer($context)
+    {
+        if (method_exists($context, 'setContainer') && ! $context->getContainer() && $this->container) {
+            $context->setContainer($this->container);
+        }
     }
 }
 
