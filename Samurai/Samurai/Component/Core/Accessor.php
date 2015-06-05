@@ -101,7 +101,8 @@ trait Accessor
             }
         }
 
-        throw new \LogicException("No such method. -> {$method}");
+        $class = get_class($this);
+        throw new \LogicException("No such method. -> {$class}::{$method}");
     }
 
 
