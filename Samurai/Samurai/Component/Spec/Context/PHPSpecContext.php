@@ -132,12 +132,7 @@ class PHPSpecContext extends ObjectBehavior
     public function __call($method, array $arguments = array())
     {
         if (! in_array(strtolower($method), ['beconstructedwith', 'beconstructedthrough'])) {
-            try {
-                $obj = $this->getWrappedObject();
-                $this->__injectContainer($obj);
-            } catch (\Exception $e) {
-                //var_dump($e->getMessage());
-            }
+            $obj = $this->getWrappedObject();
         }
         return parent::__call($method, $arguments);
     }
@@ -148,7 +143,6 @@ class PHPSpecContext extends ObjectBehavior
     public function __set($property, $value)
     {
         $obj = $this->getWrappedObject();
-        $this->__injectContainer($obj);
         parent::__set($property, $value);
     }
 
@@ -158,7 +152,6 @@ class PHPSpecContext extends ObjectBehavior
     public function __get($property)
     {
         $obj = $this->getWrappedObject();
-        $this->__injectContainer($obj);
         return parent::__get($property);
     }
     
@@ -168,21 +161,7 @@ class PHPSpecContext extends ObjectBehavior
     public function __invoke()
     {
         $obj = $this->getWrappedObject();
-        $this->__injectContainer($obj);
         return call_user_func_array('parent::__invoke', func_get_args());
-    }
-
-
-    /**
-     * inject container to context
-     *
-     * @param   object  $context
-     */
-    private function __injectContainer($context)
-    {
-        if (method_exists($context, 'setContainer') && ! $context->getContainer() && $this->container) {
-            $context->setContainer($this->container);
-        }
     }
 }
 
