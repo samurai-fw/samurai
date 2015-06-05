@@ -32,10 +32,6 @@ class DIContainerMaintainer implements MaintainerInterface
      */
     public function prepare(ExampleNode $example, SpecificationInterface $context, MatcherManager $matchers, CollaboratorManager $collaborators)
     {
-        $container = new Container('inspec');
-        $context->setContainer($container);
-
-        $container->set('console', $this->Container->get('console'));
     }
 
 

@@ -59,15 +59,6 @@ class PHPSpecContext extends ObjectBehavior
      */
     protected $__container;
 
-    /**
-     * set container
-     *
-     * @param   Samurai\Raikiri\Container   $container
-     */
-    public function setContainer(Container $container)
-    {
-        $this->container = $container;
-    }
 
     /**
      * set container.
@@ -122,6 +113,7 @@ class PHPSpecContext extends ObjectBehavior
         if ($this->isUseableRaikiri($object) && ! $object->getContainer()) {
             $c = new Container('spec');
             $object->setContainer($c->inherit($this->__getContainer()));
+            $this->container = $c;
         }
         return $object;
     }
