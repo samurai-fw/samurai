@@ -94,5 +94,14 @@ class EntitiesSpec extends PHPSpecContext
         });
         $filtered->col('id')->shouldBe([3, 4]);
     }
+    
+    
+    public function it_is_sorting_to_result()
+    {
+        $this->sort(function($a, $b) {
+            if ($a->id == $b->id) return 0;
+            return $a->id > $b->id ? -1 : 1;
+        })->col('id')->shouldBe([6, 5, 4, 3, 2 , 1]);
+    }
 }
 

@@ -227,6 +227,24 @@ class Entities implements Iterator
         return $filtered;
     }
 
+    /**
+     * sorting results
+     *
+     * @param   callable    $closure
+     * @return  Samurai\Onikiri\Entities
+     */
+    public function sort(callable $closure)
+    {
+        $entities = $this->_entities;
+        usort($entities, $closure);
+
+        $sorted = new Entities();
+        foreach ($entities as $entity) {
+            $sorted->add($entity);
+        }
+        return $sorted;
+    }
+
 
     /**
      * each attach closure

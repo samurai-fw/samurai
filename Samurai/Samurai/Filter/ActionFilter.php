@@ -60,7 +60,6 @@ class ActionFilter extends Filter
         $actionDef = $this->actionChain->getCurrentAction();
         $errorList = $this->actionChain->getCurrentErrorList();
 
-        // TODO: When has error, execute
         $this->controller = $actionDef['controller'];
         $action = $actionDef['action'];
         
