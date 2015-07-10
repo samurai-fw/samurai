@@ -295,16 +295,16 @@ class Criteria
         call_user_func_array(array($this->having, 'andAdd'), func_get_args());
         return $this;
     }
-    
+
     /**
      * Set limit.
      *
      * @param   int     $limit
-     * @return  Samurai\Onikiri\Criteria\Criteria
+     * @return  \Samurai\Onikiri\Criteria\Criteria
      */
     public function limit($limit)
     {
-        $this->limit = $limit;
+        $this->limit = intval($limit);
         return $this;
     }
 
@@ -312,11 +312,11 @@ class Criteria
      * Set offset.
      *
      * @param   int     $offset
-     * @return  Samurai\Onikiri\Criteria\Criteria
+     * @return  \Samurai\Onikiri\Criteria\Criteria
      */
     public function offset($offset)
     {
-        $this->offset = $offset;
+        $this->offset = intval($offset);
         return $this;
     }
 
