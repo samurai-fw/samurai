@@ -443,6 +443,16 @@ class Criteria
     {
         return $this->table->count($this);
     }
+    
+    /**
+     * bridge to table sum.
+     *
+     * @return  int
+     */
+    public function sum($column)
+    {
+        return $this->table->sum($column, $this);
+    }
 
     /**
      * bridge to getOne.
