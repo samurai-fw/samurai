@@ -158,8 +158,13 @@ class WhereCondition extends BaseCondition
      */
     public function andIn($key, array $values)
     {
-        $value = sprintf('%s IN (%s)', $key, join(', ', array_fill(0, count($values), '?')));
-        return $this->andAdd($value, $values);
+        if ($values) {
+            $value = sprintf('%s IN (%s)', $key, join(', ', array_fill(0, count($values), '?')));
+            return $this->andAdd($value, $values);
+        } else {
+            $value = '0';
+            return $this->andAdd($value, $values);
+        }
     }
 
     /**
@@ -171,8 +176,13 @@ class WhereCondition extends BaseCondition
      */
     public function andNotIn($key, array $values)
     {
-        $value = sprintf('%s NOT IN (%s)', $key, join(', ', array_fill(0, count($values), '?')));
-        return $this->andAdd($value, $values);
+        if ($values) {
+            $value = sprintf('%s NOT IN (%s)', $key, join(', ', array_fill(0, count($values), '?')));
+            return $this->andAdd($value, $values);
+        } else {
+            $value = '1';
+            return $this->andAdd($value, $values);
+        }
     }
     
     /**
@@ -184,8 +194,13 @@ class WhereCondition extends BaseCondition
      */
     public function orIn($key, array $values)
     {
-        $value = sprintf('%s IN (%s)', $key, join(', ', array_fill(0, count($values), '?')));
-        return $this->orAdd($value, $values);
+        if ($values) {
+            $value = sprintf('%s IN (%s)', $key, join(', ', array_fill(0, count($values), '?')));
+            return $this->orAdd($value, $values);
+        } else {
+            $value = '0';
+            return $this->orAdd($value, $values);
+        }
     }
     
     /**
@@ -197,8 +212,13 @@ class WhereCondition extends BaseCondition
      */
     public function orNotIn($key, array $values)
     {
-        $value = sprintf('%s NOT IN (%s)', $key, join(', ', array_fill(0, count($values), '?')));
-        return $this->orAdd($value, $values);
+        if ($values) {
+            $value = sprintf('%s NOT IN (%s)', $key, join(', ', array_fill(0, count($values), '?')));
+            return $this->orAdd($value, $values);
+        } else {
+            $value = '1';
+            return $this->orAdd($value, $values);
+        }
     }
     
     
