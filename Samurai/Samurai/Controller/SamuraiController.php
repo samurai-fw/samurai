@@ -195,6 +195,32 @@ class SamuraiController
     {
         return $this->raikiri()->get('onikiri');
     }
+    
+    
+    /**
+     * get a task.
+     *
+     * @access  public
+     * @param   string  $name
+     * @return  Samurai\Console\Task\Task
+     */
+    public function task($name, array $options = [])
+    {
+        $this->taskProcessor->setOutput($this);
+        $this->taskProcessor->execute($name, $options);
+    }
+    
+    /**
+     * implements for task output.
+     *
+     * @access  public
+     */
+    public function send()
+    {
+        // ignore
+    }
+
+
 
 
     /**

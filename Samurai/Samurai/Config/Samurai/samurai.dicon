@@ -49,3 +49,4 @@ finder: Samurai\Samurai\Component\FileSystem\Finder\Finder
 
 arrayUtil: Samurai\Samurai\Component\Utility\ArrayUtility
 
+taskProcessor: Samurai\Samurai\Component\Task\Processor
