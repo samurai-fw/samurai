@@ -27,7 +27,8 @@
         "mustangostang/spyc": "0.5.*@dev",
         "twig/twig": "1.*",
         "robmorgan/phinx": "*",
-        "phpspec/phpspec": "2.2.*@dev"
+        "phpspec/phpspec": "2.2.*@dev",
+        "symfony/process": "*"
     },
     "require-dev": {
         "henrikbjorn/phpspec-code-coverage" : "1.0.*@dev",
