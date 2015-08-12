@@ -30,7 +30,8 @@
 
 namespace Samurai\Onikiri;
 
-use Iterator;
+use ArrayIterator;
+use IteratorAggregate;
 use Samurai\Onikiri\Statement;
 use Samurai\Onikiri\Connection;
 use Samurai\Onikiri\EntityTable;
@@ -46,14 +47,14 @@ use Samurai\Samurai\Component\Pager\SimplePager;
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class Entities implements Iterator
+class Entities implements IteratorAggregate
 {
     /**
      * entities cache.
      *
      * @var     array
      */
-    private $_entities = array();
+    private $_entities = [];
 
     /**
      * position.
@@ -164,8 +165,6 @@ class Entities implements Iterator
         $entity = $this->current();
         if ($this->valid()) {
             $this->next();
-        } else {
-            $this->rewind();
         }
         return $entity;
     }
@@ -319,6 +318,15 @@ class Entities implements Iterator
     public function valid()
     {
         return isset($this->_entities[$this->_position]);
+    }
+
+
+    /**
+     * get iterator
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator($this->_entities);
     }
 
 
