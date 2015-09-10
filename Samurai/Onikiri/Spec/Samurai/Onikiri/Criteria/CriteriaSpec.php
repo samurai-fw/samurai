@@ -147,6 +147,12 @@ class CriteriaSpec extends PHPSpecContext
         $this->getParams()->shouldBe(['category1', 'category2', 'category3']);
     }
 
+    public function it_is_not_order_by_field_when_empty_params()
+    {
+        $this->orderByField('category', []);
+        $this->toSQL()->shouldBe('SELECT * FROM foo WHERE 1');
+    }
+
     public function it_is_limit_condition()
     {
         $this->limit(10);

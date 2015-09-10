@@ -31,6 +31,7 @@
 namespace App\Config\Initializer;
 
 use Samurai\Samurai\Application as SamuraiApplication;
+use Samurai\Samurai\Component\Console\Client\ConsoleClient;
 use Samurai\Samurai\Component\Core\Initializer;
 use Samurai\Samurai\Component\Console\Client\MultipleClient;
 use Samurai\Samurai\Component\Console\Client\BrowserClient;
