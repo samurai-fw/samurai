@@ -267,6 +267,8 @@ class Criteria
      */
     public function orderByField($column, array $params = [])
     {
+        if (count($params) <= 0) return $this;
+
         $this->order->addByField($column, $params);
         return $this;
     }
