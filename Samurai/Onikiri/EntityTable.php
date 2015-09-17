@@ -31,6 +31,7 @@
 namespace Samurai\Onikiri;
 
 use Samurai\Raikiri\DependencyInjectable;
+use Samurai\Onikiri\Exception\DeadlockException;
 use Samurai\Samurai\Component\Pager\SimplePager;
 
 /**
@@ -545,12 +546,27 @@ class EntityTable
             $sth->bindValue($key, $value, $type);
         }
 
-        $start = microtime(true);
-        $result = $sth->execute();
-        $end = microtime(true);
+        try {
 
+            $e = null;
+            $start = microtime(true);
+            $result = $sth->execute();
+
+        } catch (\PDOException $e) {
+            // deadlock
+            if ($e->getCode() == '1213') {
+                $e = new DeadlockException($e->getMessage(), (int)$e->getCode(), $e);
+            }
+        }
+
+        $end = microtime(true);
         $this->console->log(sprintf('[%01.4f] %s', $end - $start, $sql));
         $this->console->log($params);
+
+        if ($e) {
+            $this->console->fatal(sprintf('[%s] %s', $e->getCode(), $e->getMessage()));
+            throw $e;
+        }
 
         return $sth;
     }
