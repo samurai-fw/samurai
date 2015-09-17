@@ -69,6 +69,14 @@ class OptionSpec extends PHPSpecContext
         $this->get('foo')->shouldBe('zoooo');
     }
 
+    public function it_is_valuelize()
+    {
+        $this->valuelize('true')->shouldBe(true);
+        $this->valuelize('false')->shouldBe(false);
+        $this->valuelize('null')->shouldBe(null);
+        $this->valuelize(['item' => ['1', 'true', 'false']])->shouldBe(['item' => ['1', true, false]]);
+    }
+
     public function it_bredge_long_from_short_option()
     {
         $def = new OptionDefine();

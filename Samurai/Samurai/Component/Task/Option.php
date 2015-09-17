@@ -262,7 +262,7 @@ class Option
      * @param   mixed   $value
      * @return  mixed
      */
-    private function valuelize($value)
+    public function valuelize($value)
     {
         switch (true) {
             case $value === 'true':
@@ -271,8 +271,13 @@ class Option
             case $value === 'false':
                 $value = false;
                 break;
-            case strtolower($value) === 'null':
+            case is_string($value) && strtolower($value) === 'null':
                 $value = null;
+                break;
+            case is_array($value):
+                foreach ($value as $k => $v) {
+                    $value[$k] = $this->valuelize($v);
+                }
                 break;
         }
         return $value;
