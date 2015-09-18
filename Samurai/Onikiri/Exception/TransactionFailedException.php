@@ -39,7 +39,7 @@ namespace Samurai\Onikiri\Exception;
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class TransactionFailedException extends \Exception
+class TransactionFailedException extends \PDOException
 {
 }
 
