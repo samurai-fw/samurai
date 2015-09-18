@@ -554,7 +554,7 @@ class EntityTable
 
         } catch (\PDOException $e) {
             // deadlock
-            if ($e->getCode() == '4001') {
+            if ($e->getCode() == '40001') {
                 $e = new DeadlockException(sprintf('%s (%s)', $e->getMessage(), $sql), (int)$e->getCode(), $e);
             }
         }
