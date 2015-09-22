@@ -258,6 +258,19 @@ class Redis
         $this->driver->delete($key);
     }
 
+
+    /**
+     * has ?
+     *
+     * @param   string  $key
+     * @return  boolean
+     */
+    public function has($key)
+    {
+        return $this->driver->exists($key);
+    }
+
+
     /**
      * is redis supported ?
      *
