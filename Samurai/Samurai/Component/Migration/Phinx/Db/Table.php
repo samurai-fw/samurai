@@ -70,6 +70,24 @@ class Table extends PhinxTable
 
         return $column;
     }
+    
+    /**
+     * changeColumn wrapper.
+     *
+     * {@inheritdoc}
+     */
+    public function changeColumn($columnName, $newColumnType, $options = [])
+    {
+        if (!$newColumnType instanceof Column) {
+            $newColumn = new Column();
+            $newColumn->setType($newColumnType);
+            $newColumn->setOptions($options);
+        } else {
+            $newColumn = $newColumnType;
+        }
+
+        return parent::changeColumn($columnName, $newColumn);
+    }
 
     /**
      * add column bridge
