@@ -143,6 +143,20 @@ class Column extends PhinxColumn
 
 
     /**
+     * {@inheritdoc}
+     */
+    protected function getValidOptions()
+    {
+        $validOptions = parent::getValidOptions();
+
+        $validOptions[] = 'charset';
+        $validOptions[] = 'collation';
+
+        return $validOptions;
+    }
+
+
+    /**
      * __call
      *
      * @param   string  $method
