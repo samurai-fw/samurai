@@ -296,7 +296,8 @@ class EntityTable
         $sql = $criteria->toSQL();
 
         // query
-        $sth = $this->query($sql, $criteria->getParams(), Database::TARGET_SLAVE);
+        //$sth = $this->query($sql, $criteria->getParams(), Database::TARGET_SLAVE);
+        $sth = $this->query($sql, $criteria->getParams());
 
         // to entities
         $entities = new Entities($this);
