@@ -230,7 +230,20 @@ class SQLiteAdapter extends PhinxSQLiteAdapter
      */
     public function getIndexes($tableName)
     {
-        return parent::getIndexes($tableName);
+        $indexes = [];
+        $rows = $this->fetchAll(sprintf('pragma index_list(%s)', $tableName));
+
+        foreach ($rows as $row) {
+            $indexData = $this->fetchAll(sprintf('pragma index_info(%s)', $row['name']));
+            if (!isset($indexes[$row['name']])) {
+                $indexes[$row['name']] = array('index' => $row['name'], 'columns' => array());
+            }
+            foreach ($indexData as $indexItem) {
+                $indexes[$row['name']]['columns'][] = strtolower($indexItem['name']);
+            }
+        }
+
+        return $indexes;
     }
 }
 
