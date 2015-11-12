@@ -102,6 +102,10 @@ class Manager extends PhinxManager
                                 $column->getName(), $column->getType(), $codeGenerator->generateColumnOptions($column));
                 }
             }
+            foreach ($table->getDefinedIndexes() as $index) {
+                $code[] = sprintf('            ->addIndex([%s])',
+                            join(',', array_map(function($v) { return sprintf('"%s"', $v); }, $index['columns'])));
+            }
             $code[] = '            ->create();';
         }
 

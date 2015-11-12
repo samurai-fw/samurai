@@ -159,5 +159,32 @@ class Table extends PhinxTable
 
         return parent::addIndex($index);
     }
+
+    /**
+     * get defined indexes
+     *
+     * @return  array
+     */
+    public function getDefinedIndexes()
+    {
+        return $this->getAdapter()->getIndexes($this->getName());
+    }
+
+
+    /**
+     * add timestamps
+     */
+    public function addTimestamps($logical_delete = true)
+    {
+        $this->addColumn('created_at', 'integer', ['signed' => false, 'null' => true, 'comment' => 'created at timestamp']);
+        $this->addColumn('updated_at', 'integer', ['signed' => false, 'null' => true, 'comment' => 'updated at timestamp']);
+
+        if ($logical_delete) {
+            $this->addColumn('deleted_at', 'integer', ['signed' => false, 'null' => true, 'comment' => 'deleted at timestamp']);
+            $this->addColumn('active', 'boolean', ['default' => 1, 'comment' => 'logical delete flag']);
+        }
+
+        return $this;
+    }
 }
 

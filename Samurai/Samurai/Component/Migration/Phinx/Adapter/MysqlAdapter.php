@@ -155,6 +155,15 @@ class MysqlAdapter extends PhinxMysqlAdapter
 
         return $columns;
     }
+    
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getIndexes($tableName)
+    {
+        return parent::getIndexes($tableName);
+    }
 
 
     /**

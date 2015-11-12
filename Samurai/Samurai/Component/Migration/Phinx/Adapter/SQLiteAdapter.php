@@ -31,7 +31,9 @@
 namespace Samurai\Samurai\Component\Migration\Phinx\Adapter;
 
 use Samurai\Raikiri\DependencyInjectable;
-use Phinx\Db\Table\Column;
+use Samurai\Samurai\Component\Migration\Phinx\Db\Table;
+use Samurai\Samurai\Component\Migration\Phinx\Db\Column;
+use Phinx\Db\Table\Column as PhinxColumn;
 use Phinx\Db\Adapter\SQLiteAdapter as PhinxSQLiteAdapter;
 
 /**
@@ -116,9 +118,11 @@ class SQLiteAdapter extends PhinxSQLiteAdapter
     /**
      * {@inheritdoc}
      */
-    public function getColumnSqlDefinition(Column $column)
+    public function getColumnSqlDefinition(PhinxColumn $column)
     {
         $def = parent::getColumnSqlDefinition($column);
+        if (! $column instanceof Column) return $def;
+
         $defs = explode(' ', $def);
 
         $define = [$defs[0]];
@@ -138,6 +142,95 @@ class SQLiteAdapter extends PhinxSQLiteAdapter
         $define = join(' ', $define);
 
         return $define;
+    }
+    
+    
+    /**
+     * get tables
+     *
+     * @return  array
+     */
+    public function getTables()
+    {
+        $options = $this->getOptions();
+        $tables = [];
+
+        foreach ($this->fetchAll(sprintf("select name from sqlite_master where type = 'table'")) as $row) {
+            if ($row[0] == 'sqlite_sequence') continue;
+
+            $table = new Table($row[0], [], $this);
+            $tables[] = $table;
+            $options = [];
+
+            $describes = $this->fetchAll(sprintf('PRAGMA table_info(%s)', $this->quoteTableName($table->getName())));
+            $primary_keys = [];
+            foreach ($describes as $describe) {
+                if ($describe['pk'] === '1') {
+                    $primary_keys[] = $describe['name'];
+                }
+            }
+
+            if (! $primary_keys || (count($primary_keys) === 1 && $primary_keys[0] === 'id')) {
+            }
+
+            // $this->table('foo', ['id' => 'foo_id']);
+            elseif (count($primary_keys) === 1 && $primary_keys[0] !== 'id') {
+                $options = ['id' => $primary_keys[0]];
+            } else {
+                $options = ['id' => false, 'primary_key' => $primary_keys];
+            }
+
+            $table->setOptions($options);
+        }
+
+        return $tables;
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public function getColumns($tableName)
+    {
+        $columns = [];
+        $rows = $this->fetchAll(sprintf('PRAGMA table_info(%s)', $this->quoteTableName($tableName)));
+        foreach ($rows as $columnInfo) {
+            if (! $columnInfo['type']) continue;
+
+            $phinxType = $this->getPhinxType($columnInfo['type']);
+            //$collation = $this->parseCollation($columnInfo['Collation']);
+
+            $column = new Column();
+            $column->setName($columnInfo['name'])
+                   ->setNull($columnInfo['notnull'] != '0')
+                   ->setDefault($columnInfo['dflt_value'])
+                   ->setType($phinxType['name'])
+                   ->setLimit($phinxType['limit']);
+
+            if ($columnInfo['pk'] == '1') {
+                $column->setIdentity(true);
+            }
+
+            $columns[] = $column;
+        }
+
+        return $columns;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPhinxType($sqlTypeDef)
+    {
+        return parent::getPhinxType(strtolower($sqlTypeDef));
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getIndexes($tableName)
+    {
+        return parent::getIndexes($tableName);
     }
 }
 
