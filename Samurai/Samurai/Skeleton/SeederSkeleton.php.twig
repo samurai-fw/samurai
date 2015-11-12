@@ -1,0 +1,16 @@
+<?php
+
+{% if namespace %}
+namespace {{ namespace }};
+{% endif -%}
+
+use Samurai\Samurai\Component\Migration\Seeder;
+
+class {{ class }} extends Seeder
+{
+    public function seed()
+    {
+        // some seed
+    }
+}
+

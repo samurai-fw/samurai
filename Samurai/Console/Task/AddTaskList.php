@@ -395,6 +395,43 @@ EOL;
             $this->sendMessage('created migration file. -> %s', $migration_file);
         }
     }
+    
+    /**
+     * add a seeder
+     *
+     * usage:
+     *   $ ./app add:seeder [name]
+     *
+     * @option      database,d=base     set database name. (default is base)
+     * @option      app-dir             set app dir.
+     */
+    public function seederTask(Option $option)
+    {
+        $database = $option->get('database');
+        $current = $this->getCurrentAppDir($option);
+        $seeder_dir = $this->loader->find($current . DS . $this->application->config('directory.database.seed'))->first();
+        $seeder_dir->absolutize();
+
+        foreach ($option->getArgs() as $arg) {
+            $name = $this->migrationHelper->seederNameStrategy($arg);
+            $filename = $this->migrationHelper->seederFileNameStrategy($database, $name);
+            $seeder_file = $this->loader->findFirst($seeder_dir . DS . $filename, true);
+            $classname = $seeder_file->getClassName(false);
+            $namespace = $seeder_file->getNameSpace();
+
+            $skeleton = $this->getSkeleton('Seeder');
+
+            $base_dir = clone $seeder_dir;
+            
+            $skeleton->assign('namespace', $namespace ? $namespace : '');
+            $skeleton->assign('class', $classname);
+            
+            $this->fileUtil->mkdirP(dirname($seeder_file));
+            $this->fileUtil->putContents($seeder_file, $skeleton->render());
+
+            $this->sendMessage('created seeder file. -> %s', $seeder_file);
+        }
+    }
 
 
 
