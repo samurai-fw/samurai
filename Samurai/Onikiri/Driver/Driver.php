@@ -61,5 +61,14 @@ abstract class Driver
      * @return  array
      */
     abstract public function getTableDescribe(Connection $connection, $table);
+
+
+    /**
+     * get table names
+     *
+     * @param   Samurai\Onikiri\Connection  $connection
+     * @return  array
+     */
+    abstract public function getTableNames(Connection $connection);
 }
 

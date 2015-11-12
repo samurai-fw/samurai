@@ -216,6 +216,26 @@ class Onikiri
         $cacher->cache($table, $schema);
         return $schema;
     }
+
+    /**
+     * get table schema instances
+     *
+     * @param   string  $database
+     * @return  array
+     */
+    public function getTableSchemas($database = 'base')
+    {
+        $driver = $this->getDatabase($database)->getDriver();
+        $connection = $this->establishConnection($database, Database::TARGET_SLAVE);
+        $names = $driver->getTableNames($connection);
+
+        $schemas = [];
+        foreach ($names as $name) {
+            $schemas[] = $this->getTableSchema($name, $database);
+        }
+
+        return $schemas;
+    }
     
     
     /**

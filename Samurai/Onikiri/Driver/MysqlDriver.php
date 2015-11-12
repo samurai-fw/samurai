@@ -141,5 +141,23 @@ class MysqlDriver extends Driver
         
         return $info;
     }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTableNames(Connection $connection)
+    {
+        $sql = 'SHOW TABLES';
+        $stmt = $connection->query($sql);
+        $rows = $stmt->fetchAll(\PDO::FETCH_NUM);
+
+        $names = [];
+        foreach ($rows as $row) {
+            $names[] = $row[0];
+        }
+
+        return $names;
+    }
 }
 

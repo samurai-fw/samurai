@@ -115,14 +115,25 @@ class AddTaskList extends Task
      *
      * [usage]
      *   $ ./app add:model table_name
+     *
+     * @option  database,d=base     target database alias
      */
     public function modelTask(Option $option)
     {
         $current = $this->getCurrentAppDir($option);
         $base_dir = $current;
 
-        foreach ($option->getArgs() as $arg)
-        {
+        $args = $option->getArgs();
+        if (! $args) {
+            $args = [];
+            $tables = $this->onikiri()->getTableSchemas($option->get('database'));
+            foreach ($tables as $table) {
+                if (in_array($table->getName(), ['phinxlog', 'sqlite_sequence'])) continue;
+                $args[] = $table->getName();
+            }
+        }
+
+        foreach ($args as $arg) {
             // table
             $table_class_name = $this->onikiri->config->getNamingStrategy()->aliasToTableClassName($arg);
             $filename = $table_class_name . '.php';

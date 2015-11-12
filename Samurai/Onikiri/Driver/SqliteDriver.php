@@ -130,5 +130,23 @@ class SqliteDriver extends Driver
         
         return $info;
     }
+    
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTableNames(Connection $connection)
+    {
+        $sql = "select name from sqlite_master where type = 'table'";
+        $stmt = $connection->query($sql);
+        $rows = $stmt->fetchAll();
+
+        $names = [];
+        foreach ($rows as $row) {
+            $names[] = $row['name'];
+        }
+
+        return $names;
+    }
 }
 
