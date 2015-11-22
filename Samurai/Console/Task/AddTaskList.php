@@ -202,6 +202,8 @@ class AddTaskList extends Task
      *
      * [usage]
      *   $ ./app add:action controller.action
+     *
+     * @option      no-view         not create view.
      */
     public function actionTask(Option $option)
     {
@@ -260,6 +262,7 @@ EOL;
             }
 
             // view
+            if ($option->get('no-view')) return;
             $template = sprintf('%s/%s.%s', join(DS, array_map('ucfirst', explode('\\', $controller))), substr($action_name, 0, -6), $this->renderer->getSuffix());
             $file = $this->loader->find($current . DS . $this->application->config('directory.template') . DS . $template, true)->first();
             $skeleton = $this->getSkeleton('ViewContent', 'html');
