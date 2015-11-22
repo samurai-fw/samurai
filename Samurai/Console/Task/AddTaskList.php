@@ -57,6 +57,7 @@ class AddTaskList extends Task
      *   $ ./app add:class Foo\Bar\Zoo
      *
      * @option  extands,e               extends class.
+     * @option  skeleton,s=class        use skeleton name.
      * @option  use-raikiri,r=true      use raikiri(di container).
      * @option  use-accessor,a          use accessor trait.
      */
@@ -70,7 +71,7 @@ class AddTaskList extends Task
             $dir = dirname($path);
             if ($dir == '.') $dir = '';
 
-            $skeleton = $this->getSkeleton('class');
+            $skeleton = $this->getSkeleton($option->get('skeleton'));
             $class_name = basename($path, '.php');
             $namespace = str_replace(DS, '\\', $dir);
 
@@ -168,6 +169,24 @@ class AddTaskList extends Task
                 $this->sendMessage('created model entity file. -> %s', $file);
             }
         }
+    }
+    
+    
+    /**
+     * add a filter.
+     *
+     * [usage]
+     *   $ ./app add:filter Some/Foo
+     */
+    public function filterTask(Option $option)
+    {
+        $root = $this->getRootAppDir($option);
+        $current = $this->getCurrentAppDir($option);
+        $prefix = trim(preg_replace('/^' . preg_quote($root, '/') . '/', '', $current), DS);
+
+        $option->set('skeleton', 'filter');
+        $option->setArg(0, $prefix . DS . 'Filter' . DS . $option->getArg(0));
+        $this->task('add:class', $option);
     }
     
     
