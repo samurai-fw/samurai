@@ -82,10 +82,14 @@ class AddTaskList extends Task
             $skeleton->assign('use-accessor', $option->get('use-accessor'));
 
             $file = $base_dir . DS . ($dir ? $dir . DS : '') . $class_name . '.php';
-            $this->fileUtil->mkdirP(dirname($file));
-            $this->fileUtil->putContents($file, $skeleton->render());
+            $file = $this->loader->find($current . DS . ($dir ? $dir . DS : '') . $class_name . '.php', true)->first();
+            
+            if (! $file->isExists() || $this->confirmation(['class file(%s) is already exists. override ?', $file])) {
+                $this->fileUtil->mkdirP(dirname($file));
+                $this->fileUtil->putContents($file, $skeleton->render());
 
-            $this->sendMessage('created class file. -> %s', $file);
+                $this->sendMessage('created class file. -> %s', $file);
+            }
         }
     }
     
@@ -184,8 +188,11 @@ class AddTaskList extends Task
         $current = $this->getCurrentAppDir($option);
         $prefix = trim(preg_replace('/^' . preg_quote($root, '/') . '/', '', $current), DS);
 
+        $name = $option->getArg(0);
+        if (! preg_match('/Filter$/', $name)) $name .= 'Filter';
+
         $option->set('skeleton', 'filter');
-        $option->setArg(0, $prefix . DS . 'Filter' . DS . $option->getArg(0));
+        $option->setArg(0, $prefix . DS . 'Filter' . DS . $name);
         $this->task('add:class', $option);
     }
     
