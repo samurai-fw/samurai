@@ -81,6 +81,23 @@ class Option
     {
         $this->importFromArray($options);
     }
+    
+    
+    /**
+     * import
+     *
+     * @param   Option  $option
+     */
+    public function import(Option $option)
+    {
+        foreach ($option->getArgs() as $arg) {
+            $this->args[] = $arg;
+        }
+
+        foreach ($option->getAll() as $key => $value) {
+            $this->set($key, $value);
+        }
+    }
 
 
     /**
@@ -176,6 +193,27 @@ class Option
 
         return $this->valuelize($default);
     }
+
+
+    /**
+     * get all
+     */
+    public function getAll()
+    {
+        $options = [];
+
+        foreach ($this->getDefinitions() as $define) {
+            $options[$define->getName()] = $this->get($define->getName());
+        }
+
+        $original_keys = array_diff(array_keys($this->options), array_keys($options));
+        foreach ($original_keys as $key) {
+            $options[$key] = $this->get($key);
+        }
+
+        return $options;
+    }
+
     
     /**
      * set a option.

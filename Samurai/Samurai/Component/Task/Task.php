@@ -90,11 +90,11 @@ class Task
         if (! is_array($options) && ! $options instanceof Option) throw new \InvalidArgumentException('invalid option');
         if (! $this->do) throw new \Samurai\Samurai\Exception\LogicException('preset task something do.');
 
+        $option = $this->getOption($this->do);
         if (is_array($options)) {
-            $option = $this->getOption($this->do);
             $option->importFromArray($options);
         } else {
-            $option = $options;
+            $option->import($options);
         }
         $option->validate();
         $this->{$this->do . 'Task'}($option);
