@@ -56,7 +56,10 @@ class SessionFilter extends Filter
     public function prefilter()
     {
         parent::prefilter();
-        if ($this->raikiri()->has('session')) return;
+        if ($this->raikiri()->has('session')) {
+            $this->session->init();
+            return;
+        }
 
         $session = new Session();
         $this->raikiri()->register('session', $session);
