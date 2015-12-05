@@ -230,6 +230,8 @@ class SamuraiController
     {
         $this->assign('now', time());
         $this->assign('request', $this->request->getAll());
+
+        $this->assign('errorLists', $this->actionChain->getErrorLists());
     }
 
     /**

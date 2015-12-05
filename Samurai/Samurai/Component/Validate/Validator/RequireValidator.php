@@ -28,65 +28,25 @@
  * @license     http://opensource.org/licenses/MIT
  */
 
-namespace Samurai\Samurai\Filter;
+namespace Samurai\Samurai\Component\Validate\Validator;
 
 /**
- * Validate filter.
- *
- * some.action:
- *   body.require: input body
- *   body.max_length:20: body is max 20 length. 
+ * require validator
  *
  * @package     Samurai
- * @subpackage  Filter
+ * @subpackage  Component.Validate
  * @copyright   2007-2013, Samurai Framework Project
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class ValidateFilter extends Filter
+class RequireValidator extends Validator
 {
     /**
      * {@inheritdoc}
      */
-    public function prefilter()
+    public function validate($value, $attributes)
     {
-        foreach ($this->getAttributes() as $key => $message) {
-            list($key, $validator, $attributes, $negative) = $this->resolveKey($key);
-
-            $result = $this->validator->validate($this->request->get($key), $validator, $attributes);
-            if ($negative) $result = ! $result;
-
-            if (! $result) {
-                $this->errorList->setType('failedValidate');
-                $this->errorList->add($key, $message);
-            }
-        }
-    }
-
-
-    /**
-     * key resolve
-     *
-     * key.validator:attribute
-     * key.!validator:attribute
-     *
-     * @param   string  $key
-     */
-    protected function resolveKey($key)
-    {
-        list($key, $validates) = explode('.', $key);
-
-        $validates = explode(':', $validates);
-        $validator = $validates[0];
-        $attributes = count($validates) > 1 ? explode(';', $validates[1]) : [];
-
-        $negative = false;
-        if ($validator[0] === '!') {
-            $negative = true;
-            $validator = substr($validator, 1);
-        }
-
-        return [$key, $validator, $attributes, $negative];
+        return $value !== null && $value !== '';
     }
 }
 

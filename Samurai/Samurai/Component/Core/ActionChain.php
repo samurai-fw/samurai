@@ -239,6 +239,22 @@ class ActionChain
         $name = $this->getCurrentActionName();
         return $this->getErrorListByName($name);
     }
+
+    /**
+     * get error lists
+     *
+     * @return  array
+     */
+    public function getErrorLists()
+    {
+        $names = array_values($this->action_names);
+        $errors = [];
+        foreach ($names as $name) {
+            $errors[$name] = $this->getErrorListByName($name);
+        }
+        return $errors;
+    }
+
     
     /**
      * get position by name

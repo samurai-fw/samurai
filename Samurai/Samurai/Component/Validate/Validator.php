@@ -28,65 +28,64 @@
  * @license     http://opensource.org/licenses/MIT
  */
 
-namespace Samurai\Samurai\Filter;
+namespace Samurai\Samurai\Component\Validate;
+
+use Samurai\Raikiri\DependencyInjectable;
+use Samurai\Samurai\Component\Validate\Validator\Validator as ValidatorUnit;
 
 /**
- * Validate filter.
- *
- * some.action:
- *   body.require: input body
- *   body.max_length:20: body is max 20 length. 
+ * validator
  *
  * @package     Samurai
- * @subpackage  Filter
+ * @subpackage  Component.Validate
  * @copyright   2007-2013, Samurai Framework Project
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class ValidateFilter extends Filter
+class Validator
 {
     /**
-     * {@inheritdoc}
+     * @traits
      */
-    public function prefilter()
+    use DependencyInjectable;
+
+
+    /**
+     * validate
+     *
+     * @param   mixed   $value
+     * @param   mixed   $validator
+     * @param   mixed   $attributes
+     * @param   boolean $negative
+     */
+    public function validate($value, $validator, $attributes)
     {
-        foreach ($this->getAttributes() as $key => $message) {
-            list($key, $validator, $attributes, $negative) = $this->resolveKey($key);
+        $validator = $this->getValidator($validator);
 
-            $result = $this->validator->validate($this->request->get($key), $validator, $attributes);
-            if ($negative) $result = ! $result;
+        $result = $validator->validate($value, $attributes);
 
-            if (! $result) {
-                $this->errorList->setType('failedValidate');
-                $this->errorList->add($key, $message);
-            }
-        }
+        return $negative ? ! $result : $result;
     }
 
 
     /**
-     * key resolve
+     * get validator
      *
-     * key.validator:attribute
-     * key.!validator:attribute
-     *
-     * @param   string  $key
+     * @param   mixed   $validator
+     * @return  Validator
      */
-    protected function resolveKey($key)
+    public function getValidator($name)
     {
-        list($key, $validates) = explode('.', $key);
+        if ($name instanceof ValidatorUnit) return $name;
 
-        $validates = explode(':', $validates);
-        $validator = $validates[0];
-        $attributes = count($validates) > 1 ? explode(';', $validates[1]) : [];
+        $fileName = 'Component/Validate/Validator/' . ucfirst($name) . 'Validator.php';
+        $filePath = $this->loader->findFirst($fileName);
+        if (! $filePath) throw new \InvalidArgumentException('validator not found. -> ' . $name);
 
-        $negative = false;
-        if ($validator[0] === '!') {
-            $negative = true;
-            $validator = substr($validator, 1);
-        }
+        $class = $filePath->getClassName();
+        $validator = new $class();
 
-        return [$key, $validator, $attributes, $negative];
+        return $validator;
     }
 }
 
