@@ -389,6 +389,10 @@ class Database
     public function disconnect()
     {
         $this->connection = null;
+
+        foreach ($this->getSlaves() as $slave) {
+            $slave->disconnect();
+        }
     }
 
 

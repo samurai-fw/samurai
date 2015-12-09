@@ -250,6 +250,24 @@ class Onikiri
         return $database->connect();
     }
 
+    /**
+     * disconnect from backend.
+     *
+     * @param   string  $alias
+     * @param   string  $target
+     */
+    public function closeConnection($alias = null)
+    {
+        if (! $alias) {
+            foreach ($this->getDatabases() as $alias => $database) {
+                $this->closeConnection($alias);
+            }
+        } else {
+            $database = $this->getDatabase($alias, Database::TARGET_MASTER);
+            $database->disconnect();
+        }
+    }
+
 
     /**
      * get transaction instance
