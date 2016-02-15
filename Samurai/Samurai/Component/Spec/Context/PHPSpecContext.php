@@ -33,6 +33,7 @@ namespace Samurai\Samurai\Component\Spec\Context;
 use PhpSpec\ObjectBehavior;
 use Samurai\Raikiri\Container\NullableContainer;
 use Samurai\Raikiri\DependencyInjectable;
+use Samurai\Raikiri\Container;
 
 /**
  * PHPSpec text cace context.
