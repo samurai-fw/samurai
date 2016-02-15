@@ -35,7 +35,7 @@ class AddTaskListSpec extends PHPSpecContext
 
     public function it_adds_class_file(Loader $l, FileUtility $fileUtil)
     {
-        $l->find($this->application->config('directory.skeleton') . DS . 'ClassSkeleton.php.twig')
+        $l->find(Argument::containingString('ClassSkeleton.php.twig'))
             ->willReturn($this->loader->find($this->application->config('directory.skeleton') . DS . 'ClassSkeleton.php.twig'));
         $this->raikiri()->register('loader', $l);
         $this->raikiri()->register('fileUtil', $fileUtil);
@@ -65,9 +65,11 @@ class Sample
 
 EOL;
         $option = new Option();
-        $option->importFromArray(['Samurai\\Samurai\\Sample']);
+        $option->importFromArray(['Samurai\\Samurai\\Sample', 'skeleton' => 'class']);
         $current = $this->getRootAppDir($option)->getWrappedObject();
         $base_dir = $current;
+
+        $l->find(Argument::containingString('Sample.php'), true)->willReturn($this->loader->find($base_dir . '/Samurai/Samurai/Sample.php', true));
         $fileUtil->mkdirP($base_dir . '/Samurai/Samurai')->shouldBeCalled();
         $fileUtil->putContents($base_dir . '/Samurai/Samurai/Sample.php', $contents)->shouldBeCalled();
         $this->classTask($option);

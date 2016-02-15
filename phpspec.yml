@@ -1,5 +1,5 @@
 ---
-formatter.name: progress
+formatter.name: pretty
 suites:
     samurai:
         src_path: .
@@ -13,10 +13,6 @@ suites:
         src_path: .
         spec_path: .
         spec_prefix: Samurai\Onikiri\Spec
-    onikiri-tamahagane:
-        src_path: .
-        spec_path: .
-        spec_prefix: Samurai\Onikiri\TamaHagane\Spec
     raikiri:
         src_path: .
         spec_path: .
