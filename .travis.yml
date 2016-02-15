@@ -2,6 +2,11 @@ language: php
 
 php:
     - 5.5
+    - 5.6
+    - 7.0
+    - hhvm
+
+sudo: false
 
 env:
     global:
@@ -21,8 +26,9 @@ services:
     - redis-server
 
 install:
+    - mv ${HOME}/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ${HOME}/xdebug.ini || return 0
     - composer self-update
-    - composer install
+    - travis_retry composer update --no-interaction
     - mysql -e 'CREATE DATABASE app'
     - psql -c 'CREATE DATABASE app;' -U postgres
     - wget -O phpredis.tar.gz --no-check-certificate https://github.com/nicolasff/phpredis/tarball/master
@@ -31,12 +37,15 @@ install:
     - phpenv config-add .travis/php.ini
 
 script:
+    - cp ${HOME}/xdebug.ini ${HOME}/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini || return 0
     - Samurai/Console/app spec
+    - mv ${HOME}/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ${HOME}/xdebug.ini || return 0
 
-after_script:
+after_success:
     - travis_retry php vendor/bin/coveralls -v
 
 cache:
     directories:
         - vendor
+        - $HOME/.composer/cache
 
