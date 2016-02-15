@@ -32,7 +32,7 @@ class RootRuleSpec extends PHPSpecContext
     public function it_is_invalid_constructor_arguments()
     {
         $this->beConstructedWith('foo');
-        $this->shouldThrow('Samurai\Samurai\Component\Routing\Exception\InvalidArgumentException');
+        $this->shouldThrow('Samurai\Samurai\Component\Routing\Exception\InvalidArgumentException')->duringInstantiation();
     }
 }
 

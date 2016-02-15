@@ -31,7 +31,7 @@
 namespace Samurai\Samurai\Component\Spec\Context;
 
 use PhpSpec\ObjectBehavior;
-use Samurai\Raikiri\Container;
+use Samurai\Raikiri\Container\NullableContainer;
 use Samurai\Raikiri\DependencyInjectable;
 
 /**
@@ -109,13 +109,18 @@ class PHPSpecContext extends ObjectBehavior
      */
     public function getWrappedObject()
     {
-        $object = $this->object->getWrappedObject();
-        if ($this->isUseableRaikiri($object) && ! $object->getContainer()) {
-            $c = new Container('spec');
-            $object->setContainer($c->inherit($this->__getContainer()));
-            $this->container = $c;
+        try {
+            $object = $this->object->getWrappedObject();
+            if ($this->isUseableRaikiri($object) && ! $object->getContainer()) {
+                $c = new NullableContainer('spec');
+                $object->setContainer($c->inherit($this->__getContainer()));
+                $this->container = $c;
+                
+                $c->remove('console')->register('console', $c->get('undefined'));
+            }
+            return $object;
+        } catch (\Exception $e) {
         }
-        return $object;
     }
     
     /**

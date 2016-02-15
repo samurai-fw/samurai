@@ -296,8 +296,7 @@ class EntityTable
         $sql = $criteria->toSQL();
 
         // query
-        //$sth = $this->query($sql, $criteria->getParams(), Database::TARGET_SLAVE);
-        $sth = $this->query($sql, $criteria->getParams());
+        $sth = $this->query($sql, $criteria->getParams(), Database::TARGET_SLAVE);
 
         // to entities
         $entities = new Entities($this);
@@ -382,7 +381,9 @@ class EntityTable
         $attributes = array_merge($defaults, $attributes);
 
         $entity = new $class($this, $attributes, $exists);
-        $entity->setContainer($this->raikiri());
+        if ($raikiri = $this->raikiri()) {
+            $entity->setContainer($raikiri);
+        }
         $entity->initialize();
 
         return $entity;
@@ -588,7 +589,7 @@ class EntityTable
     {
         if ($sql instanceof Criteria\Criteria) return $this->getOne($sql->toSQL(), $sql->getParams());
 
-        $sth = $this->query($sql, $params);
+        $sth = $this->query($sql, $params, Database::TARGET_SLAVE);
         $row = $sth->fetch(Connection::FETCH_NUM);
         $sth->closeCursor();
         return $row[0];
@@ -605,7 +606,7 @@ class EntityTable
     {
         if ($sql instanceof Criteria\Criteria) return $this->getRow($sql->toSQL(), $sql->getParams());
 
-        $sth = $this->query($sql, $params);
+        $sth = $this->query($sql, $params, Database::TARGET_SLAVE);
         $row = $sth->fetch(Connection::FETCH_OBJ);
         $sth->closeCursor();
         return $row;
@@ -622,7 +623,7 @@ class EntityTable
     {
         if ($sql instanceof Criteria\Criteria) return $this->getCol($sql->toSQL(), $sql->getParams(), $column);
 
-        $sth = $this->query($sql, $params);
+        $sth = $this->query($sql, $params, Database::TARGET_SLAVE);
         $col = [];
         foreach ($sth->fetchAll(Connection::FETCH_BOTH) as $row) {
             $col[] = array_key_exists($column, $row) ? $row[$column] : null;

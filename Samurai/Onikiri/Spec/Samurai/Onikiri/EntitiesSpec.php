@@ -60,7 +60,7 @@ class EntitiesSpec extends PHPSpecContext
 
     public function it_is_foreachable()
     {
-        $this->shouldImplement('Iterator');
+        $this->shouldImplement('IteratorAggregate');
         $current = $this->current();
         $current->shouldHaveType('Samurai\Onikiri\Entity');
     }

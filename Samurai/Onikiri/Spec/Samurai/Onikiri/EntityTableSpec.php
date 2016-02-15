@@ -15,7 +15,7 @@ class EntityTableSpec extends PHPSpecContext
     public function let(Onikiri $oni, Connection $con, Transaction $tx)
     {
         $this->beConstructedWith($oni);
-        $oni->establishConnection($this->getDatabase(), Database::TARGET_MASTER)->willReturn($con);
+        $oni->establishConnection($this->getDatabase(), Database::TARGET_SLAVE)->willReturn($con);
         $oni->getTx()->willReturn($tx);
 
         $tx->isValid()->willReturn(false);
@@ -113,6 +113,17 @@ class EntityTableSpec extends PHPSpecContext
         $oni->establishConnection($this->getDatabase(), Database::TARGET_MASTER)->shouldBeCalled()->willReturn($c);
 
         $con = $this->establishConnection();
+        $con->shouldHaveType('Samurai\Onikiri\Connection');
+    }
+
+    public function it_establishes_conection_to_force_master_database_in_tx(Onikiri $oni, Connection $con, Transaction $tx)
+    {
+        $tx->isValid()->willReturn(true);
+        $tx->setConnection($con)->shouldBeCalled();
+        $tx->beginTransaction()->shouldBeCalled();
+        $oni->establishConnection($this->getDatabase(), Database::TARGET_MASTER)->willReturn($con);
+
+        $con = $this->establishConnection(Database::TARGET_SLAVE);
         $con->shouldHaveType('Samurai\Onikiri\Connection');
     }
 
@@ -388,6 +399,7 @@ class EntityTableSpec extends PHPSpecContext
         $entity->getName()->shouldBe('kaneda');
 
 
+        $oni->establishConnection($this->getDatabase(), Database::TARGET_MASTER)->willReturn($con);
         $con->prepare('UPDATE entity SET name = ? WHERE (id = ?)')->willReturn($stm);
         $stm->bindValue(0, 'kaneda shotaro', Connection::PARAM_STR)->shouldBeCalled();
         $stm->bindValue(1, 1, Connection::PARAM_INT)->shouldBeCalled();
@@ -405,6 +417,7 @@ class EntityTableSpec extends PHPSpecContext
         $entity = $this->build(['name' => 'kaneda', 'mail' => 'kaneda@akira.jp']);
         $entity->getName()->shouldBe('kaneda');
 
+        $oni->establishConnection($this->getDatabase(), Database::TARGET_MASTER)->willReturn($con);
         $con->prepare('INSERT INTO entity (name, mail) VALUES (?, ?)')->willReturn($stm);
         $stm->bindValue(0, 'kaneda', Connection::PARAM_STR)->shouldBeCalled();
         $stm->bindValue(1, 'kaneda@akira.jp', Connection::PARAM_STR)->shouldBeCalled();
@@ -433,7 +446,7 @@ class EntityTableSpec extends PHPSpecContext
         $entity = $this->find(1);
         $entity->getName()->shouldBe('kaneda');
 
-
+        $oni->establishConnection($this->getDatabase(), Database::TARGET_MASTER)->willReturn($con);
         $con->prepare('DELETE FROM entity WHERE (id = ?)')->willReturn($stm);
         $stm->bindValue(0, 1, Connection::PARAM_INT)->shouldBeCalled();
         $stm->isSuccess()->willReturn(true);

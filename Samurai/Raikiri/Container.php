@@ -64,7 +64,7 @@ class Container
      *
      * @param   string  $name
      */
-    public function __construct($name)
+    public function __construct($name = 'container')
     {
         $this->name = $name;
         $this->register('yaml', new YAML());
@@ -170,6 +170,19 @@ class Container
     public function getAll()
     {
         return $this->components;
+    }
+
+    /**
+     * remove
+     *
+     * @param   string  $name
+     */
+    public function remove($name)
+    {
+        if ($this->has($name)) {
+            unset($this->components[$name]);
+        }
+        return $this;
     }
 
 

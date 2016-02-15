@@ -31,6 +31,8 @@ class MysqlAdapterSpec extends PHPSpecContext
 
         $con->exec(Argument::any())->willReturn(0);
         $con->query(Argument::any())->willReturn($st);
+        $con->getAttribute(\PDO::ATTR_DRIVER_NAME)->willReturn('mysql');
+        $con->getAttribute(\PDO::ATTR_SERVER_VERSION)->willReturn('5.6.0');
 
         $this->setConnection($con);
     }

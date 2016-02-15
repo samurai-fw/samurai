@@ -38,6 +38,8 @@ class CodeGeneratorSpec extends PHPSpecContext
         $c->getAfter()->willReturn(null);
         $c->getUpdate()->willReturn(null);
         $c->getComment()->willReturn('bbbb');
+        $c->getCollation()->willReturn(null);
+        $c->getCharset()->willReturn(null);
 
         $this->generateColumnOptions($c)->shouldBe(", ['length' => 256, 'default' => 'aaaa', 'null' => true, 'comment' => 'bbbb']");
     }

@@ -49,7 +49,7 @@ class Parameters
      * @access  protected
      * @var     array
      */
-    protected $_params = array();
+    protected $_params = [];
     
     /**
      * @traits

@@ -22,77 +22,65 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  *
- * @package     Samurai
+ * @package     Raikiri
  * @copyright   2007-2013, Samurai Framework Project
  * @link        http://samurai-fw.org/
  * @license     http://opensource.org/licenses/MIT
  */
 
-namespace Samurai\Onikiri\Driver;
+namespace Samurai\Raikiri\Object;
 
-use Samurai\Onikiri\Database;
-use Samurai\Onikiri\Connection;
+use Samurai\Raikiri\DependencyInjectable;
+use Samurai\Samurai\Exception\MemberNotFoundException;
+use IteratorAggregate;
+use ArrayIterator;
 
 /**
- * Driver for postgres.
+ * null object
  *
- * @package     Onikiri
- * @subpackage  Driver
+ * @package     Raikiri
+ * @subpackage  Container
  * @copyright   2007-2013, Samurai Framework Project
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class PgsqlDriver extends Driver
+class NullObject implements IteratorAggregate
 {
     /**
-     * @implements
+     * @traits
      */
-    public function connect(Database $database)
-    {
-        $dsn = $this->makeDsn($database);
-        $con = new Connection($dsn, $database->getUser(), $database->getPassword(), $database->getOptions());
-        return $con;
+    use DependencyInjectable {
+        DependencyInjectable::__get as __di_get;
     }
-    
-    
+
+
     /**
-     * @implements
+     * __get
      */
-    public function makeDsn(Database $database)
+    public function __get($key)
     {
-        $dsn = 'pgsql:';
-        $info = array();
-
-        // database name
-        $info[] = 'dbname=' . $database->getDatabaseName();
-
-        // host name
-        $info[] = 'host=' . $database->getHostName();
-
-        // port
-        if ($port = $database->getPort()) {
-            $info[] = 'port=' . $port;
+        try {
+            return $this->__di_get($key);
+        } catch (MemberNotFoundException $e) {
+            return $this;
         }
-
-        $dsn = $dsn . join(';', $info);
-        return $dsn;
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTableDescribe(Connection $connction, $table)
-    {
-        // TODO: implements
     }
     
     /**
-     * {@inheritdoc}
+     * __call
      */
-    public function getTableNames(Connection $connection)
+    public function __call($method, $args)
     {
-        // TODO: implements
+        return $this;
+    }
+    
+    
+    /**
+     * get iterator
+     */
+    public function getIterator()
+    {
+        return new ArrayIterator([]);
     }
 }
 

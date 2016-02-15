@@ -22,77 +22,41 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  *
- * @package     Samurai
+ * @package     Raikiri
  * @copyright   2007-2013, Samurai Framework Project
  * @link        http://samurai-fw.org/
  * @license     http://opensource.org/licenses/MIT
  */
 
-namespace Samurai\Onikiri\Driver;
+namespace Samurai\Raikiri\Container;
 
-use Samurai\Onikiri\Database;
-use Samurai\Onikiri\Connection;
+use Samurai\Raikiri\Container;
+use Samurai\Raikiri\Object\NullObject;
 
 /**
- * Driver for postgres.
+ * nullable container
  *
- * @package     Onikiri
- * @subpackage  Driver
+ * @package     Raikiri
+ * @subpackage  Container
  * @copyright   2007-2013, Samurai Framework Project
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class PgsqlDriver extends Driver
+class NullableContainer extends Container
 {
     /**
-     * @implements
+     * {@inheritdoc}
      */
-    public function connect(Database $database)
+    public function get($name)
     {
-        $dsn = $this->makeDsn($database);
-        $con = new Connection($dsn, $database->getUser(), $database->getPassword(), $database->getOptions());
-        return $con;
-    }
-    
-    
-    /**
-     * @implements
-     */
-    public function makeDsn(Database $database)
-    {
-        $dsn = 'pgsql:';
-        $info = array();
+        $object = parent::get($name);
 
-        // database name
-        $info[] = 'dbname=' . $database->getDatabaseName();
-
-        // host name
-        $info[] = 'host=' . $database->getHostName();
-
-        // port
-        if ($port = $database->getPort()) {
-            $info[] = 'port=' . $port;
+        if ($object === null) {
+            $object = new NullObject();
+            $object->setContainer($this);
         }
 
-        $dsn = $dsn . join(';', $info);
-        return $dsn;
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTableDescribe(Connection $connction, $table)
-    {
-        // TODO: implements
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    public function getTableNames(Connection $connection)
-    {
-        // TODO: implements
+        return $object;
     }
 }
 

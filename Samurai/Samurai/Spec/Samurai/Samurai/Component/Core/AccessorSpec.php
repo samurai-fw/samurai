@@ -9,7 +9,7 @@ class AccessorSpec extends PHPSpecContext
 {
     public function let()
     {
-        $this->beAnInstanceOf('Samurai\Samurai\Spec\Samurai\Samurai\Component\Core\Accessor');
+        $this->object->beAnInstanceOf('Samurai\Samurai\Spec\Samurai\Samurai\Component\Core\Accessor');
     }
 
     public function it_is_not_initializable()

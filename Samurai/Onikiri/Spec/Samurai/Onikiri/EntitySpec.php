@@ -119,13 +119,13 @@ class EntitySpec extends PHPSpecContext
 
     public function it_saves(EntityTable $t)
     {
-        $t->save($this, [])->shouldBeCalled();
+        $t->save($this->object, [])->shouldBeCalled();
         $this->save();
     }
 
     public function it_saves_with_attributes(EntityTable $t)
     {
-        $t->save($this, ['name' => 'Minka Lee'])->shouldBeCalled();
+        $t->save($this->object, ['name' => 'Minka Lee'])->shouldBeCalled();
         $this->save(['name' => 'Minka Lee']);
     }
 

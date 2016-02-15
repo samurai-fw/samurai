@@ -10,7 +10,7 @@ class ApcCacheSpec extends PHPSpecContext
     public function let()
     {
         // has apc extension ?
-        if (! extension_loaded('apc')) throw new SkippingException();
+        if (! extension_loaded('apc')) throw new SkippingException('apc is not installed.');
     }
 
     public function letgo()
