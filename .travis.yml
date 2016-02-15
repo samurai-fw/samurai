@@ -6,8 +6,6 @@ php:
     - 7.0
     - hhvm
 
-sudo: false
-
 env:
     global:
         - ONIKIRI_SPEC_MYSQL_USER="root" ONIKIRI_SPEC_MYSQL_DATABASE="app"
