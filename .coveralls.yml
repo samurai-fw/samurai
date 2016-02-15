@@ -1,6 +1,6 @@
 service_name: travis-pro
 
-src_dir: .
+repo_token: sSm6vjwhJs9py0T2UrJDGRBfRE2KzVipW
 coverage_clover: coverage.xml
 json_path: coveralls-upload.json
 exclude_no_stmt: true
