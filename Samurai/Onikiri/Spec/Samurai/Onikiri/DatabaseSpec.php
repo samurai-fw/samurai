@@ -180,14 +180,14 @@ class DatabaseSpec extends PHPSpecContext
     
     public function it_connects_to_database()
     {
-        $this->_setMySQLDefinitionFromEnv($this);
+        $this->_setMySQLDefinitionFromEnv($this->getWrappedObject());
         $connection = $this->connect();
         $connection->shouldHaveType('Samurai\Onikiri\Connection');
     }
 
     public function it_connects_to_database_same_connection_when_same_database()
     {
-        $this->_setMySQLDefinitionFromEnv($this);
+        $this->_setMySQLDefinitionFromEnv($this->getWrappedObject());
         $con1 = $this->connect();
         $con2 = $this->connect();
         $con1->shouldBe($con2);
@@ -195,7 +195,7 @@ class DatabaseSpec extends PHPSpecContext
 
     public function it_disconnects_from_database()
     {
-        $this->_setMySQLDefinitionFromEnv($this);
+        $this->_setMySQLDefinitionFromEnv($this->getWrappedObject());
         $con1 = $this->connect();
         $this->disconnect();
         $con2 = $this->connect();
