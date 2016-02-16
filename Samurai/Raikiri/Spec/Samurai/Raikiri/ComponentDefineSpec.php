@@ -3,8 +3,9 @@
 namespace Samurai\Raikiri\Spec\Samurai\Raikiri;
 
 use Samurai\Samurai\Component\Spec\Context\PHPSpecContext;
+use PhpSpec\Loader\StreamWrapper;
 
-require_once __DIR__ . DS . 'ContainerSpec.php';
+require_once StreamWrapper::wrapPath(__DIR__ . DS . 'ContainerSpec.php');
 
 class ComponentDefineSpec extends PHPSpecContext
 {
