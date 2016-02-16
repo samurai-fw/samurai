@@ -79,7 +79,11 @@ class Redis
      */
     public function set($key, $value, $timeout = 0)
     {
-        $res = $this->driver->set($key, (string)$value, $timeout);
+        if ($timeout) {
+            $res = $this->driver->set($key, (string)$value, $timeout);
+        } else {
+            $res = $this->driver->set($key, (string)$value);
+        }
         var_dump('set', $key, $value, $res);
     }
 
