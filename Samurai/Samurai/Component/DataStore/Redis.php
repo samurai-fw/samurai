@@ -67,7 +67,6 @@ class Redis
             $host ? $host : $this->host,
             $port ? $port : $this->port
         );
-        var_dump($res);
         return $res;
     }
 
@@ -80,7 +79,8 @@ class Redis
      */
     public function set($key, $value, $timeout = 0)
     {
-        $this->driver->set($key, (string)$value, $timeout);
+        $res = $this->driver->set($key, (string)$value, $timeout);
+        var_dump('set', $key, $value, $res);
     }
 
     /**
@@ -92,6 +92,7 @@ class Redis
     public function get($key)
     {
         $value = $this->driver->get($key);
+        var_dump('get', $key, $value);
 
         return $value !== false ? $value : null;
     }
