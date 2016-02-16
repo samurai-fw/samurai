@@ -27,7 +27,7 @@
         "mustangostang/spyc": "0.5.*@dev",
         "twig/twig": "1.*",
         "robmorgan/phinx": "*",
-        "8823-scholar/phpspec": "dev-me/master",
+        "phpspec/phpspec": "2.4.*",
         "symfony/process": "*"
     },
     "require-dev": {

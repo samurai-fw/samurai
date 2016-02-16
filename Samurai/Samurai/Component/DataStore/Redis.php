@@ -63,10 +63,12 @@ class Redis
      */
     public function connect($host = null, $port = null)
     {
-        return $this->driver->connect(
+        $res = $this->driver->connect(
             $host ? $host : $this->host,
             $port ? $port : $this->port
         );
+        var_dump($res);
+        return $res;
     }
 
     /**
