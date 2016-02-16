@@ -86,7 +86,7 @@ class PHPSpecContext extends SamuraiPHPSpecContext
     }
     
     
-    protected function _attachMySQLDefinitionFromEnv(Database $d)
+    protected function _attachMySQLDefinitionFromEnv($d)
     {
         $definition = $this->_getMySQLDefinition();
 
