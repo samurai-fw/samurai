@@ -36,7 +36,7 @@ install:
 
 script:
     - cp ${HOME}/xdebug.ini ${HOME}/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini || return 0
-    - Samurai/Console/app spec Samurai/Raikiri/Container.php
+    - Samurai/Console/app spec
 
 after_success:
     - travis_retry php vendor/bin/coveralls -v
