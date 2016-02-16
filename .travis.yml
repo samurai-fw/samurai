@@ -21,6 +21,7 @@ notifications:
 branches:
     only:
         - feature/3.0
+        - works/php7
 
 services:
     - redis-server
@@ -28,7 +29,7 @@ services:
 install:
     - mv ${HOME}/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ${HOME}/xdebug.ini || return 0
     - composer self-update
-    - travis_retry composer update --no-interaction
+    - travis_retry composer update --no-interaction --prefer-source
     - mysql -e 'CREATE DATABASE app'
     - psql -c 'CREATE DATABASE app;' -U postgres
     - phpenv config-add .travis/php.ini

@@ -110,10 +110,40 @@ class ContainerSpec extends PHPSpecContext
 
     public function it_inherits(Container $c)
     {
+        $ref = new \ReflectionClass(get_class($this));
+        foreach ($ref->getMethods() as $m) {
+            if ($m->getName() == 'it_inherits') {
+                foreach ($m->getParameters() as $p) {
+                    var_dump($p, $p->getClass());
+                }
+            }
+        }
+
+        $ref = new \ReflectionClass(get_class($c));
+        var_dump($ref->getName(), $ref->getParentClass());
+        /*
+        foreach ($ref->getMethods() as $m) {
+            if ($m->getName() == 'it_inherits') {
+                foreach ($m->getParameters() as $p) {
+                    var_dump($p, $p->getClass());
+                }
+            }
+        }
+         */
         $c->getAll()->willReturn(['inherit' => (object)['a' => 1, 'b' => 2]]);
         $this->inherit($c);
         $this->get('inherit')->a->shouldBe(1);
         $this->get('inherit')->b->shouldBe(2);
+    }
+    
+    public function it_inherits2(Container $c)
+    {
+        $ref = new \ReflectionClass(get_class($this));
+        foreach ($ref->getMethods() as $m) {
+            if ($m->getName() == 'it_inherits') {
+                $m->invoke($this, $c);
+            }
+        }
     }
 }
 
