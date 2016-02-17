@@ -191,8 +191,7 @@ class Redis
     public function getSortedRankAsc($key, $member)
     {
         $score = $this->getScore($key, $member);
-        if ($score === false) return null;
-        var_dump($score);
+        if ($score === false || $score === null) return null;
 
         return $this->driver->zCount($key, '-inf', -- $score);
     }
