@@ -26,16 +26,21 @@ branches:
 services:
     - redis-server
 
+before_install:
+    - phpenv config-rm xdebug.ini
+
 install:
-    - mv ${HOME}/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ${HOME}/xdebug.ini || return 0
     - composer self-update
     - travis_retry composer update --no-interaction --prefer-source
     - mysql -e 'CREATE DATABASE app'
     - psql -c 'CREATE DATABASE app;' -U postgres
+    - mkdir -p ${HOME}/.phpenv/versions/$(phpenv version-name)/etc/conf.d
     - phpenv config-add .travis/php.ini
 
 script:
-    - cp ${HOME}/xdebug.ini ${HOME}/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini || return 0
+    - phpenv config-add xdebug.ini
+    - bash -c 'if [ "$TRAVIS_PHP_VERSION" == "hhvm" ]; then rm phpspec.yml; fi;'
+    - bash -c 'if [ "$TRAVIS_PHP_VERSION" == "hhvm" ]; then mv phpspec.hhvm.yml phpspec.yml; fi;'
     - Samurai/Console/app spec Samurai/Samurai/Component/DataStore/Redis.php
 
 after_success:
