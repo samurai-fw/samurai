@@ -84,7 +84,6 @@ class Redis
         } else {
             $res = $this->driver->set($key, (string)$value);
         }
-        var_dump('set', $key, $value, $res);
     }
 
     /**
@@ -96,7 +95,6 @@ class Redis
     public function get($key)
     {
         $value = $this->driver->get($key);
-        var_dump('get', $key, $value);
 
         return $value !== false ? $value : null;
     }
@@ -194,6 +192,7 @@ class Redis
     {
         $score = $this->getScore($key, $member);
         if ($score === false) return null;
+        var_dump($score);
 
         return $this->driver->zCount($key, '-inf', -- $score);
     }
