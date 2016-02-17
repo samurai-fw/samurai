@@ -27,7 +27,7 @@ services:
     - redis-server
 
 before_install:
-    - phpenv config-rm xdebug.ini
+    - mv ${HOME}/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ${HOME}/xdebug.ini || return 0
 
 install:
     - composer self-update
@@ -38,7 +38,7 @@ install:
     - phpenv config-add .travis/php.ini
 
 script:
-    - phpenv config-add xdebug.ini
+    - cp ${HOME}/xdebug.ini ${HOME}/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini || return 0
     - bash -c 'if [ "$TRAVIS_PHP_VERSION" == "hhvm" ]; then rm phpspec.yml; fi;'
     - bash -c 'if [ "$TRAVIS_PHP_VERSION" == "hhvm" ]; then mv phpspec.hhvm.yml phpspec.yml; fi;'
     - Samurai/Console/app spec Samurai/Samurai/Component/DataStore/Redis.php
