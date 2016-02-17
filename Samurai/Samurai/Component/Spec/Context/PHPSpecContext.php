@@ -31,6 +31,7 @@
 namespace Samurai\Samurai\Component\Spec\Context;
 
 use PhpSpec\ObjectBehavior;
+use PhpSpec\Exception\Example\SkippingException;
 use Samurai\Raikiri\Container\NullableContainer;
 use Samurai\Raikiri\DependencyInjectable;
 use Samurai\Raikiri\Container;
@@ -103,6 +104,16 @@ class PHPSpecContext extends ObjectBehavior
 
         return in_array('Samurai\\Raikiri\\DependencyInjectable', $traits);
     }
+
+
+    /**
+     * skip example
+     */
+    public function skipExample($message)
+    {
+        throw new SkippingException($message);
+    }
+
 
 
     /**

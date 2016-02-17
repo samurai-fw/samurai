@@ -3,7 +3,6 @@
 namespace Samurai\Onikiri\Spec\Samurai\Onikiri\Driver;
 
 use Samurai\Onikiri\Database;
-use PhpSpec\Exception\Example\SkippingException;
 use Samurai\Samurai\Component\Spec\Context\PHPSpecContext;
 
 class PgsqlDriverSpec extends PHPSpecContext
@@ -20,7 +19,9 @@ class PgsqlDriverSpec extends PHPSpecContext
     public function it_connects_to_pgsql(Database $d)
     {
         if (! $this->application->config('spec.pgsql.database.defined'))
-            throw new SkippingException('Set env "ONIKIRI_SPEC_PGSQL_(USER|PASS|HOST|PORT|DATABASE)"');
+            $this->skipExample('Set env "ONIKIRI_SPEC_PGSQL_(USER|PASS|HOST|PORT|DATABASE)"');
+        if (defined('HHVM_VERSION'))
+            $this->skipExample('HHVM is pgsql not supported.');
 
         $d->getUser()->willReturn($this->application->config('spec.pgsql.database.user'));
         $d->getPassword()->willReturn($this->application->config('spec.pgsql.database.pass'));
