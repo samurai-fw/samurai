@@ -48,6 +48,13 @@ class Session extends Request
      */
     public $handler;
 
+    /**
+     * imported ?
+     *
+     * @var     boolean
+     */
+    private $_imported = false;
+
 
     /**
      * session start
@@ -56,6 +63,9 @@ class Session extends Request
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
+        }
+        if (! $this->_imported) {
+            $this->_imported = true;
             $this->import($_SESSION);
         }
     }
