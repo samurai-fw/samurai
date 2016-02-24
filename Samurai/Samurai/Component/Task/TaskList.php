@@ -162,51 +162,6 @@ class TaskList
 
 
     /**
-     * get option
-     *
-     * @return  Samurai\Samurai\Component\Task\Option
-     */
-    public function getOption($name = null)
-    {
-        $option = new Option();
-        $reflection = $this->getReflection();
-        if (! $name) $name = $this->do;
-        $name = $name . 'Task';
-        if (! $name || ! $reflection->hasMethod($name)) return $option;
-
-        $method = $reflection->getMethod($name);
-        $comment = $method->getDocComment();
-        $parser = new OptionParser();
-        $lines = [];
-        foreach (preg_split('/\r\n|\n|\r/', $comment) as $line) {
-            // /** or */ is skip.
-            if (in_array(trim($line), ['/**', '*/', '**/'])) continue;
-
-            $line = preg_replace('/^\s*?\*\s?/', '', $line);
-
-            // options
-            if($parser->isSupports($line)) {
-                $option->addDefinition($parser->parse($line));
-                continue;
-            }
-
-            // start char is "@" that is doc comment end signal.
-            if (preg_match('/^@\w+/', $line)) continue;
-
-            $lines[] = $line;
-        }
-
-        if ($options = $option->getDefinitions()) {
-            $lines[] = $parser->formatter($option);
-        }
-
-        $option->setDescription(join(PHP_EOL, $lines));
-
-        return $option;
-    }
-
-
-    /**
      * get reflection instance.
      *
      * @return  Reflection

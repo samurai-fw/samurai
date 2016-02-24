@@ -24,7 +24,7 @@ something do.
     --usage          show help.
 
 EOL;
-        $this->getOption('some')->usage()->shouldBe($usage);
+        $this->getTask('some')->getOption()->usage()->shouldBe($usage);
     }
 }
 
@@ -34,9 +34,9 @@ EOL;
  */
 namespace Samurai\Samurai\Task;
 
-use Samurai\Samurai\Component\Task\Task;
+use Samurai\Samurai\Component\Task\TaskList;
 
-class SampleTaskList extends Task
+class SampleTaskList extends TaskList
 {
     /**
      * something do.
