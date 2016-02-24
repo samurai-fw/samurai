@@ -455,6 +455,19 @@ class Application
         // register namespacer
         Namespacer::register($namespace, $path);
     }
+    
+    /**
+     * get application path.
+     *
+     * @return  array
+     */
+    public function getAppPaths()
+    {
+        $dirs = $this->config('directory.apps');
+        if (! $dirs) $dirs = [];
+        return $dirs;
+    }
+
 
     /**
      * get controller dirs

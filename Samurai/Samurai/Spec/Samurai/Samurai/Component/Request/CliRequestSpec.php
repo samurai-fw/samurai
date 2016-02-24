@@ -13,13 +13,7 @@ class CliRequestSpec extends PHPSpecContext
 
     public function it_initialize_argv_to_params()
     {
-        // backup.
-        $argv = $_SERVER['argv'];
-
-        // sample
-        $_SERVER['argv'] = ['./app', '--key1=value1', '--key2=value2', '--multi=1', '--multi=2'];
-
-        $this->init();
+        $this->init(['argv' => ['./app', '--key1=value1', '--key2=value2', '--multi=1', '--multi=2']]);
 
         // get values
         $this->get('key1')->shouldBe('value1');
@@ -30,9 +24,6 @@ class CliRequestSpec extends PHPSpecContext
         $this->getAsArray('key1')->shouldBeArray();
         $this->getAsArray('multi')->shouldBeArray();
         $this->getAsArray('multi')->shouldBe(['1', '2']);
-
-        // restore
-        $_SERVER['argv'] = $argv;
     }
 
     public function it_gets_script_name()

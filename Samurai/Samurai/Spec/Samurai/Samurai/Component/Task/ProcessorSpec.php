@@ -25,7 +25,7 @@ class ProcessorSpec extends PHPSpecContext
         $this->raikiri()->register('loader', $l);
 
         $task = $this->get('add:spec');
-        $task->shouldHaveType('Samurai\Console\Task\AddTaskList');
+        $task->shouldHaveType('Samurai\Samurai\Component\Task\Task');
     }
 }
 

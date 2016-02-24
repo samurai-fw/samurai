@@ -31,12 +31,12 @@
 namespace Samurai\Samurai\Component\Task;
 
 use Samurai\Samurai\Component\Core\Accessor;
-use Samurai\Raikiri\DependencyInjectable;
+use Samurai\Samurai\Component\Task\Task;
 use Samurai\Samurai\Exception\NotImplementsException;
-use ReflectionMethod;
+use Samurai\Raikiri\DependencyInjectable;
 
 /**
- * task class.
+ * task list class.
  *
  * @package     Samurai
  * @subpackage  Component.Task
@@ -44,7 +44,7 @@ use ReflectionMethod;
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class Task
+class TaskList
 {
     /**
      * @traits
@@ -74,61 +74,18 @@ class Task
     public $options = [];
 
     /**
-     * list
+     * do method.
      *
-     * @var     TaskList
+     * @var     string
      */
-    public $list;
+    public $do = null;
 
     /**
-     * method.
+     * output bredge component.
      *
-     * @var     ReflectionMethod
+     * @access  public
      */
-    public $method = null;
-
-
-    /**
-     * construct
-     *
-     * @param   TaskList            $list
-     * @param   ReflectionMethod    $method
-     */
-    public function __construct(TaskList $list, ReflectionMethod $method)
-    {
-        $this->list = $list;
-        $this->method = $method;
-    }
-
-
-    /**
-     * get name
-     *
-     * @return  string
-     */
-    public function getName()
-    {
-        return sprintf('%s:%s', $this->list->getName(), substr($this->method->getName(), 0, -4));
-    }
-    
-    /**
-     * get short description
-     *
-     * @return  string
-     */
-    public function getShortDescription()
-    {
-        $comments = preg_split("/(\n|\r|\r\n)/", $this->method->getDocComment());
-
-        foreach ($comments as $comment) {
-            $comment = trim($comment);
-            if ($comment === '/**') continue;
-
-            return preg_replace('/^\s*\*\s*/', '', $comment);
-        }
-
-        return '';
-    }
+    public $output;
     
     
     /**
@@ -139,16 +96,68 @@ class Task
     public function execute($options = [])
     {
         if (! is_array($options) && ! $options instanceof Option) throw new \InvalidArgumentException('invalid option');
+        if (! $this->do) throw new \Samurai\Samurai\Exception\LogicException('preset task something do.');
 
-        $option = $this->getOption();
+        $option = $this->getOption($this->do);
         if (is_array($options)) {
             $option->importFromArray($options);
         } else {
             $option->import($options);
         }
         $option->validate();
+        $this->{$this->do . 'Task'}($option);
+    }
 
-        $this->method->invoke($this->list, $option);
+
+    /**
+     * call other task
+     *
+     * @param   string  $name
+     * @param   array|Samurai\Samurai\Component\Task\Option $option
+     */
+    public function task($name, $option = [])
+    {
+        $this->taskProcessor->execute($name, $option);
+    }
+
+
+    /**
+     * send message to client.
+     *
+     * @param   string  $message
+     */
+    public function sendMessage()
+    {
+        if (! $this->output) return;
+
+        $args = func_get_args();
+        call_user_func_array([$this->output, 'send'], $args);
+    }
+    
+    /**
+     * ask prompt
+     *
+     * @param   string|array    $message
+     * @param   boolean         $secret
+     * @param   mixed           $default
+     * @return  string
+     */
+    public function ask($message, $secret = false, $default = '')
+    {
+        return $this->response->ask($message, $secret, $default);
+    }
+
+    /**
+     * confirmation prompt
+     *
+     * @param   string|array    $message
+     * @param   array           $choices
+     * @param   mixed           $default
+     * @return  mixed
+     */
+    public function confirmation($message, $choices = ['y' => true, 'n' => false], $default = false)
+    {
+        return $this->response->confirmation($message, $choices, $default);
     }
 
 
@@ -157,11 +166,15 @@ class Task
      *
      * @return  Samurai\Samurai\Component\Task\Option
      */
-    public function getOption()
+    public function getOption($name = null)
     {
         $option = new Option();
-        $method = $this->getReflection();
+        $reflection = $this->getReflection();
+        if (! $name) $name = $this->do;
+        $name = $name . 'Task';
+        if (! $name || ! $reflection->hasMethod($name)) return $option;
 
+        $method = $reflection->getMethod($name);
         $comment = $method->getDocComment();
         $parser = new OptionParser();
         $lines = [];
@@ -200,7 +213,53 @@ class Task
      */
     public function getReflection()
     {
-        return $this->method;
+        $reflection = new \ReflectionClass(get_class($this));
+        return $reflection;
+    }
+
+
+    /**
+     * get tasks
+     *
+     * @return  array
+     */
+    public function getTasks()
+    {
+        $tasks = [];
+
+        foreach (get_class_methods($this) as $method) {
+            if (preg_match('/Task$/', $method)) {
+                $task = new Task($this, $this->getReflection()->getMethod($method));
+                $tasks[] = $task;
+            }
+        }
+
+        return $tasks;
+    }
+
+    /**
+     * get task
+     *
+     * @return  Task
+     */
+    public function getTask($name)
+    {
+        if (! $this->has($name)) throw new \InvalidArgumentException('no such task');
+
+        $task = new Task($this, $this->getReflection()->getMethod($name . 'Task'));
+        return $task;
+    }
+
+
+    /**
+     * has task method ?
+     *
+     * @param   string  $name
+     * @return  boolean
+     */
+    public function has($name)
+    {
+        return method_exists($this, $name . 'Task');
     }
 }
 

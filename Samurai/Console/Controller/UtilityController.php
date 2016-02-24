@@ -51,24 +51,26 @@ class UtilityController extends ConsoleController
     {
         $arg = $this->request->get('args');
 
-        // show usage.
-        if ($arg === null) {
-            return [self::FORWARD_ACTION, 'utility.usage'];
+        // task execute.
+        if (($task = $this->request->get('tasks')) || ($task = $this->request->get('option.T'))) {
+            return [self::FORWARD_ACTION, 'task.list'];
+        } elseif ($this->isTask($arg)) {
+            return [self::FORWARD_ACTION, 'task.execute'];
         }
-
+        
         // start server.
         if ($arg === 's') {
             return [self::FORWARD_ACTION, 'utility.server'];
         }
-
-        // task execute.
-        if ($this->isTask($arg)) {
-            return [self::FORWARD_ACTION, 'task.execute'];
-        }
         
         // show version.
-        if ($this->request->get('option.v') || $this->request->get('version')) {
+        if ($arg === null && ($this->request->get('option.v') || $this->request->get('version'))) {
             return [self::FORWARD_ACTION, 'utility.version'];
+        }
+        
+        // show usage.
+        if ($arg === null) {
+            return [self::FORWARD_ACTION, 'utility.usage'];
         }
 
         // action execute.

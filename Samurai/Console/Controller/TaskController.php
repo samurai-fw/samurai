@@ -72,6 +72,24 @@ class TaskController extends ConsoleController
             $this->send($e->getMessage());
         }
     }
+    
+    /**
+     * list action.
+     *
+     * @option      name-only,n     name only
+     */
+    public function listAction()
+    {
+        $arg = $this->request->get('args');
+        $tasks = $this->taskProcessor->find($arg);
+
+        $length = 0;
+        foreach ($tasks as $t) $length = $length < strlen($t->getName()) ? strlen($t->getName()) : $length;
+
+        foreach ($tasks as $task) {
+            $this->send('%s        %s', str_pad($task->getName(), $length), $task->getShortDescription());
+        }
+    }
 
 
     /**

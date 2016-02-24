@@ -30,14 +30,14 @@
 
 namespace Samurai\Console\Task;
 
-use Samurai\Samurai\Component\Task\Task;
+use Samurai\Samurai\Component\Task\TaskList;
 use Samurai\Samurai\Component\Task\Option;
 use Samurai\Samurai\Component\Migration\Phinx\Manager;
 use Samurai\Samurai\Component\Migration\Phinx\Config;
 use Samurai\Onikiri\Database;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
-class DbTaskList extends Task
+class DbTaskList extends TaskList
 {
     /**
      * database migration task. using phinx.

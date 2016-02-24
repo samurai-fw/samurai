@@ -55,12 +55,14 @@ class CliRequest extends Request
      *
      * @access  public
      */
-    public function init()
+    public function init($server = null)
     {
+        $server = $server ?: $_SERVER;
+
         $this->set('args', array());
-        if (isset($_SERVER['argv'])) {
+        if (isset($server['argv'])) {
             // first argument is script name.
-            $args = $_SERVER['argv'];
+            $args = $server['argv'];
             $script = array_shift($args);
             $this->script_name = $script;
 

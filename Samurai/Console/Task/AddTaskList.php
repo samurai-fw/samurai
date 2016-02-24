@@ -30,7 +30,7 @@
 
 namespace Samurai\Console\Task;
 
-use Samurai\Samurai\Component\Task\Task;
+use Samurai\Samurai\Component\Task\TaskList;
 use Samurai\Samurai\Component\Task\Option;
 use Samurai\Samurai\Component\Task\Processor;
 use Samurai\Samurai\Component\Core\Skeleton;
@@ -48,7 +48,7 @@ use Samurai\Samurai\Exception\NotImplementsException;
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class AddTaskList extends Task
+class AddTaskList extends TaskList
 {
     /**
      * add a class.

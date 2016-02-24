@@ -91,13 +91,47 @@ class Processor
 
         require_once $class_path;
         $class_name = $class_path->getClassName();
-        $task = new $class_name();
-        if (! $task->has($method)) throw new NotImplementsException("No such task. -> {$name}");
-        $task->setDo($method);
-        $task->setOutput($this->output);
-        $task->setContainer($this->raikiri());
+        $taskList = new $class_name();
+        $taskList->setOutput($this->output);
+        $taskList->setContainer($this->raikiri());
+        if (! $taskList->has($method)) throw new NotImplementsException("No such task. -> {$name}");
 
-        return $task;
+        return $taskList->getTask($method);
+    }
+
+
+    /**
+     * find task.
+     *
+     * @param   string  $name
+     */
+    public function find($name = null)
+    {
+        $tasks = [];
+
+        foreach ($this->application->getAppPaths() as $path) {
+            $files = $this->finder->path($path['dir'] . DS . 'Task')->recursive()->name('*TaskList.php')->find();
+            foreach ($files as $file) {
+                $task_path = substr($file, strlen($path['dir'] . DS . 'Task' . DS), - strlen('TaskList.php'));
+                $task_name = join(':', array_map('lcfirst', explode(DS, $task_path)));
+
+                $class_name = $file->getClassName();
+                $taskList = new $class_name();
+                $taskList->setName($task_name);
+
+                foreach ($taskList->getTasks() as $task) {
+                    $tasks[] = $task;
+                }
+            }
+        }
+
+        if ($name) {
+            $tasks = array_filter($tasks, function($task) use ($name) {
+                return strpos($task->getName(), $name) === 0;
+            });
+        }
+
+        return $tasks;
     }
 
 
