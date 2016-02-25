@@ -34,6 +34,7 @@ use Samurai\Samurai\Component\Core\Accessor;
 use Samurai\Samurai\Exception\NotFoundException;
 use Samurai\Samurai\Exception\NotImplementsException;
 use Samurai\Raikiri\DependencyInjectable;
+use ReflectionClass;
 
 /**
  * task processor.
@@ -116,7 +117,12 @@ class Processor
                 $task_name = join(':', array_map('lcfirst', explode(DS, $task_path)));
 
                 $class_name = $file->getClassName();
-                $taskList = new $class_name();
+                if (! class_exists($class_name)) continue;
+
+                $refletion = new ReflectionClass($class_name);
+                if (! $refletion->isInstantiable()) continue;
+
+                $taskList = $refletion->newInstance();
                 $taskList->setName($task_name);
 
                 foreach ($taskList->getTasks() as $task) {
