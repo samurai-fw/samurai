@@ -97,7 +97,7 @@ class Processor
         $taskList->setContainer($this->raikiri());
         if (! $taskList->has($method)) throw new NotImplementsException("No such task. -> {$name}");
 
-        return $taskList->getTask($method);
+        return $taskList->get($method);
     }
 
 

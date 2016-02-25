@@ -197,7 +197,7 @@ class TaskList
      *
      * @return  Task
      */
-    public function getTask($name)
+    public function get($name)
     {
         if (! $this->has($name)) throw new \InvalidArgumentException('no such task');
 

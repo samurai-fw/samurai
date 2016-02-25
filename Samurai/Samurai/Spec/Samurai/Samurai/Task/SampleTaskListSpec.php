@@ -24,7 +24,7 @@ something do.
     --usage          show help.
 
 EOL;
-        $this->getTask('some')->getOption()->usage()->shouldBe($usage);
+        $this->get('some')->getOption()->usage()->shouldBe($usage);
     }
 }
 
