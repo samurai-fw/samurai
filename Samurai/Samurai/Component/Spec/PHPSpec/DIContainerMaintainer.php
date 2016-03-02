@@ -8,6 +8,7 @@ use PhpSpec\SpecificationInterface;
 use PhpSpec\Runner\MatcherManager;
 use PhpSpec\Runner\CollaboratorManager;
 use Samurai\Raikiri\Container;
+use Samurai\Raikiri\Container\NullableContainer;
 
 class DIContainerMaintainer implements MaintainerInterface
 {
@@ -23,7 +24,7 @@ class DIContainerMaintainer implements MaintainerInterface
      */
     public function supports(ExampleNode $example)
     {
-        return true;
+        return $this->isUseableRaikiri($example->getSpecification()->getResource()->getSrcClassname());
     }
 
 
@@ -32,6 +33,11 @@ class DIContainerMaintainer implements MaintainerInterface
      */
     public function prepare(ExampleNode $example, SpecificationInterface $context, MatcherManager $matchers, CollaboratorManager $collaborators)
     {
+        $c = new NullableContainer('spec');
+        $context->container = $c->inherit($this->Container);
+            
+        // console component is disable in spec context
+        $c->remove('console')->register('console', $c->get('__undefined'));
     }
 
 
@@ -48,7 +54,27 @@ class DIContainerMaintainer implements MaintainerInterface
      */
     public function getPriority()
     {
-        return 5;
+        return 14;
+    }
+    
+    
+    /**
+     * useable raikiri ?
+     *
+     * @param   string  $class
+     * @return  boolean
+     */
+    public function isUseableRaikiri($class)
+    {
+        $traits = [];
+        do {
+            $traits = array_merge($traits, class_uses($class));
+        } while ($class = get_parent_class($class));
+        foreach ($traits as $trait) {
+            $traits = array_merge($traits, class_uses($trait));
+        }
+
+        return in_array('Samurai\\Raikiri\\DependencyInjectable', $traits);
     }
 }
 

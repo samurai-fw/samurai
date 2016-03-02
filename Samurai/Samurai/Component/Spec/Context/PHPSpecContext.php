@@ -84,29 +84,6 @@ class PHPSpecContext extends ObjectBehavior
 
 
     /**
-     * useable raikiri ?
-     *
-     * @param   object  $object
-     * @return  boolean
-     */
-    public function isUseableRaikiri($object)
-    {
-        if (! is_object($object)) return false;
-
-        $traits = [];
-        $class = get_class($object);
-        do {
-            $traits = array_merge($traits, class_uses($class, false));
-        } while ($class = get_parent_class($class));
-        foreach ($traits as $trait) {
-            $traits = array_merge($traits, class_uses($trait, false));
-        }
-
-        return in_array('Samurai\\Raikiri\\DependencyInjectable', $traits);
-    }
-
-
-    /**
      * skip example
      */
     public function skipExample($message)
@@ -123,12 +100,8 @@ class PHPSpecContext extends ObjectBehavior
     {
         try {
             $object = $this->object->getWrappedObject();
-            if ($this->isUseableRaikiri($object) && ! $object->getContainer()) {
-                $c = new NullableContainer('spec');
-                $object->setContainer($c->inherit($this->__getContainer()));
-                $this->container = $c;
-                
-                $c->remove('console')->register('console', $c->get('undefined'));
+            if ($this->container && ! $object->getContainer()) {
+                $object->setContainer($this->container);
             }
             return $object;
         } catch (\Exception $e) {
