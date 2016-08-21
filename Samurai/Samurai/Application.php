@@ -38,12 +38,6 @@ use Samurai\Samurai\Component\Core\Namespacer;
 // common constants.
 defined('DS') ?: define('DS', DIRECTORY_SEPARATOR);
 
-// autoload by composer
-$autoload_file = __DIR__ . '/vendor/autoload.php';
-if (file_exists($autoload_file)) {
-    require_once $autoload_file;
-}
-
 /**
  * Application class.
  *

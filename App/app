@@ -36,13 +36,19 @@ use Samurai\Samurai\Config;
 use Samurai\Samurai\Component\Core\Framework;
 
 /**
- * web wntry point.
+ * cli entry point.
  *
  * @package     Samurai
  * @copyright   2007-2013, Samurai Framework Project
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
+
+// autoload
+if (is_file($autoload = __DIR__ . '/../vendor/autoload.php'))
+    require($autoload);
+elseif (is_file($autoload = __DIR__ . '/../../../autoload.php'))
+    require($autoload);
 
 // bootstrap.
 require __DIR__ . '/Console/Application.php';

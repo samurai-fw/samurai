@@ -32,12 +32,6 @@ namespace App;
 
 use Samurai\Samurai;
 
-// composer autoload
-$autoload_file = dirname(__DIR__) . '/vendor/autoload.php';;
-if ( file_exists($autoload_file) ) {
-    require_once $autoload_file;
-}
-
 /**
  * Application class.
  *
