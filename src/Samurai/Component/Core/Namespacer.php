@@ -127,5 +127,36 @@ class Namespacer
 
         return $root ? $root : $path;
     }
+
+
+    /**
+     * get namespace by filepath
+     *
+     * @param   string  $path
+     * @return  string
+     */
+    public static function getNamespaceByPath($path, $is_dir = true)
+    {
+        // when relational path.
+        if ($path[0] !== '/')
+            return null;
+        
+        $root_ns = '';
+        $filepath = $path;
+        foreach (self::$namespaces as $p => $ns) {
+            if (strpos($path, $p) !== false) {
+                $root_ns = $ns;
+                $filepath = substr($path, strlen($p) + 1);
+                break;
+            }
+        }
+
+        $ns = $filepath ? explode(DS, $filepath) : [];
+        if (! $is_dir)
+            array_pop($ns);
+        array_unshift($ns, $root_ns);
+
+        return join('\\', $ns);
+    }
 }
 

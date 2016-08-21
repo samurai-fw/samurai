@@ -187,9 +187,7 @@ class File extends \SplFileInfo
      */
     public function getNameSpace()
     {
-        $dir = substr($this->getDirname(), strlen($this->rootDir()) + 1);
-        $namespace = str_replace(DS, '\\', $dir);
-        return $namespace;
+        return Namespacer::getNamespaceByPath($this->getDirname());
     }
 
 
