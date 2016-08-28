@@ -35,6 +35,9 @@ use Samurai\Samurai\Component\Spec\PHPSpec\Input;
 use Samurai\Samurai\Component\Spec\PHPSpec\ApplicationMaintainer;
 use Samurai\Samurai\Component\Spec\PHPSpec\DIContainerMaintainer;
 use Samurai\Samurai\Component\Spec\PHPSpec\PSR0Locator;
+use Samurai\Samurai\Component\FileSystem\File;
+use Samurai\Samurai\Component\FileSystem\Directory;
+use Samurai\Samurai\Exception\NotFoundException;
 use PhpSpec\Console\Application;
 
 /**
@@ -130,6 +133,62 @@ class PHPSpecRunner extends Runner
     public function getConfigurationFileName()
     {
         return 'phpspec.yml';
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getSpecFile($class)
+    {
+        $suites = $this->getConfig('suites', []);
+        foreach ($suites as $suite)
+        {
+            $expected_namespaces = [];
+            if (! empty($suite['psr4_prefix']))
+                $expected_namespaces[] = $suite['psr4_prefix'];
+            if (! empty($suite['namespace']))
+                $expected_namespaces[] = $suite['namespace'];
+            $expected_namespace = join('\\', $expected_namespaces);
+
+            if (strpos($class, $expected_namespace) === 0)
+            {
+                $path = [$this->getWorkspace()];
+                $namespace = [];
+
+                if (! empty($suite['spec_path']))
+                    $path[] = empty($suite['spec_path']);
+                
+                if (empty($suite['spec_prefix']))
+                    $suite['spec_prefix'] = 'spec';
+                $namespace[] = $suite['spec_prefix'];
+                $path[] = str_replace('\\', DS, $suite['spec_prefix']);
+
+                if (! empty($suite['psr4_prefix']))
+                    $namespace[] = $suite['psr4_prefix'];
+
+                if (! empty($suite['namespace']))
+                {
+                    $namespace[] = $suite['namespace'];
+                    $path[] = str_replace('\\', DS, $suite['namespace']);
+                }
+
+                $path[] = str_replace('\\', DS, substr($class, strlen($expected_namespace) + 1));
+                $classes = explode('\\', substr($class, strlen($expected_namespace) + 1));
+                $classname = array_pop($classes) . 'Spec';
+                if ($classes)
+                    $namespace[] = join('\\', $classes);
+
+                $path = join(DS, $path) . 'Spec.php';
+                $namespace = join('\\', $namespace);
+
+                $file = new File($path);
+                $file->setNamespace($namespace);
+                return $file;
+            }
+        }
+
+        throw new NotFoundException('not found spec available suite.');
     }
 }
 

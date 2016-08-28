@@ -50,7 +50,7 @@ abstract class Runner
      * @access  public
      * @var     string
      */
-    public $workspace = 'Temp/Spec';
+    public $workspace;
 
     /**
      * target path.
@@ -61,9 +61,17 @@ abstract class Runner
     public $targets = [];
 
     /**
+     * loaded configuraton
+     *
+     * @var     array
+     */
+    protected $config;
+
+    /**
      * @dependencies
      */
     public $finder;
+    public $yaml;
 
     /**
      * @traits
@@ -72,9 +80,17 @@ abstract class Runner
 
 
     /**
+     * initialize
+     */
+    public function initialize()
+    {
+        $this->loadConfigurationFile();
+    }
+
+
+    /**
      * set workspace path.
      *
-     * @access  public
      * @param   string  $dir
      */
     public function setWorkspace($dir)
@@ -85,12 +101,14 @@ abstract class Runner
     /**
      * get workspace path.
      *
-     * @access  public
      * @return  string
      */
     public function getWorkspace()
     {
-        return $this->workspace;
+        if ($this->workspace)
+            return $this->workspace;
+
+        return dirname($this->findConfigurationFile());
     }
 
 
@@ -110,8 +128,6 @@ abstract class Runner
 
     /**
      * run spec.
-     *
-     * @access  public
      */
     abstract public function run();
 
@@ -119,9 +135,76 @@ abstract class Runner
     /**
      * get configuration file.
      *
-     * @access  public
      * @return  string
      */
     abstract public function getConfigurationFileName();
+
+    /**
+     * find configuration file
+     *
+     * @param   string  $filename
+     * @param   string  $pwd
+     * @return  string
+     */
+    public function findConfigurationFile($filename = null, $pwd = null)
+    {
+        $filename = $filename ?: $this->getConfigurationFileName();
+        $pwd = $pwd ?: getcwd();
+        
+        $dirs = explode(DS, $pwd);
+        $find = false;
+        do {
+            $dir = join(DS, $dirs);
+            $config_file_path = $dir . DS . $filename;
+            if (file_exists($config_file_path) && is_file($config_file_path))
+                return $config_file_path;
+        } while (array_pop($dirs));
+
+        return $pwd . DS . $filename;
+    }
+
+    /**
+     * load configuraton file
+     *
+     * @param   string  $file
+     */
+    public function loadConfigurationFile($file = null)
+    {
+        $file = $file ?: $this->findConfigurationFile();
+        if (! file_exists($file))
+            return;
+
+        $this->config = $this->yaml->load($file);
+    }
+
+    /**
+     * get config
+     *
+     * @param   string  $key
+     * @param   mixed   $default
+     * @return  mixed
+     */
+    public function getConfig($key, $default = null)
+    {
+        return empty($this->config[$key]) ? $default : $this->config[$key];
+    }
+
+    /**
+     * get spec file
+     *
+     * @param   string  $class
+     * @return  File
+     */
+    abstract public function getSpecFile($class);
+
+    /**
+     * get spec dir
+     *
+     * @param   string  $class
+     */
+    public function getSpecDir($class)
+    {
+        return $this->getSpecFile($class)->getDirectory();
+    }
 }
 

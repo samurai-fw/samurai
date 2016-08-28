@@ -46,7 +46,6 @@ class File extends \SplFileInfo
     /**
      * path
      *
-     * @access  public
      * @var     string
      */
     public $path;
@@ -54,7 +53,6 @@ class File extends \SplFileInfo
     /**
      * parent
      *
-     * @access  public
      * @var     Samurai\Samurai\Component\FileSystem\Directory
      */
     public $parent;
@@ -62,10 +60,16 @@ class File extends \SplFileInfo
     /**
      * current directory
      *
-     * @access  public
      * @var     string
      */
     public $cwd;
+
+    /**
+     * namespace
+     *
+     * @var     string
+     */
+    protected $namespace;
 
 
     /**
@@ -110,12 +114,27 @@ class File extends \SplFileInfo
     /**
      * get dirname
      *
-     * @access  public
      * @return  string
      */
     public function getDirname()
     {
         return dirname($this->path);
+    }
+
+    /**
+     * get directory
+     *
+     * @return  Directory
+     */
+    public function getDirectory()
+    {
+        $dir = new Directory($this->getDirname());
+
+        $namespaces = explode('\\', $this->getNameSpace());
+        array_pop($namespaces);
+        $dir->setNamespace(join('\\', $namespaces));
+
+        return $dir;
     }
 
 
@@ -182,12 +201,24 @@ class File extends \SplFileInfo
      * get ruled namespace from path.
      * (not real name space.)
      *
-     * @access  public
      * @return  string
      */
     public function getNameSpace()
     {
+        if ($this->namespace)
+            return $this->namespace;
+
         return Namespacer::getNamespaceByPath($this->getDirname());
+    }
+
+    /**
+     * set namespce
+     *
+     * @param   string  $namespace
+     */
+    public function setNamespace($namespace)
+    {
+        $this->namespace = $namespace;
     }
 
 

@@ -48,6 +48,13 @@ class Helper
      */
     use DependencyInjectable;
 
+    /**
+     * runner
+     *
+     * @var     Runner
+     */
+    protected $runner;
+
 
     /**
      * get runner.
@@ -58,9 +65,15 @@ class Helper
      */
     public function getRunner()
     {
+        if ($this->runner)
+            return $this->runner;
+
         $runner = new Runner\PHPSpecRunner();
         $this->application->getContainer()->injectDependency($runner);
-        return $runner;
+
+        $runner->initialize();
+
+        return $this->runner = $runner;
     }
 }
 

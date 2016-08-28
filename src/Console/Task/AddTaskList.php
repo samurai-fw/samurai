@@ -287,30 +287,36 @@ EOL;
      */
     public function specTask(Option $option)
     {
-        $current = $this->getCurrentAppDir($option);
-        $spec_dir = $this->loader->find($current . DS . $this->application->config('directory.spec'))->first();
-        $spec_dir->absolutize();
+        $runner = $this->specHelper->getRunner();
 
-        foreach ($option->getArgs() as $arg) {
-            $path = $arg;
+        foreach ($option->getArgs() as $class) {
+            $path = str_replace('\\', DS, $class);
             $dir = dirname($path);
             if ($dir == '.') $dir = '';
 
-            $skeleton = $this->getSkeleton('Spec');
-            $base_dir = clone $spec_dir;
-            $class_name = basename($path, '.php');
-            $namespace = str_replace(DS, '\\', $dir);
+            try
+            {
+                $skeleton = $this->getSkeleton('Spec');
 
-            $skeleton->assign('namespace', $namespace ? $namespace . '\\' : '');
-            $skeleton->assign('class', $class_name);
-            $skeleton->assign('spec_namespace', $spec_dir->getNameSpace() . ($namespace ? '\\' . $namespace : ''));
-            $skeleton->assign('spec_class', $class_name . 'Spec');
+                $class_name = basename($path, '.php');
+                $skeleton->assign('class', $class_name);
 
-            $spec_file = $spec_dir->getRealPath() . DS . ($dir ? $dir . DS : '') . $class_name . 'Spec.php';
-            $this->fileUtil->mkdirP(dirname($spec_file));
-            $this->fileUtil->putContents($spec_file, $skeleton->render());
+                $namespace = str_replace(DS, '\\', $dir);
+                $skeleton->assign('namespace', $namespace ? $namespace . '\\' : '');
 
-            $this->sendMessage('created spec file. -> %s', $spec_file);
+                $spec_file = $runner->getSpecFile($class);
+                $spec_dir = $spec_file->getDirectory();
+                $skeleton->assign('spec_namespace', $spec_file->getNameSpace());
+                $skeleton->assign('spec_class', $spec_file->getClassName(false));
+                
+                $this->fileUtil->mkdirP($spec_dir);
+                $this->fileUtil->putContents($spec_file, $skeleton->render());
+                $this->sendMessage('created spec file. -> %s', $spec_file);
+            }
+            catch (NotFoundException $e)
+            {
+                $this->sendMessage('not found spec dir for %s', $class);
+            }
         }
     }
 

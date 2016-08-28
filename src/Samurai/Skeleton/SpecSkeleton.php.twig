@@ -2,13 +2,14 @@
 
 namespace {{ spec_namespace }};
 
+use {{ namespace }}{{ class }};
 use Samurai\Samurai\Component\Spec\Context\PHPSpecContext;
 
 class {{ spec_class }} extends PHPSpecContext
 {
     public function it_is_initializable()
     {
-        $this->shouldHaveType('{{ namespace }}{{ class }}');
+        $this->shouldHaveType({{ class }}::class);
     }
 }
 
