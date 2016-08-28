@@ -157,7 +157,7 @@ class Application
         $this->config('directory.root', dirname(dirname(__DIR__)));
         
         // application dir.
-        $this->addAppPath(__DIR__, __NAMESPACE__, self::PRIORITY_LOW);
+        $this->addAppPathUsePsr4(__DIR__, __NAMESPACE__, 'Samurai\\', self::PRIORITY_LOW);
 
         // set directory names.
         $this->config('directory.config.samurai', 'Config/Samurai');
@@ -430,11 +430,24 @@ class Application
      */
     public function addAppPath($path, $namespace, $priority = self::PRIORITY_LOW)
     {
+        $this->addAppPathUsePsr4($path, $namespace, '', $priority);
+    }
+    
+    /**
+     * add application path using psr4.
+     *
+     * @param   string  $path
+     * @param   string  $namespace
+     * @param   string  $psr4_prefix
+     * @param   string  $priority
+     */
+    public function addAppPathUsePsr4($path, $namespace, $psr4_prefix, $priority = self::PRIORITY_LOW)
+    {
         $dirs = $this->config('directory.apps');
-        if (! $dirs) $dirs = array();
+        if (! $dirs) $dirs = [];
 
         // root (path - namespace)
-        $root = substr($path, 0, -1 - strlen($namespace));
+        $root = substr($path, 0, -1 - strlen($namespace) + strlen($psr4_prefix));
         
         $dirs[] = ['dir' => $path, 'root' => $root, 'namespace' => $namespace, 'priority' => $priority, 'index' => count($dirs)];
         usort($dirs, function($a, $b) {

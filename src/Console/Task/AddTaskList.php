@@ -53,11 +53,12 @@ class AddTaskList extends TaskList
     /**
      * add a class.
      *
-     * [usage]
-     *   $ ./app add:class Foo\Bar\Zoo
+     * ## usge
+     * $ ./app add:class Foo\Bar\Zoo
      *
      * @option  extands,e               extends class.
      * @option  skeleton,s=class        use skeleton name.
+     * @option  with-spec               create with spec for class.
      * @option  use-raikiri,r=true      use raikiri(di container).
      * @option  use-accessor,a          use accessor trait.
      */
@@ -66,8 +67,8 @@ class AddTaskList extends TaskList
         $current = $this->getRootAppDir($option);
         $base_dir = $current;
 
-        foreach ($option->getArgs() as $arg) {
-            $path = str_replace('\\', DS, $arg);
+        foreach ($option->getArgs() as $class) {
+            $path = str_replace('\\', DS, $class);
             $dir = dirname($path);
             if ($dir == '.') $dir = '';
 
@@ -90,6 +91,9 @@ class AddTaskList extends TaskList
 
                 $this->sendMessage('created class file. -> %s', $file);
             }
+
+            if ($option->get('with-spec'))
+                $this->task('add:spec', [$class]);
         }
     }
     
@@ -308,10 +312,13 @@ EOL;
                 $spec_dir = $spec_file->getDirectory();
                 $skeleton->assign('spec_namespace', $spec_file->getNameSpace());
                 $skeleton->assign('spec_class', $spec_file->getClassName(false));
-                
-                $this->fileUtil->mkdirP($spec_dir);
-                $this->fileUtil->putContents($spec_file, $skeleton->render());
-                $this->sendMessage('created spec file. -> %s', $spec_file);
+            
+                if (! $spec_file->isExists() || $this->confirmation(['spec file(%s) is already exists. override ?', $spec_file]))
+                {
+                    $this->fileUtil->mkdirP($spec_dir);
+                    $this->fileUtil->putContents($spec_file, $skeleton->render());
+                    $this->sendMessage('created spec file. -> %s', $spec_file);
+                    }
             }
             catch (NotFoundException $e)
             {

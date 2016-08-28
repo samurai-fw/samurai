@@ -53,7 +53,7 @@ class Application extends Samurai\Application
         $this->setEnv($this->getEnvFromEnvironmentVariables());
 
         // application dir.
-        $this->addAppPath(__DIR__, __NAMESPACE__, self::PRIORITY_LOW + 1);
+        $this->addAppPathUsePsr4(__DIR__, __NAMESPACE__, 'Samurai\\', self::PRIORITY_LOW + 1);
         $this->config('controller.namespaces', ['Samurai\Console']);
         
         // default spec namespaces
@@ -73,7 +73,7 @@ class Application extends Samurai\Application
         $app->setEnv($this->getEnvFromEnvironmentVariables());
 
         // application dir.
-        $app->addAppPath(__DIR__, __NAMESPACE__, self::PRIORITY_LOW);
+        $app->addAppPathUsePsr4(__DIR__, __NAMESPACE__, 'Samurai\\', self::PRIORITY_LOW);
     }
 
 
