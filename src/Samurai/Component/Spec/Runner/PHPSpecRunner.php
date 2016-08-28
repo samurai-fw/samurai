@@ -77,7 +77,7 @@ class PHPSpecRunner extends Runner
         $container = $app->getContainer();
         $container->set('samurai.container', $this->application->getContainer());
 
-        $container->setShared('runner.specification', function($c) {
+        $container->set('runner.specification', function($c) {
             return new PHPSpecSpecificationRunner(
                 $c->get('event_dispatcher'),
                 $c->get('runner.example')

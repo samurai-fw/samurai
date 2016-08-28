@@ -2,26 +2,12 @@
 formatter.name: pretty
 suites:
     samurai:
-        src_path: .
-        spec_path: .
-        spec_prefix: Samurai\Samurai\Spec
-    console:
-        src_path: .
-        spec_path: .
-        spec_prefix: Samurai\Console\Spec
-    onikiri:
-        src_path: .
-        spec_path: .
-        spec_prefix: Samurai\Onikiri\Spec
-    raikiri:
-        src_path: .
-        spec_path: .
-        spec_prefix: Samurai\Raikiri\Spec
-extensions:
-    - PhpSpec\Extension\CodeCoverageExtension
+        namespace: Samurai
+        psr4_prefix: Samurai
 
-code_coverage:
-    format:
-        - clover
-    output:
-        clover: coverage.xml
+extensions:
+    PhpSpecCodeCoverage\CodeCoverageExtension:
+        format:
+            - clover
+        output:
+            clover: coverage.xml

@@ -29,12 +29,12 @@
         "mustangostang/spyc": "0.5.*@dev",
         "twig/twig": "1.*",
         "robmorgan/phinx": "*",
-        "phpspec/phpspec": "2.4.*",
         "symfony/process": "*"
     },
     "require-dev": {
-        "henrikbjorn/phpspec-code-coverage" : "1.0.*@dev",
-        "satooshi/php-coveralls": "dev-master"
+        "henrikbjorn/phpspec-code-coverage" : "~3.0",
+        "satooshi/php-coveralls": "dev-master",
+        "phpspec/phpspec": "~3.0"
     },
     "extra": {
         "branch-alias": {
