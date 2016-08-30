@@ -14,14 +14,13 @@
         }
     ],
     "autoload": {
-        "psr-0": {
-            "App": ""
-        },
         "psr-4": {
+            "App\\": "App",
             "Samurai\\Samurai\\": "src/Samurai",
             "Samurai\\Console\\": "src/Console",
             "Samurai\\Onikiri\\": "src/Onikiri",
-            "Samurai\\Raikiri\\": "src/Raikiri"
+            "Samurai\\Raikiri\\": "src/Raikiri",
+            "spec\\": "spec"
         }
     },
     "require": {
