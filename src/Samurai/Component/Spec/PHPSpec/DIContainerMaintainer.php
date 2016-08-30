@@ -2,15 +2,15 @@
 
 namespace Samurai\Samurai\Component\Spec\PHPSpec;
 
-use PhpSpec\Runner\Maintainer\MaintainerInterface;
+use PhpSpec\Runner\Maintainer\Maintainer;
 use PhpSpec\Loader\Node\ExampleNode;
-use PhpSpec\SpecificationInterface;
+use PhpSpec\Specification;
 use PhpSpec\Runner\MatcherManager;
 use PhpSpec\Runner\CollaboratorManager;
 use Samurai\Raikiri\Container;
 use Samurai\Raikiri\Container\NullableContainer;
 
-class DIContainerMaintainer implements MaintainerInterface
+class DIContainerMaintainer implements Maintainer
 {
     /**
      * samurai di container.
@@ -31,7 +31,7 @@ class DIContainerMaintainer implements MaintainerInterface
     /**
      * {@inheritdoc}
      */
-    public function prepare(ExampleNode $example, SpecificationInterface $context, MatcherManager $matchers, CollaboratorManager $collaborators)
+    public function prepare(ExampleNode $example, Specification $context, MatcherManager $matchers, CollaboratorManager $collaborators)
     {
         $c = new NullableContainer('spec');
         $context->container = $c->inherit($this->Container);
@@ -44,7 +44,7 @@ class DIContainerMaintainer implements MaintainerInterface
     /**
      * {@inheritdoc}
      */
-    public function teardown(ExampleNode $example, SpecificationInterface $context, MatcherManager $matchers, CollaboratorManager $collaborators)
+    public function teardown(ExampleNode $example, Specification $context, MatcherManager $matchers, CollaboratorManager $collaborators)
     {
     }
 

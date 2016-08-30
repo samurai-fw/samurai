@@ -80,47 +80,22 @@ class PHPSpecRunner extends Runner
         $container = $app->getContainer();
         $container->set('samurai.container', $this->application->getContainer());
 
-        $container->set('runner.specification', function($c) {
-            return new PHPSpecSpecificationRunner(
-                $c->get('event_dispatcher'),
-                $c->get('runner.example')
-            );
-        });
-
-        $container->set('runner.maintainers.application', function($c) {
+        $container->define('runner.maintainers.application', function($c) {
             $maintainer = new ApplicationMaintainer(
                 $c->get('formatter.presenter'),
                 $c->get('unwrapper')
             );
             $maintainer->Container = $c->get('samurai.container');
             return $maintainer;
-        });
-        $container->set('runner.maintainers.dicontainer', function($c) {
+        }, ['runner.maintainers']);
+        $container->define('runner.maintainers.dicontainer', function($c) {
             $maintainer = new DIContainerMaintainer(
                 $c->get('formatter.presenter'),
                 $c->get('unwrapper')
             );
             $maintainer->Container = $c->get('samurai.container');
             return $maintainer;
-        });
-
-        $container->addConfigurator(function($c) {
-            $suites = $c->getParam('suites', array('main' => ''));
-
-            foreach ($suites as $name => $suite) {
-                $suite = is_array($suite) ? $suite : array('namespace' => $suite);
-                $srcNS = isset($suite['namespace']) ? $suite['namespace'] : '';
-                $specNS = isset($suite['spec_namespace']) ? $suite['spec_namespace'] : 'spec';
-                $srcPath = isset($suite['src_path']) ? $suite['src_path'] : 'src';
-                $specPath = isset($suite['spec_path']) ? $suite['spec_path'] : 'spec';
-
-                $c->set(sprintf('locator.locators.%s_suite', $name),
-                    function($c) use($srcNS, $specNS, $srcPath, $specPath) {
-                        return new PSR0Locator($srcNS, $specNS, $srcPath, $specPath);
-                    }
-                );
-            }
-        });
+        }, ['runner.maintainers']);
 
         $app->run($input);
         chdir($pwd);

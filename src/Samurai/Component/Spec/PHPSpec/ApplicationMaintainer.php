@@ -2,13 +2,13 @@
 
 namespace Samurai\Samurai\Component\Spec\PHPSpec;
 
-use PhpSpec\Runner\Maintainer\MaintainerInterface;
+use PhpSpec\Runner\Maintainer\Maintainer;
 use PhpSpec\Loader\Node\ExampleNode;
-use PhpSpec\SpecificationInterface;
+use PhpSpec\Specification;
 use PhpSpec\Runner\MatcherManager;
 use PhpSpec\Runner\CollaboratorManager;
 
-class ApplicationMaintainer implements MaintainerInterface
+class ApplicationMaintainer implements Maintainer
 {
     /**
      * samurai di container.
@@ -29,7 +29,7 @@ class ApplicationMaintainer implements MaintainerInterface
     /**
      * {@inheritdoc}
      */
-    public function prepare(ExampleNode $example, SpecificationInterface $context, MatcherManager $matchers, CollaboratorManager $collaborators)
+    public function prepare(ExampleNode $example, Specification $context, MatcherManager $matchers, CollaboratorManager $collaborators)
     {
         // di container injection.
         if ($context instanceof \Samurai\Samurai\Component\Spec\Context\PHPSpecContext) {
@@ -42,7 +42,7 @@ class ApplicationMaintainer implements MaintainerInterface
     /**
      * {@inheritdoc}
      */
-    public function teardown(ExampleNode $example, SpecificationInterface $context, MatcherManager $matchers, CollaboratorManager $collaborators)
+    public function teardown(ExampleNode $example, Specification $context, MatcherManager $matchers, CollaboratorManager $collaborators)
     {
     }
 
