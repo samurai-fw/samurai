@@ -2,7 +2,7 @@
 
 namespace spec\Samurai\Onikiri;
 
-use Samurai\Samurai\Component\Spec\Context\PHPSpecContext;
+use spec\Samurai\Onikiri\PHPSpecContext;
 
 class StatementSpec extends PHPSpecContext
 {

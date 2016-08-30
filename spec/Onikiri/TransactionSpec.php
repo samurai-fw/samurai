@@ -2,8 +2,8 @@
 
 namespace spec\Samurai\Onikiri;
 
-use Samurai\Samurai\Component\Spec\Context\PHPSpecContext;
 use Samurai\Onikiri\Connection;
+use spec\Samurai\Onikiri\PHPSpecContext;
 
 class TransactionSpec extends PHPSpecContext
 {

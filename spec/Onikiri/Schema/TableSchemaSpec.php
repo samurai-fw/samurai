@@ -2,7 +2,7 @@
 
 namespace spec\Samurai\Onikiri\Schema;
 
-use spec\Onikiri\PHPSpecContext;
+use spec\Samurai\Onikiri\PHPSpecContext;
 
 class TableSchemaSpec extends PHPSpecContext
 {

@@ -2,10 +2,10 @@
 
 namespace spec\Samurai\Onikiri;
 
-use Samurai\Samurai\Component\Spec\Context\PHPSpecContext;
 use Samurai\Onikiri\Onikiri;
 use Samurai\Onikiri\EntityTable;
 use Samurai\Onikiri\Transaction;
+use spec\Samurai\Onikiri\PHPSpecContext;
 
 class EntitySpec extends PHPSpecContext
 {

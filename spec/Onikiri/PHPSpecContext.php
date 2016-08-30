@@ -28,7 +28,7 @@
  * @license     http://opensource.org/licenses/MIT
  */
 
-namespace spec\Onikiri;
+namespace spec\Samurai\Onikiri;
 
 use Samurai\Samurai\Component\Spec\Context\PHPSpecContext as SamuraiPHPSpecContext;
 use Samurai\Onikiri\Driver\MysqlDriver;

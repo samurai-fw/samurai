@@ -20,7 +20,7 @@
             "Samurai\\Console\\": "src/Console",
             "Samurai\\Onikiri\\": "src/Onikiri",
             "Samurai\\Raikiri\\": "src/Raikiri",
-            "spec\\": "spec"
+            "spec\\Samurai\\": "spec"
         }
     },
     "require": {

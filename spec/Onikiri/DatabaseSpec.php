@@ -2,7 +2,7 @@
 
 namespace spec\Samurai\Onikiri;
 
-use spec\Onikiri\PHPSpecContext;
+use spec\Samurai\Onikiri\PHPSpecContext;
 use PhpSpec\Exception\Example\SkippingException;
 
 class DatabaseSpec extends PHPSpecContext

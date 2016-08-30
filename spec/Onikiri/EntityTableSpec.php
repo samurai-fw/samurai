@@ -2,7 +2,7 @@
 
 namespace spec\Samurai\Onikiri;
 
-use spec\Onikiri\PHPSpecContext;
+use spec\Samurai\Onikiri\PHPSpecContext;
 use Samurai\Onikiri\Onikiri;
 use Samurai\Onikiri\Database;
 use Samurai\Onikiri\Connection;

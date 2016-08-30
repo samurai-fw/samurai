@@ -2,7 +2,7 @@
 
 namespace spec\Samurai\Onikiri;
 
-use spec\Onikiri\PHPSpecContext;
+use spec\Samurai\Onikiri\PHPSpecContext;
 
 class ConnectionSpec extends PHPSpecContext
 {
