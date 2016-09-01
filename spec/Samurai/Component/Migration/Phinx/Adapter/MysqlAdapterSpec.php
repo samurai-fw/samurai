@@ -7,6 +7,7 @@ use Samurai\Onikiri\Statement;
 use Samurai\Samurai\Component\Migration\Phinx\Db\Table;
 use Samurai\Samurai\Component\Migration\Phinx\Db\Column;
 use Samurai\Samurai\Component\Spec\Context\PHPSpecContext;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use PhpSpec\Exception\Example\SkippingException;
 use Prophecy\Argument;
@@ -19,7 +20,7 @@ class MysqlAdapterSpec extends PHPSpecContext
     public $request;
 
 
-    public function let(OutputInterface $o, Connection $con, Statement $st)
+    public function let(InputInterface $i, OutputInterface $o, Connection $con, Statement $st)
     {
         $op = [
             'name' => 'sandbox',
@@ -27,7 +28,7 @@ class MysqlAdapterSpec extends PHPSpecContext
             'user' => 'foo',
             'pass' => '',
         ];
-        $this->beConstructedWith($op, $o);
+        $this->beConstructedWith($op, $i, $o);
 
         $con->exec(Argument::any())->willReturn(0);
         $con->query(Argument::any())->willReturn($st);
