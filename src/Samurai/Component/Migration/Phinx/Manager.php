@@ -38,6 +38,7 @@ use Phinx\Migration\Manager as PhinxManager;
 use Phinx\Migration\Manager\Environment;
 use Phinx\Migration\MigrationInterface;
 use Phinx\Db\Adapter\AdapterFactory;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -59,10 +60,10 @@ class Manager extends PhinxManager
 
     /**
      * construct
-     */
-    public function __construct(Config $config, OutputInterface $output)
+    */
+    public function __construct(Config $config, InputInterface $input, OutputInterface $output)
     {
-        parent::__construct($config, $output);
+        parent::__construct($config, $input, $output);
 
         AdapterFactory::instance()->registerAdapter('mysql', 'Samurai\Samurai\Component\Migration\Phinx\Adapter\MysqlAdapter');
         AdapterFactory::instance()->registerAdapter('sqlite', 'Samurai\Samurai\Component\Migration\Phinx\Adapter\SQLiteAdapter');
