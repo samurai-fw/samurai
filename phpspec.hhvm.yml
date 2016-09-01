@@ -4,10 +4,3 @@ suites:
     samurai:
         namespace: Samurai
         psr4_prefix: Samurai
-
-extensions:
-    PhpSpecCodeCoverage\CodeCoverageExtension:
-        format:
-            - clover
-        output:
-            clover: coverage.xml
