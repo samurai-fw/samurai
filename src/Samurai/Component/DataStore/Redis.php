@@ -78,7 +78,7 @@ class Redis
      */
     public function set($key, $value, $timeout = 0)
     {
-        if ($timeout || version_compare(PHP_VERSION, '7.0.0') < 0) {
+        if (is_int($timeout) && $timeout > 0) {
             $this->driver->set($key, (string)$value, $timeout);
         } else {
             $this->driver->set($key, (string)$value);
