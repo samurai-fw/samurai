@@ -28,8 +28,7 @@ before_install:
     - mv ${HOME}/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ${HOME}/xdebug.ini || return 0
 
 install:
-    - composer self-update
-    - travis_retry composer update --no-interaction --prefer-source
+    - travis_retry composer install --dev --no-interaction --prefer-source
     - mysql -e 'CREATE DATABASE app'
     - psql -c 'CREATE DATABASE app;' -U postgres
     - mkdir -p ${HOME}/.phpenv/versions/$(phpenv version-name)/etc/conf.d
