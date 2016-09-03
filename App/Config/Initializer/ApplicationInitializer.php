@@ -30,12 +30,11 @@
 
 namespace App\Config\Initializer;
 
-use Samurai\Samurai\Application as SamuraiApplication;
+use Samurai\Samurai\Application;
 use Samurai\Samurai\Component\Core\Initializer;
-use Samurai\Onikiri\Onikiri;
 
 /**
- * database initializer.
+ * application initializer.
  *
  * @package     Samurai
  * @subpackage  Config.Initializer
@@ -43,33 +42,14 @@ use Samurai\Onikiri\Onikiri;
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class Database extends Initializer
+class ApplicationInitializer extends Initializer
 {
     /**
      * {@inheritdoc}
      */
-    public function configure(SamuraiApplication $app)
+    public function configure(Application $app)
     {
-        $app->config('container.callback.initialized.', function($c) use ($app) {
-            $onikiri = new Onikiri();
-            $c->register('onikiri', $onikiri);
-
-            $config = $onikiri->configure();
-
-            // register model directory.
-            $loader = $app->getLoader();
-            foreach ($loader->find($app->config('directory.model')) as $dir) {
-                $config->addModelDir($dir->toString(), $dir->getNameSpace());
-            }
-
-            // set data dir
-            $config->setDataDir($loader->findFirst($app->config('directory.database.data')));
-
-            // load configuration.
-            // App/Config/Database/[env].yml
-            $file = $loader->find($app->config('directory.config.database') . DS . $app->getEnv() . '.yml')->first();
-            if ($file) $onikiri->import($file);
-        });
+        // coding configuration for application.
     }
 }
 

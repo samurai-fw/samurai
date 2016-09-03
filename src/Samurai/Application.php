@@ -215,7 +215,7 @@ class Application
     protected function initializers()
     {
         $initializers = [];
-        $initializer_files = $this->loader->find('Config/Initializer/*.php');
+        $initializer_files = $this->loader->find('Config/Initializer/*Initializer.php');
         foreach ($initializer_files as $file) {
             require_once $file->getRealPath();
             $class = $file->getClassName();
@@ -223,7 +223,7 @@ class Application
         }
 
         // sort by priority
-        usort($initializers, function ($a, $b) { return $b->getPriority() - $a->getPriority(); });
+        usort($initializers, function ($a, $b) { return $a->getPriority() - $b->getPriority(); });
 
         // call initializer
         foreach ($initializers as $initializer) {

@@ -28,13 +28,14 @@
  * @license     http://opensource.org/licenses/MIT
  */
 
-namespace App\Config\Initializer;
+namespace Samurai\Console\Config\Initializer;
 
-use Samurai\Samurai\Application as SamuraiApplication;
-use Samurai\Samurai\Component\Core\Initializer;
+use Samurai\Samurai\Application;
+use Samurai\Samurai\Config\Initializer\RendererInitializer as SamuraiRendererInitializer;
+use Samurai\Samurai\Component\Renderer\Renderer;
 
 /**
- * application initializer.
+ * renderer initializer.
  *
  * @package     Samurai
  * @subpackage  Config.Initializer
@@ -42,14 +43,23 @@ use Samurai\Samurai\Component\Core\Initializer;
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class Application extends Initializer
+class RendererInitializer extends SamuraiRendererInitializer
 {
     /**
      * {@inheritdoc}
      */
-    public function configure(SamuraiApplication $app)
+    public function configure(Application $app)
     {
-        // coding configuration for application.
+        $app->config('renderer.auto_escape_html', false);
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function initialize(Application $app, Renderer $renderer)
+    {
+        parent::initialize($app, $renderer);
     }
 }
 

@@ -42,7 +42,7 @@ use Samurai\Samurai\Component\Core\Initializer;
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class ErrorHandler extends Initializer
+class ErrorHandlerInitializer extends Initializer
 {
     /**
      * oroginal handler

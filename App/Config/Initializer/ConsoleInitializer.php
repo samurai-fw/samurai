@@ -30,7 +30,7 @@
 
 namespace App\Config\Initializer;
 
-use Samurai\Samurai\Application as SamuraiApplication;
+use Samurai\Samurai\Application;
 use Samurai\Samurai\Component\Console\Client\ConsoleClient;
 use Samurai\Samurai\Component\Core\Initializer;
 use Samurai\Samurai\Component\Console\Client\MultipleClient;
@@ -47,12 +47,12 @@ use Samurai\Samurai\Component\Console\Client\IgnoreClient;
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class Console extends Initializer
+class ConsoleInitializer extends Initializer
 {
     /**
      * {@inheritdoc}
      */
-    public function configure(SamuraiApplication $app)
+    public function configure(Application $app)
     {
         $app->config('container.callback.initialized.', function($c) {
             switch (php_sapi_name()) {

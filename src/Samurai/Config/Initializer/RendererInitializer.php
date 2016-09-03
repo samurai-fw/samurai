@@ -32,7 +32,7 @@ namespace Samurai\Samurai\Config\Initializer;
 
 use Samurai\Samurai\Application;
 use Samurai\Samurai\Component\Core\Initializer;
-use Samurai\Samurai\Component\Renderer\Renderer as SamuraiRenderer;
+use Samurai\Samurai\Component\Renderer\Renderer;
 
 /**
  * renderer initializer.
@@ -43,7 +43,7 @@ use Samurai\Samurai\Component\Renderer\Renderer as SamuraiRenderer;
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class Renderer extends Initializer
+class RendererInitializer extends Initializer
 {
     /**
      * {@inheritdoc}
@@ -53,7 +53,7 @@ class Renderer extends Initializer
         $app->config('renderer.name', 'twig');
         $app->config('renderer.auto_reload', true);
         $app->config('renderer.auto_escape_html', true);
-        $app->config('renderer.initializers.default', function(Application $app, SamuraiRenderer $renderer) {
+        $app->config('renderer.initializers.default', function(Application $app, Renderer $renderer) {
             $this->initialize($app, $renderer);
         });
     }
@@ -66,7 +66,7 @@ class Renderer extends Initializer
      * @param   Samurai\Samurai\Application $app
      * @param   Samurai\Samurai\Component\Renderer\Renderer $renderer
      */
-    public function initialize(Application $app, SamuraiRenderer $renderer)
+    public function initialize(Application $app, Renderer $renderer)
     {
         switch ($app->config('renderer.name')) {
             case 'twig':
@@ -82,7 +82,7 @@ class Renderer extends Initializer
      * @param   Samurai\Samurai\Application $app
      * @param   Samurai\Samurai\Component\Renderer\Renderer $renderer
      */
-    protected function initialize4Twig(Application $app, SamuraiRenderer $renderer)
+    protected function initialize4Twig(Application $app, Renderer $renderer)
     {
         // register autoloader.
         \Twig_Autoloader::register();

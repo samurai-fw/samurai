@@ -42,7 +42,7 @@ use Samurai\Samurai\Component\Core\Initializer;
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class Spec extends Initializer
+class SpecInitializer extends Initializer
 {
     /**
      * {@inheritdoc}
