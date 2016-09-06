@@ -46,7 +46,7 @@ class Tag
      *
      * @var     string
      */
-    public $name;
+    public $tag;
 
     /**
      * attributes
@@ -80,6 +80,7 @@ class Tag
         'img' => self::SELF_CLOSE,
         'link' => self::SELF_CLOSE,
         'meta' => self::SELF_CLOSE,
+        'input' => self::SELF_CLOSE,
         'form' => self::DONT_CLOSE,
     ];
 
@@ -102,7 +103,7 @@ class Tag
      */
     public function __construct($name, array $attributes = [])
     {
-        $this->name = $name;
+        $this->tag = $name;
         $this->closeMode = $this->detectCloseMode($name);
 
         foreach ($attributes as $name => $value)
@@ -160,6 +161,17 @@ class Tag
     }
 
     /**
+     * add child tag
+     *
+     * @param   Tag     $tag
+     * @return  Tag
+     */
+    public function addChild(Tag $tag)
+    {
+        $this->contents[] = $tag;
+    }
+
+    /**
      * clear contents
      */
     public function clearContents()
@@ -211,6 +223,10 @@ class Tag
 
         switch (true)
         {
+            case $values === [true]:
+                $attr = $name;
+                return $attr;
+                break;
             case $name === 'style':
             case strpos($name, 'on') === 0:
                 $attr .= htmlspecialchars(join(';', $values));
@@ -233,7 +249,7 @@ class Tag
     public function make()
     {
         if ($this->closeMode === self::CLOSE_ONLY)
-            return '</' . $this->name . '>';
+            return '</' . $this->tag . '>';
 
         $join = function($tag, $last = null) {
             if ($last)
@@ -242,10 +258,13 @@ class Tag
         };
 
         $tag = [];
-        $tag[] = '<' . $this->name;
+        $tag[] = '<' . $this->tag;
 
         foreach ($this->attributes as $name => $values)
         {
+            if ($values === [null])
+                continue;
+
             $tag[] = ' ' . $this->makeAttribute($name, $values);
         }
 
@@ -259,10 +278,13 @@ class Tag
 
         foreach ($this->contents as $content)
         {
-            $tag[] = $content;
+            if ($content instanceof Tag)
+                $tag[] = $content->make();
+            else
+                $tag[] = $content;
         }
 
-        return $join($tag, '</' . $this->name . '>');
+        return $join($tag, '</' . $this->tag . '>');
     }
 
 
@@ -287,6 +309,31 @@ class Tag
     public function __toString()
     {
         return $this->make();
+    }
+
+    /**
+     * call missing method bridge to setAttribute
+     *
+     * @param   string  $method
+     * @param   array   $args
+     * @return  Tag
+     */
+    public function __call($method, $args)
+    {
+        $this->setAttribute($method, array_shift($args));
+        return $this;
+    }
+    
+    /**
+     * call missing member bridge to setAttribute
+     *
+     * @param   string  $key
+     * @param   mixed   $value
+     * @return  Tag
+     */
+    public function __set($key, $value)
+    {
+        $this->setAttribute($key, $value);
     }
 }
 

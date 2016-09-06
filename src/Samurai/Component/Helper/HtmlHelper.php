@@ -30,8 +30,6 @@
 
 namespace Samurai\Samurai\Component\Helper;
 
-use Samurai\Raikiri\DependencyInjectable;
-
 /**
  * HTML helper component.
  *

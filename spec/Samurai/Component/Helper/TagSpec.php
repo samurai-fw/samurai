@@ -81,5 +81,36 @@ class TagSpec extends PHPSpecContext
         $this->beConstructedWith('form');
         $this->make()->shouldBe('<form>');
     }
+
+    public function it_set_attribute_by_magic_method_call()
+    {
+        $this->attr1('attr1-value')->attr2('attr2-value');
+        $this->make()->shouldBe('<div attr1="attr1-value" attr2="attr2-value"></div>');
+    }
+    
+    public function it_set_attribute_by_magic_method_set()
+    {
+        $this->attr1 = 'attr1-value';
+        $this->attr2 = 'attr2-value';
+        $this->make()->shouldBe('<div attr1="attr1-value" attr2="attr2-value"></div>');
+    }
+
+    public function it_true_attribute_is_no_value()
+    {
+        $this->beConstructedWith('option');
+        $this->selected = true;
+        $this->make()->shouldBe('<option selected></option>');
+    }
+
+    public function it_adds_child_tag()
+    {
+        $child1 = new Tag('span');
+        $child1->setText('child1');
+        $child2 = new Tag('span');
+        $child2->setText('child2');
+        $this->addChild($child1);
+        $this->addChild($child2);
+        $this->make()->shouldBe('<div><span>child1</span><span>child2</span></div>');
+    }
 }
 
