@@ -4,6 +4,7 @@ namespace spec\Samurai\Samurai\Component\Helper;
 
 use Samurai\Samurai\Component\Helper\FormHelper;
 use Samurai\Samurai\Component\Spec\Context\PHPSpecContext;
+use Samurai\Onikiri\Entity;
 
 class FormHelperSpec extends PHPSpecContext
 {
@@ -130,6 +131,27 @@ class FormHelperSpec extends PHPSpecContext
         $this->label('some', 'label')
             ->make()
             ->shouldBe('<label for="some">label</label>');
+    }
+
+
+    public function it_opens_form_by_model(Entity $model)
+    {
+        $model->get('id')->willReturn(10);
+        $model->has('name')->willReturn(true);
+        $model->get('name')->willReturn('John Doe');
+        $model->has('description')->willReturn(true);
+        $model->get('description')->willReturn('a long long text.');
+
+        $this->model($model, 'http://example.jp/foo/bar/zoo')
+            ->make()
+            ->shouldBe('<form action="http://example.jp/foo/bar/zoo" method="POST">');
+
+        $this->text('name')
+            ->make()
+            ->shouldBe('<input type="text" name="name" value="John Doe" />');
+        $this->textarea('description')
+            ->make()
+            ->shouldBe('<textarea name="description">a long long text.</textarea>');
     }
 }
 

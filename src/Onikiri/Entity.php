@@ -196,7 +196,7 @@ class Entity
      */
     public function get($key)
     {
-        return array_key_exists($key, $this->attributes) ? $this->attributes[$key] : null;
+        return $this->has($key) ? $this->attributes[$key] : null;
     }
 
     /**
@@ -225,6 +225,17 @@ class Entity
     public function getOriginalAttributes()
     {
         return $this->o_attributes;
+    }
+
+    /**
+     * alias of hasAttribute
+     *
+     * @param   string  $key
+     * @retrn   boolean
+     */
+    public function has($key)
+    {
+        return $this->hasAttribute($key);
     }
 
     /**

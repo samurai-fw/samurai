@@ -30,6 +30,8 @@
 
 namespace Samurai\Samurai\Component\Helper;
 
+use Samurai\Onikiri\Entity;
+
 /**
  * Form helper component.
  *
@@ -42,17 +44,41 @@ namespace Samurai\Samurai\Component\Helper;
 class FormHelper
 {
     /**
+     * model
+     *
+     * @var     Entity
+     */
+    protected $model;
+
+
+    /**
      * open form tag.
      *
      * @param   string  $url
      * @param   array   $attributes
-     * @return  string
+     * @return  Tag
      */
     public function open($url, array $attributes = [])
     {
         $tag = new Tag('form', $attributes);
         $tag->action = $url;
         $tag->method = 'POST';
+        return $tag;
+    }
+
+    /**
+     * open form tag using model
+     *
+     * @param   Entity  $model
+     * @param   string  $url
+     * @param   array   $attributes
+     * @return  Tag
+     */
+    public function model(Entity $model, $url, array $attributes = [])
+    {
+        $this->model = $model;
+
+        $tag = $this->open($url, $attributes);
         return $tag;
     }
 
@@ -65,6 +91,9 @@ class FormHelper
     {
         $tag = new Tag('form');
         $tag->closeMode = Tag::CLOSE_ONLY;
+
+        $this->model = null;
+
         return $tag;
     }
 
@@ -97,6 +126,7 @@ class FormHelper
      */
     public function hidden($name, $value = null, array $attributes = [])
     {
+        $value = $this->getDefaultValue($name, $value);
         return $this->input('hidden', $name, $value, $attributes);
     }
     
@@ -110,6 +140,7 @@ class FormHelper
      */
     public function text($name, $value = null, array $attributes = [])
     {
+        $value = $this->getDefaultValue($name, $value);
         return $this->input('text', $name, $value, $attributes);
     }
     
@@ -123,6 +154,7 @@ class FormHelper
      */
     public function date($name, $value = null, array $attributes = [])
     {
+        $value = $this->getDefaultValue($name, $value);
         return $this->input('date', $name, $value, $attributes);
     }
 
@@ -136,6 +168,7 @@ class FormHelper
      */
     public function number($name, $value = null, array $attributes = [])
     {
+        $value = $this->getDefaultValue($name, $value);
         return $this->input('number', $name, $value, $attributes);
     }
 
@@ -149,7 +182,7 @@ class FormHelper
     public function checkbox($name, $value, $checked = false, array $attributes = [])
     {
         $tag = $this->input('checkbox', $name, $value, $attributes);
-
+        
         if ($checked)
             $tag->checked = 'checked';
 
@@ -166,6 +199,10 @@ class FormHelper
     public function radio($name, $value, $checked = false, array $attributes = [])
     {
         $tag = $this->input('radio', $name, $value, $attributes);
+        
+        $default = $this->getDefaultValue($name);
+        if ($default !== null)
+            $checked = $default == $value;
 
         if ($checked)
             $tag->checked = 'checked';
@@ -185,7 +222,7 @@ class FormHelper
     {
         $tag = new Tag('textarea', $attributes);
         $tag->name = $name;
-        $tag->setText($value);
+        $tag->setText($this->getDefaultValue($name, $value));
         return $tag;
     }
 
@@ -201,6 +238,9 @@ class FormHelper
     {
         $tag = new Tag('select', $attributes);
         $tag->name = $name;
+        
+        if ($selected === null)
+            $selected = $this->getDefaultValue($name);
 
         foreach ($options as $value => $label)
         {
@@ -244,6 +284,29 @@ class FormHelper
         $tag->for = $for;
         $tag->setText($label);
         return $tag;
+    }
+
+
+    /**
+     * get default value
+     *
+     * 1. from argument
+     * 2. from request
+     * 3. from model
+     *
+     * @param   string  $name
+     * @param   string  $value
+     * @return  mixed
+     */
+    protected function getDefaultValue($name, $value = null)
+    {
+        if ($value !== null)
+            return $value;
+
+        if ($this->model && $this->model->has($name))
+            return $this->model->get($name);
+
+        return $value;
     }
 }
 
