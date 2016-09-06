@@ -30,6 +30,8 @@
 
 namespace App\Controller;
 
+use App\Controller\Controller;
+
 /**
  * Error Controller.
  *
@@ -39,7 +41,7 @@ namespace App\Controller;
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class ErrorController extends AppController
+class ErrorController extends Controller
 {
     /**
      * not found handeler

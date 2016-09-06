@@ -30,7 +30,7 @@
 
 namespace App\Controller;
 
-use Samurai\Samurai\Controller\SamuraiController;
+use Samurai\Samurai\Controller\Controller as SamuraiController;
 
 /**
  * App base controller.
@@ -41,7 +41,7 @@ use Samurai\Samurai\Controller\SamuraiController;
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class AppController extends SamuraiController
+class Controller extends SamuraiController
 {
 }
 

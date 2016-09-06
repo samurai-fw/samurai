@@ -4,11 +4,12 @@ namespace spec\Samurai\Samurai\Controller;
 
 use Samurai\Samurai\Component\Spec\Context\PHPSpecContext;
 use Samurai\Samurai\Application;
+use Samurai\Samurai\Controller\Controller;
 use Samurai\Samurai\Component\Core\Loader;
 use Samurai\Raikiri\Container;
 use Samurai\Onikiri\Onikiri;
 
-class SamuraiControllerSpec extends PHPSpecContext
+class ControllerSpec extends PHPSpecContext
 {
     public function let(Container $c, Application $a, Onikiri $o, Loader $l)
     {
@@ -24,7 +25,7 @@ class SamuraiControllerSpec extends PHPSpecContext
 
     public function it_is_initializable()
     {
-        $this->shouldHaveType('Samurai\Samurai\Controller\SamuraiController');
+        $this->shouldHaveType(Controller::class);
     }
 
 

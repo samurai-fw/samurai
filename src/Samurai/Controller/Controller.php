@@ -44,14 +44,14 @@ use Samurai\Samurai\Component\Core\Loader;
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class SamuraiController
+class Controller
 {
     /**
      * name
      *
      * @var     string
      */
-    public $name = '';
+    public $name;
 
 
     /**

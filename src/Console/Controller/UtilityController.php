@@ -32,6 +32,7 @@
 namespace Samurai\Console\Controller;
 
 use Samurai\Samurai\Samurai;
+use Samurai\Console\Controller\Controller;
 
 /**
  * Utility controller.
@@ -42,7 +43,7 @@ use Samurai\Samurai\Samurai;
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class UtilityController extends ConsoleController
+class UtilityController extends Controller
 {
     /**
      * action locator action.

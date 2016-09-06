@@ -3,7 +3,7 @@
 namespace spec\Samurai\Samurai\Component\Core;
 
 use Samurai\Samurai\Component\Spec\Context\PHPSpecContext;
-use Samurai\Samurai\Controller\SamuraiController;
+use Samurai\Samurai\Controller\Controller;
 
 class FilterChainSpec extends PHPSpecContext
 {
@@ -20,7 +20,7 @@ class FilterChainSpec extends PHPSpecContext
     }
 
 
-    public function it_sets_controller(SamuraiController $c)
+    public function it_sets_controller(Controller $c)
     {
         $this->setAction($c, 'execute');
         $this->getController()->shouldBe($c);
@@ -38,7 +38,7 @@ class FilterChainSpec extends PHPSpecContext
     }
 
 
-    public function it_build_filter_chain(SamuraiController $c)
+    public function it_build_filter_chain(Controller $c)
     {
         $filters = [];
         foreach ($this->loader->find('Controller/filter.yml') as $filter) {
@@ -56,7 +56,7 @@ class FilterChainSpec extends PHPSpecContext
     }
 
 
-    public function it_loads_filter(SamuraiController $c)
+    public function it_loads_filter(Controller $c)
     {
         $filter = $this->loader->findFirst('Controller/filter.yml');
         if (is_null($filter)) throw new \Exception('Not found filter.');
@@ -75,7 +75,7 @@ class FilterChainSpec extends PHPSpecContext
     }
 
 
-    public function it_gets_current_filter(SamuraiController $c)
+    public function it_gets_current_filter(Controller $c)
     {
         $filter = $this->loader->findFirst('Controller/filter.yml');
         if (is_null($filter)) throw new \Exception('Not found filter.');
@@ -100,7 +100,7 @@ class FilterChainSpec extends PHPSpecContext
     }
 
 
-    public function it_is_filterchain(SamuraiController $c)
+    public function it_is_filterchain(Controller $c)
     {
         $filter = $this->loader->findFirst('Controller/filter.yml');
         if (is_null($filter)) throw new \Exception('Not found filter.');

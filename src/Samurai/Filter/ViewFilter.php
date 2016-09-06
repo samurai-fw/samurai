@@ -32,7 +32,7 @@ namespace Samurai\Samurai\Filter;
 
 use App\Application;
 use Samurai\Samurai\Component\Core\Loader;
-use Samurai\Samurai\Controller\SamuraiController;
+use Samurai\Samurai\Controller\Controller;
 use Samurai\Samurai\Exception\Exception;
 
 /**
@@ -53,28 +53,28 @@ class ViewFilter extends Filter
      *
      * @const   string
      */
-    const VIEW_TEMPLATE = SamuraiController::VIEW_TEMPLATE;
+    const VIEW_TEMPLATE = Controller::VIEW_TEMPLATE;
 
     /**
      * Forward action.
      *
      * @const   string
      */
-    const FORWARD_ACTION = SamuraiController::FORWARD_ACTION;
+    const FORWARD_ACTION = Controller::FORWARD_ACTION;
     
     /**
      * location.
      *
      * @const   string
      */
-    const LOCATION_URL = SamuraiController::LOCATION_URL;
+    const LOCATION_URL = Controller::LOCATION_URL;
 
     /**
      * output json data.
      *
      * @const   string
      */
-    const OUTPUT_JSON = SamuraiController::OUTPUT_JSON;
+    const OUTPUT_JSON = Controller::OUTPUT_JSON;
 
 
     /**

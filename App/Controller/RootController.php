@@ -30,6 +30,8 @@
 
 namespace App\Controller;
 
+use App\Controller\Controller;
+
 /**
  * Default Controller.
  *
@@ -39,7 +41,7 @@ namespace App\Controller;
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class RootController extends AppController
+class RootController extends Controller
 {
     /**
      * index action.

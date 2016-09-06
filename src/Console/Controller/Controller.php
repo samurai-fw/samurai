@@ -31,7 +31,7 @@
 
 namespace Samurai\Console\Controller;
 
-use Samurai\Samurai\Controller\SamuraiController;
+use Samurai\Samurai\Controller\Controller as SamuraiController;
 use Samurai\Console\Exception\Task\NotFoundException;
 
 /**
@@ -43,7 +43,7 @@ use Samurai\Console\Exception\Task\NotFoundException;
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class ConsoleController extends SamuraiController
+class Controller extends SamuraiController
 {
     /**
      * implements for task output.

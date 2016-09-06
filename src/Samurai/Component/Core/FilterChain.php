@@ -30,7 +30,7 @@
 
 namespace Samurai\Samurai\Component\Core;
 
-use Samurai\Samurai\Controller\SamuraiController;
+use Samurai\Samurai\Controller\Controller;
 use Samurai\Samurai\Exception;
 use Samurai\Raikiri\DependencyInjectable;
 
@@ -49,7 +49,7 @@ class FilterChain
      * controller
      *
      * @access  private
-     * @var     Samurai\Samurai\Controller\SamuraiController 
+     * @var     Samurai\Samurai\Controller\Controller 
      */
     public $controller;
 
@@ -104,10 +104,10 @@ class FilterChain
      * Set action
      *
      * @access  public
-     * @param   Samurai\Samurai\Controller\SamuraiController $controller
+     * @param   Controller  $controller
      * @param   string  $action
      */
-    public function setAction(SamuraiController $controller, $action = 'execute')
+    public function setAction(Controller $controller, $action = 'execute')
     {
         $this->controller = $controller;
         $this->action = $action;

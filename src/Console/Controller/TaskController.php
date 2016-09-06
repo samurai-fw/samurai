@@ -31,6 +31,7 @@
 
 namespace Samurai\Console\Controller;
 
+use Samurai\Console\Controller\Controller;
 use Samurai\Samurai\Exception\NotFoundException;
 use Samurai\Samurai\Component\Task\OptionRequiredException;
 
@@ -43,7 +44,7 @@ use Samurai\Samurai\Component\Task\OptionRequiredException;
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class TaskController extends ConsoleController
+class TaskController extends Controller
 {
     /**
      * execute action.

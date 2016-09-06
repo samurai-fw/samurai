@@ -30,6 +30,7 @@
 
 namespace Samurai\Console\Controller;
 
+use Samurai\Console\Controller\Controller;
 use Samurai\Samurai\Component\FileSystem\File;
 
 /**
@@ -41,7 +42,7 @@ use Samurai\Samurai\Component\FileSystem\File;
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class SpecController extends ConsoleController
+class SpecController extends Controller
 {
     /**
      * spec runner.
