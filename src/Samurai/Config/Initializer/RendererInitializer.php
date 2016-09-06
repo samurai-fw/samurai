@@ -33,6 +33,7 @@ namespace Samurai\Samurai\Config\Initializer;
 use Samurai\Samurai\Application;
 use Samurai\Samurai\Component\Core\Initializer;
 use Samurai\Samurai\Component\Renderer\Renderer;
+use Samurai\Samurai\Component\Helper\HtmlHelper;
 
 /**
  * renderer initializer.
@@ -115,6 +116,9 @@ class RendererInitializer extends Initializer
 
         // configurations assign.
         $renderer->set('config', $app->configHierarchical());
+
+        // helpers
+        $renderer->setComponent('html', new HtmlHelper());
     }
 }
 
