@@ -35,6 +35,7 @@ use Samurai\Samurai\Component\Task\Option;
 use Samurai\Samurai\Component\Migration\Phinx\Manager;
 use Samurai\Samurai\Component\Migration\Phinx\Config;
 use Samurai\Onikiri\Database;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 class SchemaTaskList extends TaskList
@@ -140,7 +141,7 @@ class SchemaTaskList extends TaskList
         $reporter->writeln('<info>using adapter</info> ' . $env['adapter']);
         $reporter->writeln('<info>using database</info> ' . $env['name']);
 
-        $manager = new Manager($config, $reporter);
+        $manager = new Manager($config, new ArrayInput([]), $reporter);
         $manager->setContainer($this->raikiri());
         return $manager;
     }
