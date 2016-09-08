@@ -81,7 +81,7 @@ class MatchRule extends Rule
     /**
      * {@inheritdoc}
      */
-    public function match($path)
+    public function match($path, $method = null)
     {
         // parse
         $regexp = [];
@@ -128,6 +128,18 @@ class MatchRule extends Rule
             return true;
         }
         return false;
+    }
+
+
+    /**
+     * fooBarZooAction to foo-bar-zoo
+     * 
+     * {@inheritdoc}
+     */
+    public function methodName2URL($method)
+    {
+        $method = preg_replace('/Action$/i', '', $method);
+        return trim(strtolower(preg_replace('/[A-Z]/', '-\0', $method)), '-');
     }
 }
 

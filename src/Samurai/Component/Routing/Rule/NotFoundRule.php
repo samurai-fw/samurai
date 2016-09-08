@@ -59,9 +59,13 @@ class NotFoundRule extends Rule
     /**
      * {@inheritdoc}
      */
-    public function match($path)
+    public function match($path, $method = null)
     {
         return false;
+    }
+    
+    public function methodName2URL($method)
+    {
     }
 }
 

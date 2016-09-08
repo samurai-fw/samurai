@@ -28,14 +28,12 @@
  * @license     http://opensource.org/licenses/MIT
  */
 
-namespace Samurai\Samurai\Component\Routing\Rule;
+namespace Samurai\Samurai\Component\Routing\Exception;
 
-use Samurai\Samurai\Component\Routing\Exception\InvalidArgumentException;
+use Exception;
 
 /**
- * Routing Rule "Root"
- *
- * default routing rule.
+ * routing is not found exception
  *
  * @package     Samurai
  * @subpackage  Component.Routing
@@ -43,32 +41,7 @@ use Samurai\Samurai\Component\Routing\Exception\InvalidArgumentException;
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class RootRule extends Rule
+class NotFoundException extends Exception
 {
-    /**
-     * constructor
-     */
-    public function __construct($rule)
-    {
-        $this->setAction($rule);
-
-        if (! $this->getController() || ! $this->getAction()) {
-            throw new InvalidArgumentException();
-        }
-    }
-
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function match($path, $method = null)
-    {
-        return $path === '/';
-    }
-    
-    public function methodName2URL($method)
-    {
-    }
 }
 

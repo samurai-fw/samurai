@@ -30,6 +30,7 @@
 
 namespace Samurai\Samurai\Component\Routing;
 
+use Samurai\Samurai\Component\Routing\Exception\NotFoundException;
 use Samurai\Raikiri\DependencyInjectable;
 
 /**
@@ -62,11 +63,11 @@ class Router
     protected $_default;
 
     /**
-     * routes
+     * rules
      *
-     * @access  protected
      * @var     array
      */
+    protected $rules = [];
     protected $_rules = array();
 
     /**
@@ -84,6 +85,149 @@ class Router
     {
         $this->_default = new Rule\DefaultRule();
     }
+
+
+
+    /**
+     * dispatch to action
+     *
+     * @param   string  $path
+     * @param   string  $method
+     * @return  Closure
+     */
+    public function dispatch($path = '/', $method = 'GET')
+    {
+        foreach ($this->rules as $rule)
+        {
+            if ($rule->match($path, $method))
+                return $rule->toActionCaller($path, $method);
+        }
+        throw new NotFoundException($path);
+    }
+
+
+    /**
+     * add get routing
+     *
+     * @param   string  $path
+     * @param   string|Closure  $action
+     * @return  Rule
+     */
+    public function get($path, $action = null)
+    {
+        return $this->match($path, Rule\HttpMethodRule::HTTP_METHOD_GET, $action);
+    }
+    
+    /**
+     * add post routing
+     *
+     * @param   string  $path
+     * @param   string|Closure  $action
+     * @return  Rule
+     */
+    public function post($path, $action = null)
+    {
+        return $this->match($path, Rule\HttpMethodRule::HTTP_METHOD_POST, $action);
+    }
+    
+    /**
+     * add put routing
+     *
+     * @param   string  $path
+     * @param   string|Closure  $action
+     * @return  Rule
+     */
+    public function put($path, $action = null)
+    {
+        return $this->match($path, Rule\HttpMethodRule::HTTP_METHOD_PUT, $action);
+    }
+    
+    /**
+     * add patch routing
+     *
+     * @param   string  $path
+     * @param   string|Closure  $action
+     * @return  Rule
+     */
+    public function patch($path, $action = null)
+    {
+        return $this->match($path, Rule\HttpMethodRule::HTTP_METHOD_PATCH, $action);
+    }
+    
+    /**
+     * add delete routing
+     *
+     * @param   string  $path
+     * @param   string|Closure  $action
+     * @return  Rule
+     */
+    public function delete($path, $action = null)
+    {
+        return $this->match($path, Rule\HttpMethodRule::HTTP_METHOD_DELETE, $action);
+    }
+
+    /**
+     * add any method routing
+     *
+     * @param   string  $path
+     * @param   string|Closure  $action
+     * @return  Rule
+     */
+    public function any($path, $action = null)
+    {
+        return $this->match($path, Rule\HttpMethodRule::HTTP_METHOD_ANY, $action);
+    }
+
+    /**
+     * add match routing
+     *
+     * @param   string  $path
+     * @param   string|array    $method
+     * @param   string|Closure  $action
+     * @return  Rule
+     */
+    public function match($path, $method, $action = null)
+    {
+        $rule = new Rule\HttpMethodRule();
+        $rule->setPath($path);
+        $rule->setMethod($method);
+        $rule->setAction($action);
+        $this->rules[] = $rule;
+        return $rule;
+    }
+
+
+    /**
+     * add controller routing
+     * (http method not important)
+     *
+     * - /foo/index: FooController::indexAction
+     * - /foo/show: FooController::showAction
+     *
+     * @param   string  $path
+     * @param   mixed   $class
+     * @param   array   $names
+     */
+    public function controller($path, $class, array $names = [])
+    {
+        $methods = get_class_methods($class);
+
+        foreach ($methods as $method)
+        {
+            // xxxxAction
+            if (! preg_match('/(.+)Action$/i', $method, $matches))
+                continue;
+
+            if (is_object($class))
+                $rule = $this->any($path, [$class, $method]);
+            else
+                $rule = $this->any($path, $class . '::' . $method);
+
+            $rule->restful(false);
+            $rule->setPath($path . '/' . $rule->methodName2URL($method));
+        }
+    }
+
 
 
 

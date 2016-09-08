@@ -33,5 +33,15 @@ class HttpMethodRuleSpec extends PHPSpecContext
         $this->match('/user/index', HttpMethodRule::HTTP_METHOD_POST)->shouldBe(false);
         $this->match('/user/index', HttpMethodRule::HTTP_METHOD_GET)->shouldBe(true);
     }
+    
+    public function it_converts_to_url_from_method_name()
+    {
+        $this->methodName2URL('getIndexAction')->shouldBe('index');
+        $this->methodName2URL('getFooBarZooAction')->shouldBe('foo-bar-zoo');
+        $this->methodName2URL('getfoo_bar_zooAction')->shouldBe('foo_bar_zoo');
+
+        $this->restful(false);
+        $this->methodName2URL('getIndexAction')->shouldBe('get-index');
+    }
 }
 

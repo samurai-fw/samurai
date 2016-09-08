@@ -44,7 +44,7 @@ class DefaultRule extends Rule
     /**
      * {@inheritdoc}
      */
-    public function match($path)
+    public function match($path, $method = null)
     {
         $paths = explode(DS, $path);
         array_shift($paths);
@@ -81,6 +81,11 @@ class DefaultRule extends Rule
         }
 
         return false;
+    }
+    
+    
+    public function methodName2URL($method)
+    {
     }
 }
 

@@ -30,6 +30,10 @@
 
 namespace Samurai\Samurai\Component\Routing\Rule;
 
+use Closure;
+use Samurai\Samurai\Component\Routing\ActionCaller;
+
+
 /**
  * Rule abstract class.
  *
@@ -58,7 +62,7 @@ abstract class Rule
     /**
      * action
      *
-     * @var     string
+     * @var     mixed
      */
     public $action;
 
@@ -76,6 +80,16 @@ abstract class Rule
      */
     public $params = [];
 
+    /**
+     * alias of setName
+     *
+     * @param   string  $name
+     * @return  Rule
+     */
+    public function name($name)
+    {
+        return $this->setName($name);
+    }
 
     /**
      * Set name.
@@ -85,6 +99,7 @@ abstract class Rule
     public function setName($name)
     {
         $this->name = $name;
+        return $this;
     }
 
     /**
@@ -128,6 +143,22 @@ abstract class Rule
      */
     public function setAction($action)
     {
+        if ($action instanceof Closure)
+        {
+            $this->action = $action;
+            return;
+        }
+        else if (is_array($action) && is_callable($action))
+        {
+            $this->action = $action;
+            return;
+        }
+        else if (strpos($action, '::') > 0)
+        {
+            $this->action = explode('::', $action);
+            return;
+        }
+
         $names = explode('.', $action);
         if (count($names) > 1) {
             $controller = array_shift($names);
@@ -222,8 +253,46 @@ abstract class Rule
      * matching to path.
      *
      * @param   string  $path
+     * @param   string  $method
      * @return  boolean
      */
-    abstract public function match($path);
+    abstract public function match($path, $method = null);
+    
+    
+    /**
+     * rule convert to action caller
+     *
+     * @param   string  $path
+     * @param   string  $method
+     * @return  ActionCaller
+     */
+    public function toActionCaller()
+    {
+        $actionCaller = new ActionCaller();
+
+        $action = $this->getAction();
+        if ($action instanceof Closure)
+        {
+            $actionCaller->byClosure($action);
+        }
+        else if (is_callable($action))
+        {
+            $actionCaller->byCallable($action);
+        }
+        else
+        {
+        }
+
+        return $actionCaller;
+    }
+
+
+    /**
+     * method name convert to url string
+     *
+     * @param   string  $method
+     * @return  string
+     */
+    abstract public function methodName2URL($method);
 }
 

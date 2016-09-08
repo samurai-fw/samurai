@@ -71,6 +71,16 @@ trait DependencyInjectable
     }
 
     /**
+     * has container
+     *
+     * @return  boolean
+     */
+    public function hasContainer()
+    {
+        return $this->container !== null;
+    }
+
+    /**
      * get container alias.
      *
      * @return  Samurai\Raikiri\Container

@@ -44,9 +44,16 @@ class HttpMethodRule extends MatchRule
     /**
      * method
      *
-     * @var     string
+     * @var     array
      */
-    protected $method = self::HTTP_METHOD_GET;
+    protected $method = [self::HTTP_METHOD_GET];
+
+    /**
+     * restful
+     *
+     * @var     boolean
+     */
+    protected $restful = true;
 
     /**
      * http method const
@@ -56,27 +63,62 @@ class HttpMethodRule extends MatchRule
     const HTTP_METHOD_GET = 'GET';
     const HTTP_METHOD_POST = 'POST';
     const HTTP_METHOD_PUT = 'PUT';
+    const HTTP_METHOD_PATCH = 'PATCH';
     const HTTP_METHOD_DELETE = 'DELETE';
+    const HTTP_METHOD_ANY = 'GET|POST|PUT|PATCH|DELETE';
 
 
     /**
      * set method
      *
      * @param   string  $method
+     * @return  Rule
      */
     public function setMethod($method)
     {
-        $this->method = $method;
+        if (is_string($method))
+            $method = explode('|', $method);
+
+        $this->method = array_map('strtoupper', $method);
+
+        return $this;
     }
 
 
     /**
-     * @override
+     * restful
+     *
+     * @param   boolean     $flag
+     * @return  Rule
+     */
+    public function restful($flag = true)
+    {
+        $this->restful = $flag;
+    }
+
+
+    /**
+     * {@inheritdoc}
      */
     public function match($path, $method = self::HTTP_METHOD_GET)
     {
         $match = parent::match($path);
-        return $match && $this->method === $method;
+        return $match && in_array(strtoupper($method), $this->method);
+    }
+    
+    /**
+     * getFooBarZooAction to foo-bar-zoo
+     * 
+     * {@inheritdoc}
+     */
+    public function methodName2URL($method)
+    {
+        if (! $this->restful)
+            return parent::methodName2URL($method);
+
+        $method = preg_replace('/Action$/i', '', $method);
+        $method = preg_replace('/^(' . self::HTTP_METHOD_ANY . ')/i', '', $method);
+        return trim(strtolower(preg_replace('/[A-Z]/', '-\0', $method)), '-');
     }
 }
 

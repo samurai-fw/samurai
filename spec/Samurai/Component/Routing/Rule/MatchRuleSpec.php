@@ -66,5 +66,12 @@ class MatchRuleSpec extends PHPSpecContext
         $this->getAction()->shouldBe('show');
         $this->getParams()->shouldBe(['format' => 'jpg', 'id' => '123']);
     }
+
+    public function it_converts_to_url_from_method_name()
+    {
+        $this->methodName2URL('indexAction')->shouldBe('index');
+        $this->methodName2URL('fooBarZooAction')->shouldBe('foo-bar-zoo');
+        $this->methodName2URL('foo_bar_zooAction')->shouldBe('foo_bar_zoo');
+    }
 }
 
