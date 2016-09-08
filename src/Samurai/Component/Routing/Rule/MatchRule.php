@@ -46,8 +46,11 @@ class MatchRule extends Rule
     /**
      * constructor
      */
-    public function __construct($rule)
+    public function __construct($rule = null)
     {
+        if (! $rule)
+            return;
+
         foreach ($rule as $key => $value) {
             switch ($key) {
                 case 'as':
@@ -85,14 +88,23 @@ class MatchRule extends Rule
         $params = [];
         $elements = explode('/', $this->getPath());
         foreach ($elements as $i => $element) {
-            if (trim($element) === '') continue;
+            if ($i === 0) continue;
 
-            if(preg_match('/^:([a-z_]+)$/i', $element, $matches)){
+            if ($element === '')
+            {
+                $regexp[] = '/';
+            }
+            elseif(preg_match('/^:([a-z_]+)$/i', $element, $matches))
+            {
                 $regexp[] = '(?:/([^/]+))';
                 $params[] = $matches[1];
-            } elseif(preg_match('/^\*$/', $element, $matches)){
+            }
+            elseif(preg_match('/^\*$/', $element, $matches))
+            {
                 $regexp[] = '(?:/.*)';
-            } else {
+            }
+            else
+            {
                 $regexp[] = '/' . preg_quote($element, '|');
             }
         }
@@ -105,7 +117,7 @@ class MatchRule extends Rule
             }
         }
 
-        $regexp = sprintf('|^%s|', join('', $regexp));
+        $regexp = sprintf('|^%s$|', join('', $regexp));
         if (preg_match($regexp, $path, $matches)) {
 
             array_shift($matches);
