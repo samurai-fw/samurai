@@ -43,5 +43,35 @@ class HttpMethodRuleSpec extends PHPSpecContext
         $this->restful(false);
         $this->methodName2URL('getIndexAction')->shouldBe('get-index');
     }
+
+
+    public function it_is_http_only()
+    {
+        $this->setPath('/user/index');
+        $this->match('/user/index')->shouldBe(true);
+
+        $_SERVER['HTTPS'] = 'on';
+        $this->match('/user/index')->shouldBe(true);
+
+        $this->notSecure();
+        $this->match('/user/index')->shouldBe(false);
+        
+        unset($_SERVER['HTTPS']);
+    }
+    
+    public function it_is_https_only()
+    {
+        $this->setPath('/user/index');
+        $this->match('/user/index')->shouldBe(true);
+
+        // in secure
+        $this->secure();
+        $this->match('/user/index')->shouldBe(false);
+
+        $_SERVER['HTTPS'] = 'on';
+        $this->match('/user/index')->shouldBe(true);
+        
+        unset($_SERVER['HTTPS']);
+    }
 }
 

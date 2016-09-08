@@ -83,6 +83,21 @@ class RouterSpec extends PHPSpecContext
     }
 
 
+    public function it_is_restful_controller()
+    {
+        $this->controller('/foo', 'spec\Samurai\Samurai\Component\Routing\ExampleController');
+
+        $this->dispatch('/foo/index')
+            ->shouldHaveType(ActionCaller::class);
+        $this->dispatch('/foo/index', 'POST')
+            ->shouldHaveType(ActionCaller::class);
+        $this->dispatch('/foo/show')
+            ->shouldHaveType(ActionCaller::class);
+        $this->shouldThrow(NotFoundException::class)
+            ->duringDispatch('/foo/output');
+    }
+
+
     /*
     public function let(HttpRequest $r, ActionChain $a)
     {

@@ -56,6 +56,15 @@ class HttpMethodRule extends MatchRule
     protected $restful = true;
 
     /**
+     * secure only
+     *
+     * null: any
+     * true: https only
+     * false: http only
+     */
+    protected $secure = null;
+
+    /**
      * http method const
      *
      * @const   string
@@ -84,7 +93,6 @@ class HttpMethodRule extends MatchRule
         return $this;
     }
 
-
     /**
      * restful
      *
@@ -96,6 +104,22 @@ class HttpMethodRule extends MatchRule
         $this->restful = $flag;
     }
 
+    /**
+     * secure only
+     */
+    public function secure()
+    {
+        $this->secure = true;
+    }
+
+    /**
+     * not secure only
+     */
+    public function notSecure()
+    {
+        $this->secure = false;
+    }
+
 
     /**
      * {@inheritdoc}
@@ -103,9 +127,25 @@ class HttpMethodRule extends MatchRule
     public function match($path, $method = self::HTTP_METHOD_GET)
     {
         $match = parent::match($path);
-        return $match && in_array(strtoupper($method), $this->method);
+        return $match && in_array(strtoupper($method), $this->method) && $this->checkSecure();
     }
-    
+
+
+    /**
+     * checking secure setting
+     *
+     * @return  boolean
+     */
+    public function checkSecure()
+    {
+        if ($this->secure === null)
+            return true;
+
+        $in_secure = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on';
+        return ($this->secure && $in_secure) || (! $this->secure && ! $in_secure);
+    }
+
+
     /**
      * getFooBarZooAction to foo-bar-zoo
      * 
