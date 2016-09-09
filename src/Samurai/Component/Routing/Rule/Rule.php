@@ -81,6 +81,14 @@ abstract class Rule
     public $params = [];
 
     /**
+     * prefix path
+     *
+     * @var     string
+     */
+    protected $prefix;
+
+
+    /**
      * alias of setName
      *
      * @param   string  $name
@@ -112,6 +120,17 @@ abstract class Rule
         return $this->name;
     }
 
+
+    /**
+     * prefix
+     *
+     * @param   string  $prefix
+     * @return  Rule
+     */
+    public function prefix($prefix)
+    {
+        $this->prefix = $prefix;
+    }
 
     /**
      * Set controller.
@@ -208,11 +227,12 @@ abstract class Rule
     /**
      * get path
      *
+     * @param   boolean     $with_prefix
      * @return  string
      */
-    public function getPath()
+    public function getPath($with_prefix = true)
     {
-        return $this->path;
+        return $with_prefix && $this->prefix ? $this->prefix . $this->path : $this->path;
     }
 
 

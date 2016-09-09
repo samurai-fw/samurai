@@ -67,6 +67,16 @@ class MatchRuleSpec extends PHPSpecContext
         $this->getParams()->shouldBe(['format' => 'jpg', 'id' => '123']);
     }
 
+
+    public function it_is_prefix_matching()
+    {
+        $this->setPath('/user/index');
+        $this->prefix('/foo');
+        
+        $this->match('/user/index')->shouldBe(false);
+        $this->match('/foo/user/index')->shouldBe(true);
+    }
+
     public function it_converts_to_url_from_method_name()
     {
         $this->methodName2URL('indexAction')->shouldBe('index');

@@ -62,7 +62,7 @@ class HttpMethodRule extends MatchRule
      * true: https only
      * false: http only
      */
-    protected $secure = null;
+    protected $secure;
 
     /**
      * http method const
@@ -102,14 +102,18 @@ class HttpMethodRule extends MatchRule
     public function restful($flag = true)
     {
         $this->restful = $flag;
+        return $this;
     }
 
     /**
      * secure only
+     *
+     * @return  Rule
      */
     public function secure()
     {
         $this->secure = true;
+        return $this;
     }
 
     /**
@@ -118,6 +122,7 @@ class HttpMethodRule extends MatchRule
     public function notSecure()
     {
         $this->secure = false;
+        return $this;
     }
 
 
