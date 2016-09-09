@@ -19,14 +19,14 @@ class RootRuleSpec extends PHPSpecContext
 
     public function it_is_match()
     {
-        $this->match('/')->shouldBe(true);
+        $this->matching('/')->shouldBe(true);
     }
 
     public function it_is_not_match()
     {
-        $this->match('/foo')->shouldBe(false);;
-        $this->match('/foo/bar/zoo')->shouldBe(false);;
-        $this->match('/favicon.ico')->shouldBe(false);;
+        $this->matching('/foo')->shouldBe(false);;
+        $this->matching('/foo/bar/zoo')->shouldBe(false);;
+        $this->matching('/favicon.ico')->shouldBe(false);;
     }
 
     public function it_is_invalid_constructor_arguments()

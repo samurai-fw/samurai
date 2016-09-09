@@ -46,7 +46,7 @@ class MatchRule extends Rule
     /**
      * constructor
      */
-    public function __construct($rule = null)
+    public function __construct(array $rule = [])
     {
         if (! $rule)
             return;
@@ -61,6 +61,9 @@ class MatchRule extends Rule
                     break;
                 case 'action':
                     $this->setAction($value);
+                    break;
+                case 'prefix':
+                    $this->prefix($value);
                     break;
                 default:
                     // when numeric key, then path
@@ -81,7 +84,7 @@ class MatchRule extends Rule
     /**
      * {@inheritdoc}
      */
-    public function match($path, $method = null)
+    public function matching($path, $method = null)
     {
         // parse
         $regexp = [];

@@ -85,6 +85,25 @@ class HttpMethodRule extends MatchRule
 
 
     /**
+     * {@inheritdoc}
+     */
+    public function __construct(array $rule = [])
+    {
+        parent::__construct($rule);
+
+        foreach ($rule as $key => $value)
+        {
+            switch ($key)
+            {
+                case 'domain':
+                    $this->domain($value);
+                    break;
+            }
+        }
+    }
+
+
+    /**
      * set method
      *
      * @param   string  $method
@@ -148,9 +167,9 @@ class HttpMethodRule extends MatchRule
     /**
      * {@inheritdoc}
      */
-    public function match($path, $method = self::HTTP_METHOD_GET)
+    public function matching($path, $method = self::HTTP_METHOD_GET)
     {
-        $match = parent::match($path);
+        $match = parent::matching($path);
         return $match
             && in_array(strtoupper($method), $this->method)
             && $this->checkSecure()
@@ -178,6 +197,10 @@ class HttpMethodRule extends MatchRule
      */
     public function checkDomain()
     {
+        // parent
+        if ($this->group && ! $this->group->checkDomain())
+            return false;
+
         if ($this->domain === null)
             return true;
 

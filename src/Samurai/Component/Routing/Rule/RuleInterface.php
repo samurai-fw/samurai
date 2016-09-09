@@ -31,61 +31,23 @@
 namespace Samurai\Samurai\Component\Routing\Rule;
 
 /**
- * Default Rule.
+ * Rule interface.
  *
  * @package     Samurai
- * @subpackage  Componen.Routing
+ * @subpackage  Component.Routing
  * @copyright   2007-2013, Samurai Framework Project
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-class DefaultRule extends Rule
+interface RuleInterface
 {
     /**
-     * {@inheritdoc}
+     * matching to path.
+     *
+     * @param   string  $path
+     * @param   string  $method
+     * @return  boolean
      */
-    public function matching($path, $method = null)
-    {
-        $paths = explode(DS, $path);
-        array_shift($paths);
-        if (count($paths) < 2) return false;
-
-        // more population pattern.
-        // /:controller/:action
-        if (preg_match('|^/(\w+)/(\w+)/?$|', $path, $matches)) {
-            $this->setController($matches[1]);
-            $this->setAction($matches[2]);
-            return true;
-        }
-
-        // has id, or nested controller ?
-        // /:controller/:action/:id
-        // /:controller/:controller/:action
-        if (count($paths) > 2) {
-            $action = array_pop($paths);
-
-            // has format.
-            if (preg_match('/^(\w+)\.(\w+)$/', $action, $matches)) {
-                $action = $matches[1];
-                $this->setParam('format', $matches[2]);
-            }
-
-            if (is_numeric($action)) {
-                $this->setParam('id', (int)$action);
-                $action = array_pop($paths);
-            }
-            $controller = join('_', $paths);
-            $this->setController($controller);
-            $this->setAction($action);
-            return true;
-        }
-
-        return false;
-    }
-    
-    
-    public function methodName2URL($method)
-    {
-    }
+    public function matching($path, $method = null);
 }
 

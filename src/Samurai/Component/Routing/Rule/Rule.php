@@ -43,7 +43,7 @@ use Samurai\Samurai\Component\Routing\ActionCaller;
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-abstract class Rule
+abstract class Rule implements RuleInterface
 {
     /**
      * name
@@ -87,6 +87,25 @@ abstract class Rule
      */
     protected $prefix;
 
+    /**
+     * group rule
+     *
+     * @var     GroupRule
+     */
+    protected $group;
+
+
+    /**
+     * set group
+     *
+     * @param   GroupRule   $group
+     * @return  Rule
+     */
+    public function setGroup(GroupRule $group)
+    {
+        $this->group = $group;
+    }
+
 
     /**
      * alias of setName
@@ -120,7 +139,6 @@ abstract class Rule
         return $this->name;
     }
 
-
     /**
      * prefix
      *
@@ -132,6 +150,7 @@ abstract class Rule
         $this->prefix = $prefix;
     }
 
+
     /**
      * Set controller.
      *
@@ -141,7 +160,6 @@ abstract class Rule
     {
         $this->controller = $controller;
     }
-
 
     /**
      * Get Controller
@@ -232,7 +250,16 @@ abstract class Rule
      */
     public function getPath($with_prefix = true)
     {
-        return $with_prefix && $this->prefix ? $this->prefix . $this->path : $this->path;
+        $prefix = '';
+
+        // group
+        if ($with_prefix && $this->group)
+            $prefix .= $this->group->getPath();
+
+        if ($with_prefix && $this->prefix)
+            $prefix .= $this->prefix;
+
+        return $prefix . $this->path;
     }
 
 
@@ -269,15 +296,6 @@ abstract class Rule
     }
 
 
-    /**
-     * matching to path.
-     *
-     * @param   string  $path
-     * @param   string  $method
-     * @return  boolean
-     */
-    abstract public function match($path, $method = null);
-    
     
     /**
      * rule convert to action caller

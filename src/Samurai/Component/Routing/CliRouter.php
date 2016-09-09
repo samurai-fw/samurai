@@ -86,7 +86,7 @@ class CliRouter extends Router
 
         // default rule.
         $path = '/';
-        if ($this->_default && $this->_default->match($path)) {
+        if ($this->_default && $this->_default->matching($path)) {
             return $this->_default;
         }
     }

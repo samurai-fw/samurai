@@ -27,7 +27,7 @@ class MatchRuleSpec extends PHPSpecContext
             'as' => 'login',
         ]);
 
-        $this->match('/login')->shouldBe(true);
+        $this->matching('/login')->shouldBe(true);
 
         $this->getName()->shouldBe('login');
         $this->getController()->shouldBe('user');
@@ -41,8 +41,8 @@ class MatchRuleSpec extends PHPSpecContext
     {
         $this->beConstructedWith(['/foo/*' => 'foo.compile', 'as' => 'foo']);
 
-        $this->match('/foo/bar')->shouldBe(true);
-        $this->match('/foo/bar/zoo')->shouldBe(true);
+        $this->matching('/foo/bar')->shouldBe(true);
+        $this->matching('/foo/bar/zoo')->shouldBe(true);
         $this->getController()->shouldBe('foo');
         $this->getAction()->shouldBe('compile');
     }
@@ -51,7 +51,7 @@ class MatchRuleSpec extends PHPSpecContext
     {
         $this->beConstructedWith(['/foo/:bar/:zoo' => 'foo.compile', 'as' => 'foo']);
 
-        $this->match('/foo/1/2')->shouldBe(true);
+        $this->matching('/foo/1/2')->shouldBe(true);
         $this->getController()->shouldBe('foo');
         $this->getAction()->shouldBe('compile');
         $this->getParams()->shouldBe(['bar' => '1', 'zoo' => '2']);
@@ -61,7 +61,7 @@ class MatchRuleSpec extends PHPSpecContext
     {
         $this->beConstructedWith(['/photo/:id.:format' => 'photo.show', 'as' => 'photo_show']);
 
-        $this->match('/photo/123.jpg')->shouldBe(true);
+        $this->matching('/photo/123.jpg')->shouldBe(true);
         $this->getController()->shouldBe('photo');
         $this->getAction()->shouldBe('show');
         $this->getParams()->shouldBe(['format' => 'jpg', 'id' => '123']);
@@ -73,8 +73,8 @@ class MatchRuleSpec extends PHPSpecContext
         $this->setPath('/user/index');
         $this->prefix('/foo');
         
-        $this->match('/user/index')->shouldBe(false);
-        $this->match('/foo/user/index')->shouldBe(true);
+        $this->matching('/user/index')->shouldBe(false);
+        $this->matching('/foo/user/index')->shouldBe(true);
     }
 
     public function it_converts_to_url_from_method_name()

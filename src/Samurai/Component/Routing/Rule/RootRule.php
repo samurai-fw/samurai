@@ -62,7 +62,7 @@ class RootRule extends Rule
     /**
      * {@inheritdoc}
      */
-    public function match($path, $method = null)
+    public function matching($path, $method = null)
     {
         return $path === '/';
     }

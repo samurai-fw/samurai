@@ -19,7 +19,7 @@ class DefaultRuleSpec extends PHPSpecContext
     public function it_is_match_standard()
     {
         // /:controller/:action
-        $this->match('/user/profile')->shouldBe(true);
+        $this->matching('/user/profile')->shouldBe(true);
 
         $this->getController()->shouldBe('user');
         $this->getAction()->shouldBe('profile');
@@ -28,7 +28,7 @@ class DefaultRuleSpec extends PHPSpecContext
     public function it_is_match_has_id()
     {
         // /:controller/:action/:id
-        $this->match('/user/profile/11')->shouldBe(true);
+        $this->matching('/user/profile/11')->shouldBe(true);
 
         $this->getController()->shouldBe('user');
         $this->getAction()->shouldBe('profile');
@@ -38,7 +38,7 @@ class DefaultRuleSpec extends PHPSpecContext
     public function it_is_match_has_format()
     {
         // /:controller/:action/:id.:format
-        $this->match('/user/profile/11.gif')->shouldBe(true);
+        $this->matching('/user/profile/11.gif')->shouldBe(true);
 
         $this->getController()->shouldBe('user');
         $this->getAction()->shouldBe('profile');
@@ -48,26 +48,26 @@ class DefaultRuleSpec extends PHPSpecContext
     public function it_is_match_hierarchical()
     {
         // /:controller/:subcontroller/:action
-        $this->match('/user/profile/show')->shouldBe(true);
+        $this->matching('/user/profile/show')->shouldBe(true);
 
         $this->getController()->shouldBe('user_profile');
         $this->getAction()->shouldBe('show');
         
         // /:controller/:subcontroller/:nested/:action
-        $this->match('/user/profile/zoom/show')->shouldBe(true);
+        $this->matching('/user/profile/zoom/show')->shouldBe(true);
 
         $this->getController()->shouldBe('user_profile_zoom');
         $this->getAction()->shouldBe('show');
         
         // /:controller/:subcontroller/:nested/:action/:id
-        $this->match('/user/profile/zoom/show/12')->shouldBe(true);
+        $this->matching('/user/profile/zoom/show/12')->shouldBe(true);
 
         $this->getController()->shouldBe('user_profile_zoom');
         $this->getAction()->shouldBe('show');
         $this->getParams(['id' => 12]);
         
         // /:controller/:subcontroller/:nested/:action/:id.:format
-        $this->match('/user/profile/zoom/show/12.jpg')->shouldBe(true);
+        $this->matching('/user/profile/zoom/show/12.jpg')->shouldBe(true);
 
         $this->getController()->shouldBe('user_profile_zoom');
         $this->getAction()->shouldBe('show');
@@ -77,8 +77,8 @@ class DefaultRuleSpec extends PHPSpecContext
     public function it_is_not_match()
     {
         // top layer uri (no action information)
-        $this->match('/foo')->shouldBe(false);
-        $this->match('/favicon.ico')->shouldBe(false);
+        $this->matching('/foo')->shouldBe(false);
+        $this->matching('/favicon.ico')->shouldBe(false);
     }
 }
 

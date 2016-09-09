@@ -79,7 +79,7 @@ class Router
     /**
      * constructor.
      *
-     * @access  public
+     * @param   Router  $parent
      */
     public function __construct()
     {
@@ -99,7 +99,7 @@ class Router
     {
         foreach ($this->rules as $rule)
         {
-            if ($rule->match($path, $method))
+            if ($rule->matching($path, $method))
                 return $rule->toActionCaller($path, $method);
         }
         throw new NotFoundException($path);
@@ -226,6 +226,18 @@ class Router
             $rule->restful(false);
             $rule->setPath($path . '/' . $rule->methodName2URL($method));
         }
+    }
+
+
+    /**
+     * add group matching
+     *
+     * @param   array   $rule
+     * @return  GroupRule
+     */
+    public function group(array $option = [])
+    {
+        $rule = new Rule\GroupRule;
     }
 
 

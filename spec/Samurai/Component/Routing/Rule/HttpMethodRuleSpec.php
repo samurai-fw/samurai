@@ -17,9 +17,9 @@ class HttpMethodRuleSpec extends PHPSpecContext
         $this->setPath('/');
         $this->setMethod(HttpMethodRule::HTTP_METHOD_GET);
 
-        $this->match('/', HttpMethodRule::HTTP_METHOD_GET)->shouldBe(true);
-        $this->match('/', HttpMethodRule::HTTP_METHOD_POST)->shouldBe(false);
-        $this->match('/foo', HttpMethodRule::HTTP_METHOD_GET)->shouldBe(false);
+        $this->matching('/', HttpMethodRule::HTTP_METHOD_GET)->shouldBe(true);
+        $this->matching('/', HttpMethodRule::HTTP_METHOD_POST)->shouldBe(false);
+        $this->matching('/foo', HttpMethodRule::HTTP_METHOD_GET)->shouldBe(false);
     }
     
 
@@ -28,10 +28,10 @@ class HttpMethodRuleSpec extends PHPSpecContext
         $this->setPath('/user/index');
         $this->setMethod(HttpMethodRule::HTTP_METHOD_GET);
 
-        $this->match('/', HttpMethodRule::HTTP_METHOD_GET)->shouldBe(false);
-        $this->match('/user/edit', HttpMethodRule::HTTP_METHOD_GET)->shouldBe(false);
-        $this->match('/user/index', HttpMethodRule::HTTP_METHOD_POST)->shouldBe(false);
-        $this->match('/user/index', HttpMethodRule::HTTP_METHOD_GET)->shouldBe(true);
+        $this->matching('/', HttpMethodRule::HTTP_METHOD_GET)->shouldBe(false);
+        $this->matching('/user/edit', HttpMethodRule::HTTP_METHOD_GET)->shouldBe(false);
+        $this->matching('/user/index', HttpMethodRule::HTTP_METHOD_POST)->shouldBe(false);
+        $this->matching('/user/index', HttpMethodRule::HTTP_METHOD_GET)->shouldBe(true);
     }
     
 
@@ -39,13 +39,13 @@ class HttpMethodRuleSpec extends PHPSpecContext
     public function it_is_http_only()
     {
         $this->setPath('/user/index');
-        $this->match('/user/index')->shouldBe(true);
+        $this->matching('/user/index')->shouldBe(true);
 
         $_SERVER['HTTPS'] = 'on';
-        $this->match('/user/index')->shouldBe(true);
+        $this->matching('/user/index')->shouldBe(true);
 
         $this->notSecure();
-        $this->match('/user/index')->shouldBe(false);
+        $this->matching('/user/index')->shouldBe(false);
         
         unset($_SERVER['HTTPS']);
     }
@@ -53,14 +53,14 @@ class HttpMethodRuleSpec extends PHPSpecContext
     public function it_is_https_only()
     {
         $this->setPath('/user/index');
-        $this->match('/user/index')->shouldBe(true);
+        $this->matching('/user/index')->shouldBe(true);
 
         // in secure
         $this->secure();
-        $this->match('/user/index')->shouldBe(false);
+        $this->matching('/user/index')->shouldBe(false);
 
         $_SERVER['HTTPS'] = 'on';
-        $this->match('/user/index')->shouldBe(true);
+        $this->matching('/user/index')->shouldBe(true);
         
         unset($_SERVER['HTTPS']);
     }
@@ -73,10 +73,10 @@ class HttpMethodRuleSpec extends PHPSpecContext
         $domain = empty($_SERVER['SERVER_NAME']) ? null : $_SERVER['SERVER_NAME'];
 
         $_SERVER['SERVER_NAME'] = 'example.jp';
-        $this->match('/user/index')->shouldBe(true);
+        $this->matching('/user/index')->shouldBe(true);
 
         $_SERVER['SERVER_NAME'] = 'example.com';
-        $this->match('/user/index')->shouldBe(false);
+        $this->matching('/user/index')->shouldBe(false);
         
         $_SERVER['SERVER_NAME'] = $domain;
     }
