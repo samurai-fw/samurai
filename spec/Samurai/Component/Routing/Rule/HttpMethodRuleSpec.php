@@ -64,6 +64,22 @@ class HttpMethodRuleSpec extends PHPSpecContext
         
         unset($_SERVER['HTTPS']);
     }
+
+    public function it_is_domain_matching()
+    {
+        $this->setPath('/user/index');
+        $this->domain('example.jp');
+
+        $domain = empty($_SERVER['SERVER_NAME']) ? null : $_SERVER['SERVER_NAME'];
+
+        $_SERVER['SERVER_NAME'] = 'example.jp';
+        $this->match('/user/index')->shouldBe(true);
+
+        $_SERVER['SERVER_NAME'] = 'example.com';
+        $this->match('/user/index')->shouldBe(false);
+        
+        $_SERVER['SERVER_NAME'] = $domain;
+    }
     
     public function it_converts_to_url_from_method_name()
     {
@@ -74,6 +90,5 @@ class HttpMethodRuleSpec extends PHPSpecContext
         $this->restful(false);
         $this->methodName2URL('getIndexAction')->shouldBe('get-index');
     }
-
 }
 

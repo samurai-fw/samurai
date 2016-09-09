@@ -65,6 +65,13 @@ class HttpMethodRule extends MatchRule
     protected $secure;
 
     /**
+     * domain
+     *
+     * @var     string
+     */
+    protected $domain;
+
+    /**
      * http method const
      *
      * @const   string
@@ -125,6 +132,18 @@ class HttpMethodRule extends MatchRule
         return $this;
     }
 
+    /**
+     * domain
+     *
+     * @param   string  $domain
+     * @return  Rule
+     */
+    public function domain($domain)
+    {
+        $this->domain = $domain;
+        return $this;
+    }
+
 
     /**
      * {@inheritdoc}
@@ -132,9 +151,11 @@ class HttpMethodRule extends MatchRule
     public function match($path, $method = self::HTTP_METHOD_GET)
     {
         $match = parent::match($path);
-        return $match && in_array(strtoupper($method), $this->method) && $this->checkSecure();
+        return $match
+            && in_array(strtoupper($method), $this->method)
+            && $this->checkSecure()
+            && $this->checkDomain();
     }
-
 
     /**
      * checking secure setting
@@ -148,6 +169,23 @@ class HttpMethodRule extends MatchRule
 
         $in_secure = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on';
         return ($this->secure && $in_secure) || (! $this->secure && ! $in_secure);
+    }
+
+    /**
+     * checking domain
+     *
+     * @return  boolean
+     */
+    public function checkDomain()
+    {
+        if ($this->domain === null)
+            return true;
+
+        $domain = empty($_SERVER['SERVER_NAME']) ? null : $_SERVER['SERVER_NAME'];
+        if ($domain === null)
+            return false;
+
+        return $domain === $this->domain;
     }
 
 
