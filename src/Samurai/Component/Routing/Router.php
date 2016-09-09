@@ -47,6 +47,13 @@ use Samurai\Raikiri\DependencyInjectable;
 class Router
 {
     /**
+     * parent router
+     *
+     * @var     Router
+     */
+    protected $parent;
+
+    /**
      * root routing.
      *
      * @access  protected
@@ -79,10 +86,11 @@ class Router
     /**
      * constructor.
      *
-     * @access  public
+     * @param   Router  $parent
      */
-    public function __construct()
+    public function __construct(Router $parent = null)
     {
+        $this->parent = $parent;
         $this->_default = new Rule\DefaultRule();
     }
 
@@ -226,6 +234,18 @@ class Router
             $rule->restful(false);
             $rule->setPath($path . '/' . $rule->methodName2URL($method));
         }
+    }
+
+
+    /**
+     * add group matching
+     *
+     * @param   array   $option
+     * @return  GroupRule
+     */
+    public function group(array $option = [])
+    {
+        $rule = new Rule\GroupRule;
     }
 
 

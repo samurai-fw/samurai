@@ -43,7 +43,7 @@ use Samurai\Samurai\Component\Routing\ActionCaller;
  * @author      KIUCHI Satoshinosuke <scholar@hayabusa-lab.jp>
  * @license     http://opensource.org/licenses/MIT
  */
-abstract class Rule
+abstract class Rule implements RuleInterface
 {
     /**
      * name
@@ -269,15 +269,6 @@ abstract class Rule
     }
 
 
-    /**
-     * matching to path.
-     *
-     * @param   string  $path
-     * @param   string  $method
-     * @return  boolean
-     */
-    abstract public function match($path, $method = null);
-    
     
     /**
      * rule convert to action caller
